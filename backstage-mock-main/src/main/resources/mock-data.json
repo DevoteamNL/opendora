@@ -1,0 +1,174 @@
+{
+
+  "metadata_1": {
+
+    "id": 46,
+
+    "iid": 11,
+
+    "project_id": 1,
+
+    "status": "success",
+
+    "ref": "main",
+
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+
+    "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+
+    "tag": false,
+
+    "yaml_errors": null,
+
+    "user": {
+
+      "name": "Administrator",
+
+      "username": "root",
+
+      "id": 1,
+
+      "state": "active",
+
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+
+      "web_url": "http://localhost:3000/root"
+
+    },
+
+    "created_at": "2016-08-11T11:28:34.085Z",
+
+    "updated_at": "2016-08-11T11:32:35.169Z",
+
+    "started_at": null,
+
+    "finished_at": "2016-08-11T11:32:35.145Z",
+
+    "committed_at": null,
+
+    "duration": 123.65,
+
+    "queued_duration": 0.01,
+
+    "coverage": "30.0",
+
+    "web_url": "https://example.com/foo/bar/pipelines/46"
+
+  },
+
+
+  "metadata_2": {
+
+    "id": 47,
+
+    "iid": 12,
+
+    "project_id": 1,
+
+    "status": "failed",
+
+    "ref": "main",
+
+    "sha": "b63ea48c6b9aa6c3b6cbf1d3c1cbf02ab7af28c6",
+
+    "before_sha": "b63ea48c6b9aa6c3b6cbf1d3c1cbf02ab7af28c6",
+
+    "tag": false,
+
+    "yaml_errors": "Invalid syntax",
+
+    "user": {
+
+      "name": "John Doe",
+
+      "username": "johndoe",
+
+      "id": 2,
+
+      "state": "active",
+
+      "avatar_url": "http://www.gravatar.com/avatar/123456789abcdef?s=80&d=identicon",
+
+      "web_url": "http://localhost:3000/johndoe"
+
+    },
+
+    "created_at": "2018-03-19T10:11:12.345Z",
+
+    "updated_at": "2018-03-19T10:13:14.567Z",
+
+    "started_at": null,
+
+    "finished_at": "2018-03-19T10:13:14.345Z",
+
+    "committed_at": null,
+
+    "duration": 45.67,
+
+    "queued_duration": 0.01,
+
+    "coverage": "50.0",
+
+    "web_url": "https://example.com/foo/bar/pipelines/47"
+
+  },
+
+
+  "metadata_3": {
+
+    "id": 48,
+
+    "iid": 13,
+
+    "project_id": 2,
+
+    "status": "canceled",
+
+    "ref": "feature-branch",
+
+    "sha": "c123456789abcdef123456789abcdef123456789",
+
+    "before_sha": "c123456789abcdef123456789abcdef123456789",
+
+    "tag": false,
+
+    "yaml_errors": null,
+
+    "user": {
+
+      "name": "Jane Smith",
+
+      "username": "janesmith",
+
+      "id": 3,
+
+      "state": "active",
+
+      "avatar_url": "http://www.gravatar.com/avatar/987654321abcdef?s=80&d=identicon",
+
+      "web_url": "http://localhost:3000/janesmith"
+
+    },
+
+    "created_at": "2019-05-01T09:10:11.123Z",
+
+    "updated_at": "2019-05-01T09:12:13.456Z",
+
+    "started_at": null,
+
+    "finished_at": "2019-05-01T09:12:13.123Z",
+
+    "committed_at": "2019-05-01T09:00:00.000Z",
+
+    "duration": 67.89,
+
+    "queued_duration": 0.020,
+
+    "coverage": "80.0",
+
+    "web_url": "https://example.com/foo/bar/pipelines/48"
+
+  }
+
+}
+
