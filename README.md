@@ -8,3 +8,6 @@ To start the app, run:
 yarn install
 yarn dev
 ```
+
+
+Mock Api endpoint: localhost:8080/mock-data
