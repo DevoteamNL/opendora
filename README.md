@@ -1,13 +1,29 @@
-# [Backstage](https://backstage.io)
+# Backstage Dora Project
 
-This is your newly scaffolded Backstage App, Good Luck!
+This repo contains all the projects needed to start development on the backstage plugin for Dora metrics.
 
-To start the app, run:
+## Contents
 
-```sh
-yarn install
-yarn dev
-```
+### backstage-mock-main
 
+This is a basic Spring application used to provide a mock API with data representing metrics stored in a DevLake. This can be used to develop the frontend plugin without needing to setup the local backend API or DevLake.
 
-Mock Api endpoint: localhost:8080/mock-data
+Prerequisites:
+- JDK 11
+- Maven
+
+[More details todo](backstage-mock-main/README.md)
+
+### backstage-plugin
+
+This is a scaffold [Backstage](https://backstage.io) app used to configure an environment to develop the plugin. 
+
+Prerequisites: [Backstage docs](https://backstage.io/docs/getting-started/#prerequisites)
+
+[More details todo](backstage-plugin/README.md)
+
+### devlake-go
+
+This contains the docker image (todo) and configuration scripts to setup DevLake to properly ingest the Dora metrics from a GitLab repo and group them according to Backstage groups.
+
+[More details](devlake-go/README.md)
