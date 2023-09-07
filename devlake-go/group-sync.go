@@ -9,13 +9,21 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"slices"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
 
+func lookupEnvDefault(envKey string, envDefaultValue string) string {
+	if val, ok := os.LookupEnv(envKey); ok {
+		return val
+	}
+	return envDefaultValue
+}
+
 func retrieveBackstageTeams() []backstage.Entity {
-	client, err := backstage.NewClient("http://localhost:7007/", "default", nil)
+	client, err := backstage.NewClient(lookupEnvDefault("BACKSTAGE_URL", "http://localhost:7007/"), "default", nil)
 	backstageTeams, _, err := client.Catalog.Entities.List(context.Background(), &backstage.ListEntityOptions{
 		Filters: []string{
 			"kind=group",
@@ -25,26 +33,30 @@ func retrieveBackstageTeams() []backstage.Entity {
 	})
 
 	if err != nil {
-		log.Fatal("Cannot retrieve Backstage teams", err)
+		log.Fatal("Cannot retrieve Backstage teams: ", err)
 	}
 
 	return backstageTeams
 }
 
+func devLakeTeamsApiUrlFromEnv() string {
+	return lookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/") + "api/plugins/org/teams.csv"
+}
+
 func retrieveDevLakeTeams() ([][]string, []string) {
-	resp, err := http.Get("http://localhost:4000/api/plugins/org/teams.csv")
+	resp, err := http.Get(devLakeTeamsApiUrlFromEnv())
 	if err != nil {
-		log.Fatal("Cannot retrieve DevLake teams", err)
+		log.Fatal("Cannot retrieve DevLake teams: ", err)
 	}
 	csvReader := csv.NewReader(resp.Body)
 	devLakeTeams, err := csvReader.ReadAll()
 	if err != nil {
-		log.Fatal("Cannot read DevLake team CSV format", err)
+		log.Fatal("Cannot read DevLake team CSV format: ", err)
 	}
 
 	teamNameIndex := slices.Index(devLakeTeams[0], "Name")
 	if teamNameIndex == -1 {
-		log.Fatal("DevLake team CSV does not contain a column for team names", err)
+		log.Fatal("DevLake team CSV does not contain a column for team names: ", err)
 	}
 
 	devLakeTeamNames := []string{}
@@ -72,7 +84,7 @@ func updateDevLakeTeams(devLakeTeams [][]string) {
 	csvWriter.WriteAll(devLakeTeams)
 
 	if err := csvWriter.Error(); err != nil {
-		log.Fatal("Cannot write DevLake teams to CSV format", err)
+		log.Fatal("Cannot write DevLake teams to CSV format: ", err)
 	}
 
 	multipartBody := &bytes.Buffer{}
@@ -81,10 +93,10 @@ func updateDevLakeTeams(devLakeTeams [][]string) {
 	io.Copy(part, buf)
 	writer.Close()
 
-	req, err := http.NewRequest("PUT", "http://localhost:4000/api/plugins/org/teams.csv", multipartBody)
+	req, err := http.NewRequest("PUT", devLakeTeamsApiUrlFromEnv(), multipartBody)
 
 	if err != nil {
-		log.Fatal("Cannot create DevLake PUT request", err)
+		log.Fatal("Cannot create DevLake PUT request: ", err)
 	}
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
@@ -93,11 +105,11 @@ func updateDevLakeTeams(devLakeTeams [][]string) {
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		log.Fatal("Cannot update DevLake teams CSV", err)
+		log.Fatal("Cannot update DevLake teams CSV: ", err)
 	}
 	resBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal("Cannot read response from DevLake teams update request", err)
+		log.Fatal("Cannot read response from DevLake teams update request: ", err)
 	}
 
 	log.Printf("Response: %s\n", resBody)
