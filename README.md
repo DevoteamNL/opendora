@@ -8,19 +8,13 @@ This repo contains all the projects needed to start development on the backstage
 
 This is a basic Spring application used to provide a mock API with data representing metrics stored in a DevLake. This can be used to develop the frontend plugin without needing to setup the local backend API or DevLake.
 
-Prerequisites:
-- JDK 11
-- Maven
-
-[More details todo](backstage-mock-main/README.md)
+[More details](backstage-mock-main/README.md)
 
 ### backstage-plugin
 
-This is a scaffold [Backstage](https://backstage.io) app used to configure an environment to develop the plugin. 
+This is a scaffold [Backstage](https://backstage.io) app used to configure an environment to develop the plugin.
 
-Prerequisites: [Backstage docs](https://backstage.io/docs/getting-started/#prerequisites)
-
-[More details todo](backstage-plugin/README.md)
+[More details](backstage-plugin/README.md)
 
 ### devlake-go
 
