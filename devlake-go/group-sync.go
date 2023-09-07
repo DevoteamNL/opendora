@@ -44,6 +44,10 @@ func devLakeTeamsApiUrlFromEnv() string {
 }
 
 func retrieveDevLakeTeams() ([][]string, []string) {
+	if _, ok := os.LookupEnv("REPLACE_DEVLAKE_TEAMS"); ok {
+		return [][]string{{"Id", "Name", "Alias", "ParentId", "SortingIndex"}}, []string{}
+	}
+
 	resp, err := http.Get(devLakeTeamsApiUrlFromEnv())
 	if err != nil {
 		log.Fatal("Cannot retrieve DevLake teams: ", err)
