@@ -4,16 +4,20 @@ import (
 	"bytes"
 	"context"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
+
+const DevLakeTeamIdColumn = 0
+const DevLakeTeamNameColumn = 1
+const DevLakeTeamParentIdColumn = 3
 
 func retrieveBackstageTeams() []backstage.Entity {
 	client, err := backstage.NewClient("http://localhost:7007/", "default", nil)
@@ -46,43 +50,55 @@ func retrieveDevLakeTeams() [][]string {
 	return devLakeTeams
 }
 
-func devLakeTeamFinder(teamName string) func(devLakeTeam []string) bool {
-	const DevLakeTeamNameColumn = 1
-
+func devLakeTeamPredicate(teamName string) func(devLakeTeam []string) bool {
 	return func(devLakeTeam []string) bool {
 		return strings.EqualFold(devLakeTeam[DevLakeTeamNameColumn], teamName)
 	}
 }
 
+func largestTeamId(devLakeTeams [][]string) int {
+	latestId := 0
+	for _, devLakeTeam := range devLakeTeams {
+		idAsInt, err := strconv.Atoi(devLakeTeam[DevLakeTeamIdColumn])
+		if err == nil && latestId < idAsInt {
+			latestId = idAsInt
+		}
+	}
+	return latestId
+}
+
 func appendNewTeams(backstageTeams []backstage.Entity, devLakeTeams [][]string) [][]string {
-	const DevLakeTeamIdColumn = 0
-	const DevLakeTeamParentIdColumn = 3
+	lastId := largestTeamId(devLakeTeams)
 
 	for _, backStageTeam := range backstageTeams {
-		currentIndex := slices.IndexFunc(devLakeTeams, devLakeTeamFinder(backStageTeam.Metadata.Name))
-		log.Printf("Team %v %s: %v\n", currentIndex, backStageTeam.Metadata.Name, backStageTeam.Spec["children"])
+		currentIndex := slices.IndexFunc(devLakeTeams, devLakeTeamPredicate(backStageTeam.Metadata.Name))
+
 		if currentIndex != -1 {
 			log.Printf("Team already exists in DevLake: %s\n", backStageTeam.Metadata.Name)
 		} else {
-			devLakeTeams = append(devLakeTeams, []string{fmt.Sprint(len(devLakeTeams)), backStageTeam.Metadata.Name, "", "", ""})
+			lastId += 1
+			devLakeTeams = append(devLakeTeams, []string{strconv.Itoa(lastId), backStageTeam.Metadata.Name, "", "", ""})
 			currentIndex = len(devLakeTeams) - 1
 		}
 
-		for _, relation := range backStageTeam.Relations {
-			targetIndex := slices.IndexFunc(devLakeTeams, devLakeTeamFinder(relation.Target.Name))
-
-			if targetIndex == -1 {
-				continue
-			}
-			if relation.Type == "childOf" {
-				devLakeTeams[currentIndex][DevLakeTeamParentIdColumn] = devLakeTeams[targetIndex][DevLakeTeamIdColumn]
-			} else if relation.Type == "parentOf" {
-				devLakeTeams[targetIndex][DevLakeTeamParentIdColumn] = devLakeTeams[currentIndex][DevLakeTeamIdColumn]
-			}
-		}
-
+		createRelationships(backStageTeam, devLakeTeams, currentIndex)
 	}
 	return devLakeTeams
+}
+
+func createRelationships(backStageTeam backstage.Entity, devLakeTeams [][]string, sourceIndex int) {
+	for _, relation := range backStageTeam.Relations {
+		targetIndex := slices.IndexFunc(devLakeTeams, devLakeTeamPredicate(relation.Target.Name))
+
+		if targetIndex == -1 {
+			continue
+		}
+		if relation.Type == "childOf" {
+			devLakeTeams[sourceIndex][DevLakeTeamParentIdColumn] = devLakeTeams[targetIndex][DevLakeTeamIdColumn]
+		} else if relation.Type == "parentOf" {
+			devLakeTeams[targetIndex][DevLakeTeamParentIdColumn] = devLakeTeams[sourceIndex][DevLakeTeamIdColumn]
+		}
+	}
 }
 
 func updateDevLakeTeams(devLakeTeams [][]string) {
