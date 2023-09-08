@@ -1,4 +1,4 @@
-# Backstage Dora Project
+# Backstage Dora Plugin
 
 This repo contains all the projects needed to start development on the backstage plugin for Dora metrics.
 

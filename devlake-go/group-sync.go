@@ -104,17 +104,22 @@ func createRelationships(backStageTeam backstage.Entity, devLakeTeams [][]string
 func updateDevLakeTeams(devLakeTeams [][]string) {
 	buf := new(bytes.Buffer)
 	csvWriter := csv.NewWriter(buf)
-	csvWriter.WriteAll(devLakeTeams)
 
-	if err := csvWriter.Error(); err != nil {
+	if err := csvWriter.WriteAll(devLakeTeams); err != nil {
 		log.Fatal("Cannot write DevLake teams to CSV format", err)
 	}
 
 	multipartBody := &bytes.Buffer{}
 	writer := multipart.NewWriter(multipartBody)
 	part, _ := writer.CreateFormFile("file", "teams.csv")
-	io.Copy(part, buf)
-	writer.Close()
+
+	if _, err := io.Copy(part, buf); err != nil {
+		log.Fatal("Cannot copy CSV buffer to multipart file: ", err)
+	}
+
+	if err := writer.Close(); err != nil {
+		log.Fatal("Cannot close CSV writer: ", err)
+	}
 
 	req, err := http.NewRequest("PUT", "http://localhost:4000/api/plugins/org/teams.csv", multipartBody)
 
