@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
@@ -21,6 +22,10 @@ func lookupEnvDefault(envKey string, envDefaultValue string) string {
 	}
 	return envDefaultValue
 }
+
+const DevLakeTeamIdColumn = 0
+const DevLakeTeamNameColumn = 1
+const DevLakeTeamParentIdColumn = 3
 
 func retrieveBackstageTeams() []backstage.Entity {
 	client, err := backstage.NewClient(lookupEnvDefault("BACKSTAGE_URL", "http://localhost:7007/"), "default", nil)
@@ -43,9 +48,9 @@ func devLakeTeamsApiUrlFromEnv() string {
 	return lookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/") + "api/plugins/org/teams.csv"
 }
 
-func retrieveDevLakeTeams() ([][]string, []string) {
+func retrieveDevLakeTeams() [][]string {
 	if _, ok := os.LookupEnv("REPLACE_DEVLAKE_TEAMS"); ok {
-		return [][]string{{"Id", "Name", "Alias", "ParentId", "SortingIndex"}}, []string{}
+		return [][]string{{"Id", "Name", "Alias", "ParentId", "SortingIndex"}}
 	}
 
 	resp, err := http.Get(devLakeTeamsApiUrlFromEnv())
@@ -58,44 +63,79 @@ func retrieveDevLakeTeams() ([][]string, []string) {
 		log.Fatal("Cannot read DevLake team CSV format: ", err)
 	}
 
-	teamNameIndex := slices.Index(devLakeTeams[0], "Name")
-	if teamNameIndex == -1 {
-		log.Fatal("DevLake team CSV does not contain a column for team names: ", err)
-	}
-
-	devLakeTeamNames := []string{}
-	for _, team := range devLakeTeams[1:] {
-		devLakeTeamNames = append(devLakeTeamNames, team[teamNameIndex])
-	}
-
-	return devLakeTeams, devLakeTeamNames
+	return devLakeTeams
 }
 
-func appendNewTeams(backstageTeams []backstage.Entity, devLakeTeams [][]string, devLakeTeamNames []string) [][]string {
-	for _, team := range backstageTeams {
-		if slices.Contains(devLakeTeamNames, team.Metadata.Name) {
-			log.Printf("Team already exists in DevLake: %s\n", team.Metadata.Name)
-		} else {
-			devLakeTeams = append(devLakeTeams, []string{fmt.Sprint(len(devLakeTeams)), team.Metadata.Name, "", "", ""})
+func devLakeTeamPredicate(teamName string) func(devLakeTeam []string) bool {
+	return func(devLakeTeam []string) bool {
+		return strings.EqualFold(devLakeTeam[DevLakeTeamNameColumn], teamName)
+	}
+}
+
+func largestTeamId(devLakeTeams [][]string) int {
+	latestId := 0
+	for _, devLakeTeam := range devLakeTeams {
+		idAsInt, err := strconv.Atoi(devLakeTeam[DevLakeTeamIdColumn])
+		if err == nil && latestId < idAsInt {
+			latestId = idAsInt
 		}
 	}
+	return latestId
+}
+
+func appendNewTeams(backstageTeams []backstage.Entity, devLakeTeams [][]string) [][]string {
+	lastId := largestTeamId(devLakeTeams)
+
+	for _, backStageTeam := range backstageTeams {
+		currentIndex := slices.IndexFunc(devLakeTeams, devLakeTeamPredicate(backStageTeam.Metadata.Name))
+
+		if currentIndex != -1 {
+			log.Printf("Team already exists in DevLake: %s\n", backStageTeam.Metadata.Name)
+		} else {
+			lastId += 1
+			devLakeTeams = append(devLakeTeams, []string{strconv.Itoa(lastId), backStageTeam.Metadata.Name, "", "", ""})
+			currentIndex = len(devLakeTeams) - 1
+		}
+
+		createRelationships(backStageTeam, devLakeTeams, currentIndex)
+	}
 	return devLakeTeams
+}
+
+func createRelationships(backStageTeam backstage.Entity, devLakeTeams [][]string, sourceIndex int) {
+	for _, relation := range backStageTeam.Relations {
+		targetIndex := slices.IndexFunc(devLakeTeams, devLakeTeamPredicate(relation.Target.Name))
+
+		if targetIndex == -1 {
+			continue
+		}
+		if relation.Type == "childOf" {
+			devLakeTeams[sourceIndex][DevLakeTeamParentIdColumn] = devLakeTeams[targetIndex][DevLakeTeamIdColumn]
+		} else if relation.Type == "parentOf" {
+			devLakeTeams[targetIndex][DevLakeTeamParentIdColumn] = devLakeTeams[sourceIndex][DevLakeTeamIdColumn]
+		}
+	}
 }
 
 func updateDevLakeTeams(devLakeTeams [][]string) {
 	buf := new(bytes.Buffer)
 	csvWriter := csv.NewWriter(buf)
-	csvWriter.WriteAll(devLakeTeams)
 
-	if err := csvWriter.Error(); err != nil {
+	if err := csvWriter.WriteAll(devLakeTeams); err != nil {
 		log.Fatal("Cannot write DevLake teams to CSV format: ", err)
 	}
 
 	multipartBody := &bytes.Buffer{}
 	writer := multipart.NewWriter(multipartBody)
 	part, _ := writer.CreateFormFile("file", "teams.csv")
-	io.Copy(part, buf)
-	writer.Close()
+
+	if _, err := io.Copy(part, buf); err != nil {
+		log.Fatal("Cannot copy CSV buffer to multipart file: ", err)
+	}
+
+	if err := writer.Close(); err != nil {
+		log.Fatal("Cannot close CSV writer: ", err)
+	}
 
 	req, err := http.NewRequest("PUT", devLakeTeamsApiUrlFromEnv(), multipartBody)
 
@@ -121,8 +161,8 @@ func updateDevLakeTeams(devLakeTeams [][]string) {
 
 func main() {
 	backstageTeams := retrieveBackstageTeams()
-	devLakeTeams, devLakeTeamNames := retrieveDevLakeTeams()
-	devLakeTeams = appendNewTeams(backstageTeams, devLakeTeams, devLakeTeamNames)
+	devLakeTeams := retrieveDevLakeTeams()
+	devLakeTeams = appendNewTeams(backstageTeams, devLakeTeams)
 
 	updateDevLakeTeams(devLakeTeams)
 }
