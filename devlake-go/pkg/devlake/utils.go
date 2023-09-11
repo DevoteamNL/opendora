@@ -1,14 +1,9 @@
 package devlake
 
 import (
-	"devlake-go/group-sync/pkg/config"
 	"strconv"
 	"strings"
 )
-
-func ApiUrlFromEnv() string {
-	return config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/")
-}
 
 func TeamNamePredicate(teamName string) func(devLakeTeam []string) bool {
 	return func(devLakeTeam []string) bool {
