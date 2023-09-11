@@ -4,6 +4,9 @@ on:
   pull-request:
     branches:
       - main
+    paths:
+      - "devlake-go/**"
+      - ".github/workflows/pr-go-workflow.yaml"
 
 jobs:
   build:
