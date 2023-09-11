@@ -53,7 +53,7 @@ func TestReplaceTeams(t *testing.T) {
 	}
 }
 
-func TestNoServer(t *testing.T) {
+func TestNoServerGetRequest(t *testing.T) {
 	csv, err := RetrieveTeams("http://localhost/no-server")
 
 	if err == nil || csv != nil {
