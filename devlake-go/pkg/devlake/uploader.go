@@ -10,20 +10,20 @@ import (
 )
 
 func UpdateTeams(baseUrl string, devLakeTeams [][]string) (response []byte, err error) {
-	buf := new(bytes.Buffer)
-	csvWriter := csv.NewWriter(buf)
+	var buf bytes.Buffer
+	csvWriter := csv.NewWriter(&buf)
 
 	if err := csvWriter.WriteAll(devLakeTeams); err != nil {
 		return nil, fmt.Errorf("cannot write DevLake teams to CSV format: %w", err)
 	}
 
-	multipartBody := &bytes.Buffer{}
-	writer := multipart.NewWriter(multipartBody)
+	var multipartBody bytes.Buffer
+	writer := multipart.NewWriter(&multipartBody)
 	part, err := writer.CreateFormFile("file", "teams.csv")
 	if err != nil {
 		return nil, fmt.Errorf("cannot create multipart file: %w", err)
 	}
-	if _, err := io.Copy(part, buf); err != nil {
+	if _, err := io.Copy(part, &buf); err != nil {
 		return nil, fmt.Errorf("cannot copy CSV buffer to multipart file: %w", err)
 	}
 
@@ -31,14 +31,14 @@ func UpdateTeams(baseUrl string, devLakeTeams [][]string) (response []byte, err 
 		return nil, fmt.Errorf("cannot close CSV writer: %w", err)
 	}
 
-	req, err := http.NewRequest("PUT", baseUrl+teamCsvApiPath, multipartBody)
+	req, err := http.NewRequest("PUT", baseUrl+teamCsvApiPath, &multipartBody)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create DevLake PUT request: %w", err)
 	}
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 
-	httpClient := &http.Client{}
+	var httpClient http.Client
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
