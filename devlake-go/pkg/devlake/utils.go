@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func TeamsApiUrlFromEnv() string {
+func ApiUrlFromEnv() string {
 	return config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/")
 }
 

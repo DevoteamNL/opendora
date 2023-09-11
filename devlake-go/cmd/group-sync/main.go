@@ -10,12 +10,17 @@ import (
 func main() {
 	backstageTeams := backstage.RetrieveTeams()
 
-	devlakeApiUrl := devlake.TeamsApiUrlFromEnv()
+	devlakeApiUrl := devlake.ApiUrlFromEnv()
 	devLakeTeams, err := devlake.RetrieveTeams(devlakeApiUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
 	devLakeTeams = conversion.BackstageTeamsToDevLakeTeams(backstageTeams, devLakeTeams)
 
-	devlake.UpdateTeams(devlakeApiUrl, devLakeTeams)
+	response, err := devlake.UpdateTeams(devlakeApiUrl, devLakeTeams)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Response: %s\n", response)
 }

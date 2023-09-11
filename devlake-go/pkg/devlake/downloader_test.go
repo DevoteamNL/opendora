@@ -9,14 +9,20 @@ import (
 	"testing"
 )
 
-func TestRetrieveTeams(t *testing.T) {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func csvGetHandler(t *testing.T) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/api/plugins/org/teams.csv" {
 			t.Errorf("Expected to request '/api/plugins/org/teams.csv'/, got: %s", r.URL.Path)
 		}
+		if r.Method != "GET" {
+			t.Errorf("Expected a GET request, got: %s", r.Method)
+		}
 		fmt.Fprintln(w, "Id,Name,Alias,ParentId,SortingIndex\n1,Maple Leafs,ML,2,0\n2,Friendly Confines,FC,,1\n3,Blue Jays,BJ,,2")
-	}))
+	})
+}
 
+func TestRetrieveTeams(t *testing.T) {
+	testServer := httptest.NewServer(csvGetHandler(t))
 	defer testServer.Close()
 
 	csv, err := RetrieveTeams(testServer.URL)
@@ -31,13 +37,7 @@ func TestRetrieveTeams(t *testing.T) {
 }
 
 func TestReplaceTeams(t *testing.T) {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/api/plugins/org/teams.csv" {
-			t.Errorf("Expected to request '/api/plugins/org/teams.csv'/, got: %s", r.URL.Path)
-		}
-		fmt.Fprintln(w, "Id,Name,Alias,ParentId,SortingIndex\n1,Maple Leafs,ML,2,0\n2,Friendly Confines,FC,,1\n3,Blue Jays,BJ,,2")
-	}))
-
+	testServer := httptest.NewServer(csvGetHandler(t))
 	defer testServer.Close()
 
 	t.Setenv("REPLACE_DEVLAKE_TEAMS", "true")
