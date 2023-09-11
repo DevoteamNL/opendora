@@ -8,8 +8,10 @@ import (
 
 func main() {
 	backstageTeams := backstage.RetrieveTeams()
-	devLakeTeams := devlake.RetrieveTeams()
+
+	devlakeApiUrl := devlake.TeamsApiUrlFromEnv()
+	devLakeTeams := devlake.RetrieveTeams(devlakeApiUrl)
 	devLakeTeams = conversion.BackstageTeamsToDevLakeTeams(backstageTeams, devLakeTeams)
 
-	devlake.UpdateTeams(devLakeTeams)
+	devlake.UpdateTeams(devlakeApiUrl, devLakeTeams)
 }

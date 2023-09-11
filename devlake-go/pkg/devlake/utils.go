@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-func teamsApiUrlFromEnv() string {
-	return config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/") + "api/plugins/org/teams.csv"
+func TeamsApiUrlFromEnv() string {
+	return config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/")
 }
 
 func TeamNamePredicate(teamName string) func(devLakeTeam []string) bool {
 	return func(devLakeTeam []string) bool {
-		return strings.EqualFold(devLakeTeam[TeamNameColumn], teamName)
+		return strings.EqualFold(devLakeTeam[teamNameColumn], teamName)
 	}
 }
 

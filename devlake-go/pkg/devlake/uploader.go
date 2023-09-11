@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func UpdateTeams(devLakeTeams [][]string) {
+func UpdateTeams(baseUrl string, devLakeTeams [][]string) {
 	buf := new(bytes.Buffer)
 	csvWriter := csv.NewWriter(buf)
 
@@ -29,7 +29,7 @@ func UpdateTeams(devLakeTeams [][]string) {
 		log.Fatal("Cannot close CSV writer: ", err)
 	}
 
-	req, err := http.NewRequest("PUT", teamsApiUrlFromEnv(), multipartBody)
+	req, err := http.NewRequest("PUT", baseUrl+teamCsvApiPath, multipartBody)
 
 	if err != nil {
 		log.Fatal("Cannot create DevLake PUT request: ", err)

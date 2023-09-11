@@ -7,12 +7,12 @@ import (
 	"os"
 )
 
-func RetrieveTeams() [][]string {
+func RetrieveTeams(baseUrl string) [][]string {
 	if _, ok := os.LookupEnv("REPLACE_DEVLAKE_TEAMS"); ok {
 		return [][]string{{"Id", "Name", "Alias", "ParentId", "SortingIndex"}}
 	}
 
-	resp, err := http.Get(teamsApiUrlFromEnv())
+	resp, err := http.Get(baseUrl + teamCsvApiPath)
 	if err != nil {
 		log.Fatal("Cannot retrieve DevLake teams: ", err)
 	}
