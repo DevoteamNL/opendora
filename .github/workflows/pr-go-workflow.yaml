@@ -21,13 +21,13 @@ jobs:
           go-version: "1.21"
 
       - name: Install dependencies
-        run: go get .
+        run: go get ./...
 
       - name: Vet
-        run: go vet .
+        run: go vet ./...
 
       - name: Format
-        run: gofmt -l -s .
+        run: test -z $(gofmt -l -s . | tee /dev/fd/2)
 
       - name: Build
         run: go build -v ./...
