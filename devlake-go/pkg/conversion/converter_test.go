@@ -30,7 +30,7 @@ func createBackstageTeamWithName(name string) backstage.Entity {
 }
 
 func createTestBackstageTeamsWithNames(names []string) []backstage.Entity {
-	teams := []backstage.Entity{}
+	var teams []backstage.Entity
 
 	for _, name := range names {
 		teams = append(teams, createBackstageTeamWithName(name))
