@@ -3,50 +3,51 @@ package devlake
 import (
 	"bytes"
 	"encoding/csv"
+	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"net/http"
 )
 
-func UpdateTeams(devLakeTeams [][]string) {
-	buf := new(bytes.Buffer)
-	csvWriter := csv.NewWriter(buf)
+func UpdateTeams(baseUrl string, devLakeTeams [][]string) (response []byte, err error) {
+	var buf bytes.Buffer
+	csvWriter := csv.NewWriter(&buf)
 
 	if err := csvWriter.WriteAll(devLakeTeams); err != nil {
-		log.Fatal("Cannot write DevLake teams to CSV format: ", err)
+		return nil, fmt.Errorf("cannot write DevLake teams to CSV format: %w", err)
 	}
 
-	multipartBody := &bytes.Buffer{}
-	writer := multipart.NewWriter(multipartBody)
-	part, _ := writer.CreateFormFile("file", "teams.csv")
-
-	if _, err := io.Copy(part, buf); err != nil {
-		log.Fatal("Cannot copy CSV buffer to multipart file: ", err)
+	var multipartBody bytes.Buffer
+	writer := multipart.NewWriter(&multipartBody)
+	part, err := writer.CreateFormFile("file", "teams.csv")
+	if err != nil {
+		return nil, fmt.Errorf("cannot create multipart file: %w", err)
+	}
+	if _, err := io.Copy(part, &buf); err != nil {
+		return nil, fmt.Errorf("cannot copy CSV buffer to multipart file: %w", err)
 	}
 
 	if err := writer.Close(); err != nil {
-		log.Fatal("Cannot close CSV writer: ", err)
+		return nil, fmt.Errorf("cannot close CSV writer: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPut, teamsApiUrlFromEnv(), multipartBody)
-
+	req, err := http.NewRequest(http.MethodPut, baseUrl+teamCsvApiPath, &multipartBody)
 	if err != nil {
-		log.Fatal("Cannot create DevLake PUT request: ", err)
+		return nil, fmt.Errorf("cannot create DevLake PUT request: %w", err)
 	}
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 
-	httpClient := &http.Client{}
+	var httpClient http.Client
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		log.Fatal("Cannot update DevLake teams CSV: ", err)
+		return nil, fmt.Errorf("cannot update DevLake teams CSV: %w", err)
 	}
 	resBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal("Cannot read response from DevLake teams update request: ", err)
+		return nil, fmt.Errorf("cannot read response from DevLake teams update request: %w", err)
 	}
 
-	log.Printf("Response: %s\n", resBody)
+	return resBody, nil
 }

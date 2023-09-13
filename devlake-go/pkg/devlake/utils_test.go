@@ -6,7 +6,6 @@ import (
 )
 
 func TestLargestTeamIdTableDriven(t *testing.T) {
-
 	var tests = []struct {
 		name  string
 		input [][]string
@@ -25,6 +24,35 @@ func TestLargestTeamIdTableDriven(t *testing.T) {
 			ans := LargestTeamId(tt.input)
 			if ans != tt.want {
 				t.Errorf("got %d, want %d", ans, tt.want)
+			}
+		})
+	}
+}
+
+func TestTeamNamePredicateTableDriven(t *testing.T) {
+	type Input struct {
+		team []string
+		name string
+	}
+	var tests = []struct {
+		name  string
+		input Input
+		want  bool
+	}{
+		{"should match exact name", Input{[]string{"A", "TeamA", "C", "D", "E"}, "TeamA"}, true},
+		{"should match exact name disregarding case", Input{[]string{"A", "teama", "C", "D", "E"}, "TeamA"}, true},
+		{"should match exact name disregarding case", Input{[]string{"A", "TeamA", "C", "D", "E"}, "teama"}, true},
+		{"should not match sub-string", Input{[]string{"A", "TeamAandB", "C", "D", "E"}, "TeamA"}, false},
+		{"should not match sub-string", Input{[]string{"A", "TeamA", "C", "D", "E"}, "TeamAandB"}, false},
+		{"should not match partial string", Input{[]string{"A", "TeamA", "C", "D", "E"}, "Tea"}, false},
+		{"should not match partial string", Input{[]string{"A", "Tea", "C", "D", "E"}, "TeamA"}, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ans := TeamNamePredicate(tt.input.name)(tt.input.team)
+			if ans != tt.want {
+				t.Errorf("got %t, want %t", ans, tt.want)
 			}
 		})
 	}
