@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { DataPoint, DeploymentFrequencyDataProp } from '../../models/DeploymentFrequencyData';
 
-export default function SimpleCharts({ ChartData }) {
+export default function SimpleCharts({deploymentFrequencyData}: DeploymentFrequencyDataProp) {
+
   let keys = ['0'];
   let values = [0];
-  if (ChartData && ChartData.dataPoints) {
-    keys = ChartData.dataPoints.map(item => item.key);
-    values = ChartData.dataPoints.map(item => item.value);
+  if (deploymentFrequencyData && deploymentFrequencyData.dataPoints) {
+    keys = deploymentFrequencyData.dataPoints.map((item:DataPoint) => item.key);
+    values = deploymentFrequencyData.dataPoints.map((item:DataPoint)  => item.value);
   }
   return (
     <BarChart

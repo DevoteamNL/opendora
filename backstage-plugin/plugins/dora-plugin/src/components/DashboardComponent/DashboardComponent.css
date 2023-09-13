@@ -1,16 +1,7 @@
 .gridBorder {
   padding: 8px;
   margin-top: 20px !important;
-  /* 
-border-style: solid;
-border-color: #424242;
-border-width: 1px; */
 }
-
-/* .gridBorder {
-    padding:20px;
-    margin: 20px !important;  
-background: green;} */
 
 .highlight {
   display: flex;

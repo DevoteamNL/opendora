@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Grid } from '@material-ui/core';
+import React, {  useEffect } from 'react';
+import {  Grid } from '@material-ui/core';
 import {
-  InfoCard,
   Header,
   Page,
   Content,
@@ -15,12 +14,13 @@ import SimpleCharts from '../BarChartComponent/BarChartComponent';
 import DropdownComponent from '../DropdownComponent/DropdownComponent';
 
 import GroupDataService from '../../services/GroupDataService';
+import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
 
-export const DashboardComponent = () => {
-  const [chartData, setChartData] = React.useState('');
+export  const  DashboardComponent = () => {
+  const [chartData, setChartData] = React.useState<DeploymentFrequencyData | null>(null);
 
   useEffect(() => {
-    GroupDataService.getMockData().then((response: any) => {
+    GroupDataService.getMockData().then((response: DeploymentFrequencyData) => {
       // here we get fetch data for the graphs
       setChartData(response);
     });
@@ -105,7 +105,7 @@ export const DashboardComponent = () => {
 
             <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
-                <SimpleCharts ChartData={chartData} />
+                <SimpleCharts deploymentFrequencyData={chartData} />
               </div>
             </Grid>
           </Grid>
