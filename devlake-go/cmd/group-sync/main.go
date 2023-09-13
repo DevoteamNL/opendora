@@ -9,20 +9,20 @@ import (
 )
 
 func main() {
-	backstageTeams, err := backstage.RetrieveTeams(config.LookupEnvDefault("BACKSTAGE_URL", "http://localhost:7007/"))
+	backstageTeamMap, err := backstage.RetrieveTeams(config.LookupEnvDefault("BACKSTAGE_URL", "http://localhost:7007/"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	devlakeApiUrl := config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/")
-	devLakeTeams, err := devlake.RetrieveTeams(devlakeApiUrl)
+	devLakeTeamMap, err := devlake.RetrieveTeams(devlakeApiUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	devLakeTeams = conversion.BackstageTeamsToDevLakeTeams(backstageTeams, devLakeTeams)
+	conversion.BackstageTeamsToDevLakeTeams(backstageTeamMap, devLakeTeamMap)
 
-	response, err := devlake.UpdateTeams(devlakeApiUrl, devLakeTeams)
+	response, err := devlake.UpdateTeams(devlakeApiUrl, devLakeTeamMap)
 	if err != nil {
 		log.Fatal(err)
 	}

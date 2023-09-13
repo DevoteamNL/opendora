@@ -9,11 +9,21 @@ import (
 	"net/http"
 )
 
-func UpdateTeams(baseUrl string, devLakeTeams [][]string) (response []byte, err error) {
+func csvHeader() []string { return []string{"Id", "Name", "Alias", "ParentId", "SortingIndex"} }
+
+func teamMapToCsvSlice(teamMap map[string][]string) [][]string {
+	entries := [][]string{csvHeader()}
+	for _, entry := range teamMap {
+		entries = append(entries, entry)
+	}
+	return entries
+}
+
+func UpdateTeams(baseUrl string, devLakeTeamMap map[string][]string) (response []byte, err error) {
 	var buf bytes.Buffer
 	csvWriter := csv.NewWriter(&buf)
 
-	if err := csvWriter.WriteAll(devLakeTeams); err != nil {
+	if err := csvWriter.WriteAll(teamMapToCsvSlice(devLakeTeamMap)); err != nil {
 		return nil, fmt.Errorf("cannot write DevLake teams to CSV format: %w", err)
 	}
 
