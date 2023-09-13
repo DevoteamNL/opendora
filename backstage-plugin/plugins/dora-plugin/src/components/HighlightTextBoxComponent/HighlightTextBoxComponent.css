@@ -1,26 +1,26 @@
 .highlight {
-    text-align: center;
-    width: 100%;
-    font-size: 70px;
+  text-align: center;
+  width: 100%;
+  font-size: 70px;
 }
 
 .notification {
-    text-align: right;
-    font-style: italic;
+  text-align: right;
+  font-style: italic;
 }
 
 .warning {
-    color: #FFCC00;
+  color: #ffcc00;
 }
 
 .critical {
-    color: red;
+  color: red;
 }
 
 .positiveHighlight {
-    color: 	#198754;
+  color: #198754;
 }
 
-.parentBox{
-    height: 200px;
+.parentBox {
+  height: 200px;
 }
