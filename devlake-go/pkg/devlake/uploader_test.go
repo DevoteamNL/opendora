@@ -24,7 +24,7 @@ func csvPutHandler(t *testing.T) http.HandlerFunc {
 		if r.URL.Path != "/api/plugins/org/teams.csv" {
 			t.Errorf("Expected to request '/api/plugins/org/teams.csv', got: %s", r.URL.Path)
 		}
-		if r.Method != "PUT" {
+		if r.Method != http.MethodPut {
 			t.Errorf("Expected a PUT request, got: %s", r.Method)
 		}
 
