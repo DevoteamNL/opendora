@@ -31,7 +31,7 @@ func UpdateTeams(baseUrl string, devLakeTeams [][]string) (response []byte, err 
 		return nil, fmt.Errorf("cannot close CSV writer: %w", err)
 	}
 
-	req, err := http.NewRequest("PUT", baseUrl+teamCsvApiPath, &multipartBody)
+	req, err := http.NewRequest(http.MethodPut, baseUrl+teamCsvApiPath, &multipartBody)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create DevLake PUT request: %w", err)
 	}
