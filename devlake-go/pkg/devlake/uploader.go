@@ -29,7 +29,7 @@ func UpdateTeams(devLakeTeams [][]string) {
 		log.Fatal("Cannot close CSV writer: ", err)
 	}
 
-	req, err := http.NewRequest("PUT", teamsApiUrlFromEnv(), multipartBody)
+	req, err := http.NewRequest(http.MethodPut, teamsApiUrlFromEnv(), multipartBody)
 
 	if err != nil {
 		log.Fatal("Cannot create DevLake PUT request: ", err)
