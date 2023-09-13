@@ -3,7 +3,6 @@ import './HighlightTextBoxComponent.css'
 
 export const HighlightTextBoxComponent = (prop: any) => {
     
-    // console.log("title", title.title, title.highlight, text)
 
     if (prop.warning) {
 

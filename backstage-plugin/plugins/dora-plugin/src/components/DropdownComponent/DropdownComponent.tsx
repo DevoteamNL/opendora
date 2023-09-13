@@ -3,8 +3,6 @@ import { Box, MenuItem, TextField } from "@material-ui/core";
 
 
 function DropdownComponent({ onSelect, selection, type }) {
-console.log("🚀 ~ file: DropdownComponent.tsx:6 ~ DropdownComponent ~ selection:", selection)
-
 // TODO
 
 // Fetch all the groups here and list them as options

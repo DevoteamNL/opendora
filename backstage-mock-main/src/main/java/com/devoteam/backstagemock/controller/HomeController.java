@@ -11,10 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/mock-data")
 public class HomeController {
@@ -26,7 +29,7 @@ public class HomeController {
         ClassPathResource staticDataResource = new ClassPathResource("mock-data.json");
 
         String staticDataString = IOUtils.toString(staticDataResource.getInputStream(), StandardCharsets.UTF_8);
-
+      
         return ResponseEntity.ok(new JSONObject(staticDataString).toMap());
 
     }

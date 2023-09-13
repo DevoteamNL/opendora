@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Grid } from '@material-ui/core';
 import {
   InfoCard,
@@ -14,9 +14,23 @@ import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/Highligh
 import SimpleCharts from '../BarChartComponent/BarChartComponent';
 import DropdownComponent from '../DropdownComponent/DropdownComponent';
 
+import GroupDataService from '../../services/GroupDataService'
+
 
 
 export const DashboardComponent = () => {
+
+  const [chartData, setChartData] = React.useState('')
+
+  
+
+  useEffect(()=> {
+    GroupDataService.getMockData()
+      .then((response: any) => { 
+        // here we get fetch data for the graphs
+        setChartData(response);
+  });
+    }, [])
 
   const [selectedGroup, setSelectedGroup] = React.useState('');
   const updateGrp = (grp) => {
@@ -86,7 +100,7 @@ export const DashboardComponent = () => {
 
               <Grid item xs={6} className="gridBorder">
                 <div className="gridBoxText" >
-                 <SimpleCharts groupName="Test"/>
+                 <SimpleCharts ChartData={chartData}/>
                 </div>
               </Grid>
 
