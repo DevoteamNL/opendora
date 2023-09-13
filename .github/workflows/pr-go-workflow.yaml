@@ -1,0 +1,39 @@
+name: pr-go-packages
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "devlake-go/**"
+      - ".github/workflows/pr-go-workflow.yaml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: devlake-go
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Install dependencies
+        run: go get ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Format
+        run: test -z $(gofmt -l -s . | tee /dev/fd/2)
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
