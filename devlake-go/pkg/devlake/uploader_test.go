@@ -1,7 +1,6 @@
 package devlake
 
 import (
-	"devlake-go/group-sync/pkg/test"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,14 +9,17 @@ import (
 	"testing"
 )
 
-func exampleTeamsInput() [][]string {
-	return test.ExampleCsvWithColumnHeaders([][]string{{"1", "Maple Leafs", "ML", "2", "0"}, {"2", "Friendly Confines", "FC", "", "1"}, {"3", "Blue Jays", "BJ", "", "2"}})
+func exampleTeamsInput() map[string][]string {
+	return map[string][]string{
+		"1": {"1", "Maple Leafs", "ML", "2", "0"},
+		"2": {"2", "Friendly Confines", "FC", "", "1"},
+		"3": {"3", "Blue Jays", "BJ", "", "2"},
+	}
 }
 
-const exampleTeamsCsv = `Id,Name,Alias,ParentId,SortingIndex
-1,Maple Leafs,ML,2,0
-2,Friendly Confines,FC,,1
-3,Blue Jays,BJ,,2`
+func exampleTeamsCsvLines() []string {
+	return []string{"Id,Name,Alias,ParentId,SortingIndex\n", "1,Maple Leafs,ML,2,0\n", "2,Friendly Confines,FC,,1", "3,Blue Jays,BJ,,2\n"}
+}
 
 func csvPutHandler(t *testing.T) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -33,8 +35,10 @@ func csvPutHandler(t *testing.T) http.HandlerFunc {
 			t.Fatalf("unexpected error reading request body: %v", err)
 		}
 
-		if !strings.Contains(string(reqBody), exampleTeamsCsv) {
-			t.Errorf("Expected body %s, got: %s", exampleTeamsCsv, string(reqBody))
+		for _, line := range exampleTeamsCsvLines() {
+			if !strings.Contains(string(reqBody), line) {
+				t.Errorf("Expected line in body %s, got: %s", line, string(reqBody))
+			}
 		}
 
 		fmt.Fprintln(w, "Success")
