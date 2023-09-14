@@ -25,10 +25,9 @@ jobs:
           cache: "yarn"
           cache-dependency-path: backstage-plugin/yarn.lock
 
-      - name: yarn install
-        uses: backstage/actions/yarn-install@v0.6.4
-        with:
-          cache-prefix: ${{ runner.os }}-v18.x
+      - name: Install dependencies
+        working-directory: backstage-plugin/
+        run: yarn install --frozen-lockfile
 
       - name: validate config
         run: yarn backstage-cli config:check --lax
