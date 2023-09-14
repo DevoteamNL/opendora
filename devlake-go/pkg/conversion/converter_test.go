@@ -112,7 +112,7 @@ func TestAppendNewTeamsTableDriven(t *testing.T) {
 			BackstageTeamsToDevLakeTeams(tt.input.backstageTeams, tt.input.devLakeTeams)
 			ans := tt.input.devLakeTeams
 			if !reflect.DeepEqual(ans, tt.want) {
-				t.Errorf("got %v, want %v", ans, tt.want)
+				t.Errorf("got:\n %v, want:\n %v", ans, tt.want)
 			}
 		})
 	}
@@ -159,7 +159,7 @@ func TestCreateRelationshipsParentOf(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(devlakeTeams, want) {
-		t.Errorf("got %v, want %v", devlakeTeams, want)
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
 	}
 }
 
@@ -181,7 +181,7 @@ func TestCreateRelationshipsChildOf(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(devlakeTeams, want) {
-		t.Errorf("got %v, want %v", devlakeTeams, want)
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
 	}
 }
 
@@ -203,6 +203,30 @@ func TestCreateRelationshipsMissingTarget(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(devlakeTeams, want) {
-		t.Errorf("got %v, want %v", devlakeTeams, want)
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
+	}
+}
+
+func TestFullConversion(t *testing.T) {
+	backstageTeams := map[string]backstage.Entity{
+		"group:default/teama": createTestBackstageTeamWithRelations("teama", "uid1", []TestRelation{{targetRef: "group:default/teamb", relationType: "childOf"}}),
+		"group:default/teamb": createTestBackstageTeamWithRelations("teamb", "uid2", []TestRelation{{targetRef: "group:default/teamc", relationType: "parentOf"}}),
+		"group:default/teamc": createBackstageTeam("teamc", "uid3"),
+	}
+
+	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"devlake-1", "devlake-2", "backstage:uid3", "backstage:uid4"})
+
+	BackstageTeamsToDevLakeTeams(backstageTeams, devlakeTeams)
+
+	want := map[string][]string{
+		"backstage:uid1": {"backstage:uid1", "teama", "", "backstage:uid2", ""},
+		"backstage:uid2": {"backstage:uid2", "teamb", "", "", ""},
+		"backstage:uid3": {"backstage:uid3", "teamc", "C", "backstage:uid2", "E"},
+		"devlake-1":      {"devlake-1", "B", "C", "D", "E"},
+		"devlake-2":      {"devlake-2", "B", "C", "D", "E"},
+	}
+
+	if !reflect.DeepEqual(devlakeTeams, want) {
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
 	}
 }

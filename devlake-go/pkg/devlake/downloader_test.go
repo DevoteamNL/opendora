@@ -35,7 +35,7 @@ func TestRetrieveTeams(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(csv, want) {
-		t.Errorf("got %v, want %v", csv, want)
+		t.Errorf("got:\n %v, want:\n %v", csv, want)
 	}
 }
 
