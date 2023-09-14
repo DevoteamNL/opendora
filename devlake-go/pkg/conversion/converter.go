@@ -4,7 +4,6 @@ import (
 	"devlake-go/group-sync/pkg/devlake"
 	"log"
 	"slices"
-	"strings"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
@@ -13,7 +12,7 @@ func BackstageTeamsToDevLakeTeams(backstageTeamMap map[string]backstage.Entity, 
 	var backstageTeamIds []string
 	for _, backStageTeam := range backstageTeamMap {
 		backstageTeamIds = append(backstageTeamIds, backStageTeam.Metadata.UID)
-		id := devlake.BackstageTeamIdPrefix + backStageTeam.Metadata.UID
+		id := backstageToDevLakeId(backStageTeam)
 		devLakeTeam, exists := devLakeTeamMap[id]
 
 		if exists {
@@ -30,7 +29,7 @@ func BackstageTeamsToDevLakeTeams(backstageTeamMap map[string]backstage.Entity, 
 
 func removeDeletedBackstageTeams(backstageTeamIds []string, devLakeTeamMap map[string][]string) {
 	for key := range devLakeTeamMap {
-		backstageTeamId, found := strings.CutPrefix(key, devlake.BackstageTeamIdPrefix)
+		backstageTeamId, found := devLakeToBackstageId(key)
 		if !found {
 			continue
 		}
@@ -45,14 +44,14 @@ func removeDeletedBackstageTeams(backstageTeamIds []string, devLakeTeamMap map[s
 func createRelationships(backstageTeamMap map[string]backstage.Entity, devLakeTeamMap map[string][]string) {
 	for _, backStageTeam := range backstageTeamMap {
 		for _, relation := range backStageTeam.Relations {
-			sourceId := devlake.BackstageTeamIdPrefix + backStageTeam.Metadata.UID
+			sourceId := backstageToDevLakeId(backStageTeam)
 			target, exists := backstageTeamMap[relation.TargetRef]
 
 			if !exists {
 				continue
 			}
 
-			targetId := devlake.BackstageTeamIdPrefix + target.Metadata.UID
+			targetId := backstageToDevLakeId(target)
 			if relation.Type == "childOf" {
 				devLakeTeamMap[sourceId][devlake.TeamParentIdColumn] = targetId
 			} else if relation.Type == "parentOf" {
