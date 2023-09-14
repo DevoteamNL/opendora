@@ -212,9 +212,10 @@ func TestFullConversion(t *testing.T) {
 		"group:default/teama": createTestBackstageTeamWithRelations("teama", "uid1", []TestRelation{{targetRef: "group:default/teamb", relationType: "childOf"}}),
 		"group:default/teamb": createTestBackstageTeamWithRelations("teamb", "uid2", []TestRelation{{targetRef: "group:default/teamc", relationType: "parentOf"}}),
 		"group:default/teamc": createBackstageTeam("teamc", "uid3"),
+		"group:default/teame": createTestBackstageTeamWithRelations("teame", "uid5", []TestRelation{{targetRef: "group:default/teamd", relationType: "childOf"}}),
 	}
 
-	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"devlake-1", "devlake-2", "backstage:uid3", "backstage:uid4"})
+	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"devlake-1", "devlake-2", "backstage:uid3", "backstage:uid4", "backstage:uid5"})
 
 	BackstageTeamsToDevLakeTeams(backstageTeams, devlakeTeams)
 
@@ -222,6 +223,7 @@ func TestFullConversion(t *testing.T) {
 		"backstage:uid1": {"backstage:uid1", "teama", "", "backstage:uid2", ""},
 		"backstage:uid2": {"backstage:uid2", "teamb", "", "", ""},
 		"backstage:uid3": {"backstage:uid3", "teamc", "C", "backstage:uid2", "E"},
+		"backstage:uid5": {"backstage:uid5", "teame", "C", "D", "E"},
 		"devlake-1":      {"devlake-1", "B", "C", "D", "E"},
 		"devlake-2":      {"devlake-2", "B", "C", "D", "E"},
 	}
