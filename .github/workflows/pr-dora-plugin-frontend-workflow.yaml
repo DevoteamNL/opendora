@@ -35,6 +35,9 @@ jobs:
       - name: lint
         run: yarn backstage-cli package lint
 
+      - name: format
+        run: yarn prettier:check
+
       - name: type checking and declarations
         run: yarn tsc
 
