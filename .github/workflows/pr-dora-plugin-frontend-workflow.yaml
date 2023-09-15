@@ -1,0 +1,49 @@
+name: Check Plugin
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "backstage-plugin/**"
+      - ".github/workflows/pr-dora-plugin-frontend-workflow.yaml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backstage-plugin/plugins/dora-plugin
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: setup nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "yarn"
+          cache-dependency-path: backstage-plugin/yarn.lock
+
+      - name: Install dependencies
+        working-directory: backstage-plugin/
+        run: yarn install --frozen-lockfile
+
+      - name: validate config
+        run: yarn backstage-cli config:check --lax
+
+      - name: lint
+        run: yarn backstage-cli package lint
+
+      - name: format
+        run: yarn prettier:check
+
+      - name: type checking and declarations
+        run: yarn tsc
+
+      - name: build
+        run: yarn backstage-cli package build
+
+      # TODO: Reenable tests once written for plugin, check that they work in new version of backstage.
+      # - name: test
+      #   run: yarn backstage-cli package test

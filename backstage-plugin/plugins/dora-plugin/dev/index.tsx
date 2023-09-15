@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <DoraPluginPage />,
     title: 'Root Page',
-    path: '/dora-plugin'
+    path: '/dora-plugin',
   })
   .render();
