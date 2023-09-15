@@ -4,41 +4,58 @@ import (
 	"devlake-go/group-sync/pkg/devlake"
 	"log"
 	"slices"
-	"strconv"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
 
-func BackstageTeamsToDevLakeTeams(backstageTeams []backstage.Entity, devLakeTeams [][]string) [][]string {
-	lastId := devlake.LargestTeamId(devLakeTeams)
+func BackstageTeamsToDevLakeTeams(backstageTeamMap map[string]backstage.Entity, devLakeTeamMap map[string][]string) {
+	var backstageTeamIds []string
+	for _, backStageTeam := range backstageTeamMap {
+		backstageTeamIds = append(backstageTeamIds, backStageTeam.Metadata.UID)
+		id := backstageToDevLakeId(backStageTeam)
 
-	for _, backStageTeam := range backstageTeams {
-		currentIndex := slices.IndexFunc(devLakeTeams, devlake.TeamNamePredicate(backStageTeam.Metadata.Name))
-
-		if currentIndex != -1 {
-			log.Printf("Team already exists in DevLake: %s\n", backStageTeam.Metadata.Name)
+		if devLakeTeam, exists := devLakeTeamMap[id]; exists {
+			devLakeTeam[devlake.TeamNameColumn] = backStageTeam.Metadata.Name
+			log.Printf("Team already exists in DevLake, updating name: %s\n", backStageTeam.Metadata.Name)
 		} else {
-			lastId += 1
-			devLakeTeams = append(devLakeTeams, []string{strconv.Itoa(lastId), backStageTeam.Metadata.Name, "", "", ""})
-			currentIndex = len(devLakeTeams) - 1
+			devLakeTeamMap[id] = []string{id, backStageTeam.Metadata.Name, "", "", ""}
 		}
-
-		createRelationships(backStageTeam, devLakeTeams, currentIndex)
 	}
-	return devLakeTeams
+
+	removeDeletedBackstageTeams(backstageTeamIds, devLakeTeamMap)
+	createRelationships(backstageTeamMap, devLakeTeamMap)
 }
 
-func createRelationships(backStageTeam backstage.Entity, devLakeTeams [][]string, sourceIndex int) {
-	for _, relation := range backStageTeam.Relations {
-		targetIndex := slices.IndexFunc(devLakeTeams, devlake.TeamNamePredicate(relation.Target.Name))
-
-		if targetIndex == -1 {
+func removeDeletedBackstageTeams(backstageTeamIds []string, devLakeTeamMap map[string][]string) {
+	for key := range devLakeTeamMap {
+		backstageTeamId, found := devLakeToBackstageId(key)
+		if !found {
 			continue
 		}
-		if relation.Type == "childOf" {
-			devLakeTeams[sourceIndex][devlake.TeamParentIdColumn] = devLakeTeams[targetIndex][devlake.TeamIdColumn]
-		} else if relation.Type == "parentOf" {
-			devLakeTeams[targetIndex][devlake.TeamParentIdColumn] = devLakeTeams[sourceIndex][devlake.TeamIdColumn]
+
+		if !slices.Contains(backstageTeamIds, backstageTeamId) {
+			log.Printf("Team no longer exists in Backstage, removing: %s\n", backstageTeamId)
+			delete(devLakeTeamMap, key)
+		}
+	}
+}
+
+func createRelationships(backstageTeamMap map[string]backstage.Entity, devLakeTeamMap map[string][]string) {
+	for _, backStageTeam := range backstageTeamMap {
+		for _, relation := range backStageTeam.Relations {
+			sourceId := backstageToDevLakeId(backStageTeam)
+			target, exists := backstageTeamMap[relation.TargetRef]
+
+			if !exists {
+				continue
+			}
+
+			targetId := backstageToDevLakeId(target)
+			if relation.Type == "childOf" {
+				devLakeTeamMap[sourceId][devlake.TeamParentIdColumn] = targetId
+			} else if relation.Type == "parentOf" {
+				devLakeTeamMap[targetId][devlake.TeamParentIdColumn] = sourceId
+			}
 		}
 	}
 }

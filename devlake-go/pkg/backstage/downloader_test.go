@@ -62,8 +62,10 @@ func TestRetrieveTeams(t *testing.T) {
 		t.Fatalf("unexpected error retrieving teams: %v", err)
 	}
 
-	if len(teams) != 1 || teams[0].Kind != "Group" || teams[0].Metadata.Name != "GroupD" {
-		t.Errorf("incorrectly retrieved or parsed teams: kind %s; name %s", teams[0].Kind, teams[0].Metadata.Name)
+	team, exists := teams["group:default/groupd"]
+
+	if !exists || team.Kind != "Group" || team.Metadata.Name != "GroupD" || team.Metadata.UID != "0919d912-b2f2-48df-b935-782bacd29fb2" {
+		t.Errorf("incorrectly retrieved or parsed teams: kind %s; name %s; uid %s", team.Kind, team.Metadata.Name, team.Metadata.UID)
 	}
 }
 

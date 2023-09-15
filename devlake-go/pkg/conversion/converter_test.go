@@ -1,22 +1,32 @@
 package conversion
 
 import (
-	"devlake-go/group-sync/pkg/test"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
 
-func createBackstageTeamWithName(name string) backstage.Entity {
+func createTestDevLakeTeamsWithIds(ids []string) map[string][]string {
+	teams := make(map[string][]string)
+
+	for _, id := range ids {
+		teams[id] = []string{id, "B", "C", "D", "E"}
+	}
+
+	return teams
+}
+
+func createBackstageTeam(name string, uid string) backstage.Entity {
 	return backstage.Entity{
 		ApiVersion: "",
-		Kind:       "",
+		Kind:       "Group",
 		Metadata: backstage.EntityMeta{
-			UID:         "",
+			UID:         uid,
 			Etag:        "",
 			Name:        name,
-			Namespace:   "",
+			Namespace:   "default",
 			Title:       "",
 			Description: "",
 			Labels:      map[string]string{},
@@ -29,11 +39,11 @@ func createBackstageTeamWithName(name string) backstage.Entity {
 	}
 }
 
-func createTestBackstageTeamsWithNames(names []string) []backstage.Entity {
-	var teams []backstage.Entity
+func createTestBackstageTeamsWithUids(uids []string) map[string]backstage.Entity {
+	teams := make(map[string]backstage.Entity)
 
-	for _, name := range names {
-		teams = append(teams, createBackstageTeamWithName(name))
+	for i, uid := range uids {
+		teams["group:default/team"+strconv.Itoa(i)] = createBackstageTeam("Team"+strconv.Itoa(i), uid)
 	}
 
 	return teams
@@ -41,58 +51,87 @@ func createTestBackstageTeamsWithNames(names []string) []backstage.Entity {
 
 func TestAppendNewTeamsTableDriven(t *testing.T) {
 	type Input struct {
-		backstageTeams []backstage.Entity
-		devLakeTeams   [][]string
+		backstageTeams map[string]backstage.Entity
+		devLakeTeams   map[string][]string
 	}
 	var tests = []struct {
 		name  string
 		input Input
-		want  [][]string
+		want  map[string][]string
 	}{
-		{"should append nothing to empty table", Input{[]backstage.Entity{}, [][]string{}}, [][]string{}},
+		{"should append nothing to empty table", Input{make(map[string]backstage.Entity), make(map[string][]string)}, make(map[string][]string)},
 		{
 			"should append a single team to empty table",
-			Input{createTestBackstageTeamsWithNames([]string{"TeamA"}), [][]string{}},
-			[][]string{{"1", "TeamA", "", "", ""}},
+			Input{createTestBackstageTeamsWithUids([]string{"uid1"}), make(map[string][]string)},
+			map[string][]string{
+				"backstage:uid1": {"backstage:uid1", "Team0", "", "", ""},
+			},
 		},
 		{"should append teams to empty table",
-			Input{createTestBackstageTeamsWithNames([]string{"TeamA", "TeamB", "TeamC"}), [][]string{}},
-			[][]string{{"1", "TeamA", "", "", ""}, {"2", "TeamB", "", "", ""}, {"3", "TeamC", "", "", ""}},
+			Input{createTestBackstageTeamsWithUids([]string{"uid1", "uid2", "uid3"}), make(map[string][]string)},
+			map[string][]string{
+				"backstage:uid1": {"backstage:uid1", "Team0", "", "", ""},
+				"backstage:uid2": {"backstage:uid2", "Team1", "", "", ""},
+				"backstage:uid3": {"backstage:uid3", "Team2", "", "", ""},
+			},
 		},
 		{"should append teams to populated table",
-			Input{createTestBackstageTeamsWithNames([]string{"TeamA", "TeamB", "TeamC"}), test.ExampleCsvWithColumnHeaders(test.CreateTestDevLakeTeamsWithIds([]string{"3", "5", "4"}))},
-			test.ExampleCsvWithColumnHeaders([][]string{{"3", "B", "C", "D", "E"}, {"5", "B", "C", "D", "E"}, {"4", "B", "C", "D", "E"}, {"6", "TeamA", "", "", ""}, {"7", "TeamB", "", "", ""}, {"8", "TeamC", "", "", ""}}),
+			Input{createTestBackstageTeamsWithUids([]string{"uid1", "uid2", "uid3"}), createTestDevLakeTeamsWithIds([]string{"3", "5", "4"})},
+			map[string][]string{
+				"3":              {"3", "B", "C", "D", "E"},
+				"4":              {"4", "B", "C", "D", "E"},
+				"5":              {"5", "B", "C", "D", "E"},
+				"backstage:uid1": {"backstage:uid1", "Team0", "", "", ""},
+				"backstage:uid2": {"backstage:uid2", "Team1", "", "", ""},
+				"backstage:uid3": {"backstage:uid3", "Team2", "", "", ""},
+			},
 		},
-		{"should skip teams to already in table",
-			Input{createTestBackstageTeamsWithNames([]string{"TeamA", "TeamB", "TeamC"}), [][]string{{"6", "TeamA", "", "", ""}, {"7", "TeamB", "", "", ""}}},
-			[][]string{{"6", "TeamA", "", "", ""}, {"7", "TeamB", "", "", ""}, {"8", "TeamC", "", "", ""}},
+		{"should update the name for teams already in devlake",
+			Input{createTestBackstageTeamsWithUids([]string{"uid1", "uid2", "uid3"}), createTestDevLakeTeamsWithIds([]string{"backstage:uid2", "5", "4"})},
+			map[string][]string{
+				"backstage:uid2": {"backstage:uid2", "Team1", "C", "D", "E"},
+				"5":              {"5", "B", "C", "D", "E"},
+				"4":              {"4", "B", "C", "D", "E"},
+				"backstage:uid1": {"backstage:uid1", "Team0", "", "", ""},
+				"backstage:uid3": {"backstage:uid3", "Team2", "", "", ""},
+			},
+		},
+		{"should remove teams that are no-longer in backstage",
+			Input{createTestBackstageTeamsWithUids([]string{"uid1", "uid3"}), createTestDevLakeTeamsWithIds([]string{"backstage:uid2", "5", "4"})},
+			map[string][]string{
+				"5":              {"5", "B", "C", "D", "E"},
+				"4":              {"4", "B", "C", "D", "E"},
+				"backstage:uid1": {"backstage:uid1", "Team0", "", "", ""},
+				"backstage:uid3": {"backstage:uid3", "Team1", "", "", ""},
+			},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ans := BackstageTeamsToDevLakeTeams(tt.input.backstageTeams, tt.input.devLakeTeams)
+			BackstageTeamsToDevLakeTeams(tt.input.backstageTeams, tt.input.devLakeTeams)
+			ans := tt.input.devLakeTeams
 			if !reflect.DeepEqual(ans, tt.want) {
-				t.Errorf("got %v, want %v", ans, tt.want)
+				t.Errorf("got:\n %v, want:\n %v", ans, tt.want)
 			}
 		})
 	}
 }
 
 type TestRelation struct {
-	name         string
+	targetRef    string
 	relationType string
 }
 
-func createTestBackstageTeamWithRelations(relations []TestRelation) backstage.Entity {
-	team := createBackstageTeamWithName("BackstageTeam")
+func createTestBackstageTeamWithRelations(name string, uid string, relations []TestRelation) backstage.Entity {
+	team := createBackstageTeam(name, uid)
 
 	for _, relation := range relations {
 		team.Relations = append(team.Relations, backstage.EntityRelation{
 			Type:      relation.relationType,
-			TargetRef: "",
+			TargetRef: relation.targetRef,
 			Target: backstage.EntityRelationTarget{
-				Name:      relation.name,
+				Name:      "",
 				Kind:      "",
 				Namespace: "",
 			},
@@ -102,62 +141,94 @@ func createTestBackstageTeamWithRelations(relations []TestRelation) backstage.En
 	return team
 }
 
-func TestCreateRelationshipsTableDriven(t *testing.T) {
-	type Input struct {
-		backstageTeam backstage.Entity
-		devLakeTeams  [][]string
-		sourceIndex   int
-	}
-	var tests = []struct {
-		name  string
-		input Input
-		want  [][]string
-	}{
-		{
-			"should set the parentId of the target for each source parentOf relation",
-			Input{
-				createTestBackstageTeamWithRelations([]TestRelation{{name: "TeamB", relationType: "parentOf"}, {name: "TeamC", relationType: "parentOf"}}),
-				test.CreateTestDevLakeTeamsWithNames([]string{"TeamA", "TeamB", "TeamC"}),
-				0,
-			},
-			[][]string{{"0", "TeamA", "C", "D", "E"}, {"1", "TeamB", "C", "0", "E"}, {"2", "TeamC", "C", "0", "E"}},
-		},
-		{
-			"should set the parentId of the source for each source childOf relation",
-			Input{
-				createTestBackstageTeamWithRelations([]TestRelation{{name: "TeamC", relationType: "childOf"}}),
-				test.CreateTestDevLakeTeamsWithNames([]string{"TeamA", "TeamB", "TeamC"}),
-				1,
-			},
-			[][]string{{"0", "TeamA", "C", "D", "E"}, {"1", "TeamB", "C", "2", "E"}, {"2", "TeamC", "C", "D", "E"}},
-		},
-		{
-			"should not set anything if the target does not exist in the list of DevLake teams",
-			Input{
-				createTestBackstageTeamWithRelations([]TestRelation{{name: "TeamC", relationType: "parentOf"}}),
-				test.CreateTestDevLakeTeamsWithNames([]string{"TeamA", "TeamB"}),
-				0,
-			},
-			[][]string{{"0", "TeamA", "C", "D", "E"}, {"1", "TeamB", "C", "D", "E"}},
-		},
-		{
-			"should not set anything if the target does not exist in the list of DevLake teams",
-			Input{
-				createTestBackstageTeamWithRelations([]TestRelation{{name: "TeamC", relationType: "childOf"}}),
-				test.CreateTestDevLakeTeamsWithNames([]string{"TeamA", "TeamB"}),
-				0,
-			},
-			[][]string{{"0", "TeamA", "C", "D", "E"}, {"1", "TeamB", "C", "D", "E"}},
-		},
+func TestCreateRelationshipsParentOf(t *testing.T) {
+	backstageTeams := map[string]backstage.Entity{
+		"group:default/teama": createTestBackstageTeamWithRelations("teama", "uid1", []TestRelation{{targetRef: "group:default/teamb", relationType: "parentOf"}, {targetRef: "group:default/teamc", relationType: "parentOf"}}),
+		"group:default/teamb": createBackstageTeam("teamb", "uid2"),
+		"group:default/teamc": createBackstageTeam("teamc", "uid3"),
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			createRelationships(tt.input.backstageTeam, tt.input.devLakeTeams, tt.input.sourceIndex)
-			ans := tt.input.devLakeTeams
-			if !reflect.DeepEqual(ans, tt.want) {
-				t.Errorf("got %v, want %v", ans, tt.want)
-			}
-		})
+	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"backstage:uid1", "backstage:uid2", "backstage:uid3"})
+
+	createRelationships(backstageTeams, devlakeTeams)
+
+	want := map[string][]string{
+		"backstage:uid1": {"backstage:uid1", "B", "C", "D", "E"},
+		"backstage:uid2": {"backstage:uid2", "B", "C", "backstage:uid1", "E"},
+		"backstage:uid3": {"backstage:uid3", "B", "C", "backstage:uid1", "E"},
+	}
+
+	if !reflect.DeepEqual(devlakeTeams, want) {
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
+	}
+}
+
+func TestCreateRelationshipsChildOf(t *testing.T) {
+	backstageTeams := map[string]backstage.Entity{
+		"group:default/teama": createTestBackstageTeamWithRelations("teama", "uid1", []TestRelation{{targetRef: "group:default/teamb", relationType: "childOf"}}),
+		"group:default/teamb": createTestBackstageTeamWithRelations("teamb", "uid2", []TestRelation{{targetRef: "group:default/teamc", relationType: "childOf"}}),
+		"group:default/teamc": createBackstageTeam("teamc", "uid3"),
+	}
+
+	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"backstage:uid1", "backstage:uid2", "backstage:uid3"})
+
+	createRelationships(backstageTeams, devlakeTeams)
+
+	want := map[string][]string{
+		"backstage:uid1": {"backstage:uid1", "B", "C", "backstage:uid2", "E"},
+		"backstage:uid2": {"backstage:uid2", "B", "C", "backstage:uid3", "E"},
+		"backstage:uid3": {"backstage:uid3", "B", "C", "D", "E"},
+	}
+
+	if !reflect.DeepEqual(devlakeTeams, want) {
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
+	}
+}
+
+func TestCreateRelationshipsMissingTarget(t *testing.T) {
+	backstageTeams := map[string]backstage.Entity{
+		"group:default/teama": createTestBackstageTeamWithRelations("teama", "uid1", []TestRelation{{targetRef: "group:default/team-non-existent", relationType: "parentOf"}}),
+		"group:default/teamb": createTestBackstageTeamWithRelations("teamb", "uid2", []TestRelation{{targetRef: "group:default/team-non-existent", relationType: "childOf"}}),
+		"group:default/teamc": createBackstageTeam("teamc", "uid3"),
+	}
+
+	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"backstage:uid1", "backstage:uid2", "backstage:uid3"})
+
+	createRelationships(backstageTeams, devlakeTeams)
+
+	want := map[string][]string{
+		"backstage:uid1": {"backstage:uid1", "B", "C", "D", "E"},
+		"backstage:uid2": {"backstage:uid2", "B", "C", "D", "E"},
+		"backstage:uid3": {"backstage:uid3", "B", "C", "D", "E"},
+	}
+
+	if !reflect.DeepEqual(devlakeTeams, want) {
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
+	}
+}
+
+func TestFullConversion(t *testing.T) {
+	backstageTeams := map[string]backstage.Entity{
+		"group:default/teama": createTestBackstageTeamWithRelations("teama", "uid1", []TestRelation{{targetRef: "group:default/teamb", relationType: "childOf"}}),
+		"group:default/teamb": createTestBackstageTeamWithRelations("teamb", "uid2", []TestRelation{{targetRef: "group:default/teamc", relationType: "parentOf"}}),
+		"group:default/teamc": createBackstageTeam("teamc", "uid3"),
+		"group:default/teame": createTestBackstageTeamWithRelations("teame", "uid5", []TestRelation{{targetRef: "group:default/teamd", relationType: "childOf"}}),
+	}
+
+	devlakeTeams := createTestDevLakeTeamsWithIds([]string{"devlake-1", "devlake-2", "backstage:uid3", "backstage:uid4", "backstage:uid5"})
+
+	BackstageTeamsToDevLakeTeams(backstageTeams, devlakeTeams)
+
+	want := map[string][]string{
+		"backstage:uid1": {"backstage:uid1", "teama", "", "backstage:uid2", ""},
+		"backstage:uid2": {"backstage:uid2", "teamb", "", "", ""},
+		"backstage:uid3": {"backstage:uid3", "teamc", "C", "backstage:uid2", "E"},
+		"backstage:uid5": {"backstage:uid5", "teame", "C", "D", "E"},
+		"devlake-1":      {"devlake-1", "B", "C", "D", "E"},
+		"devlake-2":      {"devlake-2", "B", "C", "D", "E"},
+	}
+
+	if !reflect.DeepEqual(devlakeTeams, want) {
+		t.Errorf("got:\n %v, want:\n %v", devlakeTeams, want)
 	}
 }

@@ -4,14 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"net/http"
-	"os"
 )
 
-func RetrieveTeams(baseUrl string) (teams [][]string, err error) {
-	if _, ok := os.LookupEnv("REPLACE_DEVLAKE_TEAMS"); ok {
-		return [][]string{{"Id", "Name", "Alias", "ParentId", "SortingIndex"}}, nil
-	}
-
+func RetrieveTeams(baseUrl string) (teams map[string][]string, err error) {
 	resp, err := http.Get(baseUrl + teamCsvApiPath)
 	if err != nil {
 		return nil, fmt.Errorf("cannot retrieve DevLake teams: %w", err)
@@ -22,5 +17,11 @@ func RetrieveTeams(baseUrl string) (teams [][]string, err error) {
 		return nil, fmt.Errorf("cannot read DevLake team CSV format: %w", err)
 	}
 
-	return devLakeTeams, nil
+	devLakeTeamMap := make(map[string][]string)
+
+	for _, team := range devLakeTeams[1:] {
+		devLakeTeamMap[team[TeamIdColumn]] = team
+	}
+
+	return devLakeTeamMap, nil
 }

@@ -1,7 +1,6 @@
 package devlake
 
 import (
-	"devlake-go/group-sync/pkg/test"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -29,27 +28,14 @@ func TestRetrieveTeams(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error retrieving teams: %v", err)
 	}
-	want := test.ExampleCsvWithColumnHeaders([][]string{{"1", "Maple Leafs", "ML", "2", "0"}, {"2", "Friendly Confines", "FC", "", "1"}, {"3", "Blue Jays", "BJ", "", "2"}})
+	want := map[string][]string{
+		"1": {"1", "Maple Leafs", "ML", "2", "0"},
+		"2": {"2", "Friendly Confines", "FC", "", "1"},
+		"3": {"3", "Blue Jays", "BJ", "", "2"},
+	}
 
 	if !reflect.DeepEqual(csv, want) {
-		t.Errorf("got %v, want %v", csv, want)
-	}
-}
-
-func TestReplaceTeams(t *testing.T) {
-	testServer := httptest.NewServer(csvGetHandler(t))
-	defer testServer.Close()
-
-	t.Setenv("REPLACE_DEVLAKE_TEAMS", "true")
-
-	csv, err := RetrieveTeams(testServer.URL)
-	if err != nil {
-		t.Fatalf("unexpected error retrieving teams: %v", err)
-	}
-	want := test.ExampleCsvWithColumnHeaders([][]string{})
-
-	if !reflect.DeepEqual(csv, want) {
-		t.Errorf("got %v, want %v", csv, want)
+		t.Errorf("got:\n %v, want:\n %v", csv, want)
 	}
 }
 
