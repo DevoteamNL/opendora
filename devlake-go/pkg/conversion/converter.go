@@ -13,9 +13,8 @@ func BackstageTeamsToDevLakeTeams(backstageTeamMap map[string]backstage.Entity, 
 	for _, backStageTeam := range backstageTeamMap {
 		backstageTeamIds = append(backstageTeamIds, backStageTeam.Metadata.UID)
 		id := backstageToDevLakeId(backStageTeam)
-		devLakeTeam, exists := devLakeTeamMap[id]
 
-		if exists {
+		if devLakeTeam, exists := devLakeTeamMap[id]; exists {
 			devLakeTeam[devlake.TeamNameColumn] = backStageTeam.Metadata.Name
 			log.Printf("Team already exists in DevLake, updating name: %s\n", backStageTeam.Metadata.Name)
 		} else {
