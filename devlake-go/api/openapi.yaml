@@ -1,0 +1,214 @@
+openapi: 3.0.3
+info:
+  title: Devoteam DORA Metrics API
+  description: ""
+  contact:
+    name: Devoteam DORA
+    url: https://github.com/DevoteamNL/dora-backstage-plugin/issues
+    email: dora@devoteam.com
+  version: v1
+  x-logo:
+    altText: Devoteam Logo
+    backgroundColor: "#FFFFFF"
+    url: https://voortekst.nl/storage/clients/mqjWxe5KUrI1sytG3RPXtlKy9qgvLBuXgcqpwljm.png
+    href: /
+servers:
+  - url: http://localhost:10666/dora/api
+security:
+  - BearerAuth: []
+tags:
+  - name: data-point
+    description: <SchemaDefinition schemaRef="#/components/schemas/DataPoint" />
+    x-displayName: DataPoint
+  - name: response
+    description: <SchemaDefinition schemaRef="#/components/schemas/Response" />
+    x-displayName: Response
+  - name: error-response
+    description: <SchemaDefinition schemaRef="#/components/schemas/ErrorResponse" />
+    x-displayName: ErrorResponse
+paths:
+  /metric:
+    get:
+      tags:
+        - data-points
+      summary: Query data points for a given DORA Metric
+      description: |+
+        Returns the data points for the requested metric according to the informed filters. The below are the metrics currently supported:
+
+        | Metric Type     | Description                                                                         |
+        | --------------- | ----------------------------------------------------------------------------------- |
+        | `df_average`    | Deployment frequency (average), aggregated according to the `aggregation` parameter |
+        | `df_total`      | Deployment total, aggregated according to the `aggregation` parameter               |
+
+      operationId: dataPointsByMetrics
+      parameters:
+        - name: type
+          in: query
+          description: >-
+            `required`. Specify the type of metric the data points should be retrieved to
+          required: true
+          schema:
+            type: string
+            enum:
+              - df_average
+              - df_total
+        - name: aggregation
+          in: query
+          required: true
+          description: >-
+            `required`. Specify how the data points should be aggregated. If not informed, it will assume `weekly` by default
+          schema:
+            type: string
+            enum:
+              - weekly
+              - monthly
+              - quarterly
+            default: weekly
+        - name: from
+          in: query
+          description: >-
+            `optional`. Date/time from when the results should be filtered. If not informed, it will assume 30 days from the current date/time
+          schema:
+            type: string
+            format: date-time
+            example: "2020-01-01T00:00:00Z"
+        - name: to
+          in: query
+          description: >-
+            `optional`. Date/time to when the results should be filtered. If not informed, it will assume the current date/time
+          schema:
+            type: string
+            format: date-time
+            example: "2020-01-31T23:59:59Z"
+        - name: x-correlation-id
+          in: header
+          description: Unique identifer associated with the request
+          schema:
+            type: string
+            format: uuid
+          example: c0c62604-e3ab-4008-b882-4effcb4963ae
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response"
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+        "403":
+          description: Forbidden! Access denied. Do not have authority to call this API
+          content: {}
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+        "401":
+          description: Unauthorized! Should Provide a valid JWT token
+          content: {}
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: Failed to connect to DevLake's DB
+                reference: c0c62604-e3ab-4008-b882-4effcb4963ae
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+      security:
+        - BearerAuth: []
+components:
+  schemas:
+    DataPoint:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          title: The key/label for the datapoint
+          type: string
+        value:
+          title: "The numeric value of the metric, can be a Long or Double"
+          type: number
+          example: 103.5
+    Response:
+      type: object
+      required:
+        - aggregation
+        - dataPoints
+      properties:
+        aggregation:
+          title: Unit of aggregation used
+          type: string
+          example: weekly
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataPoint"
+    ErrorResponse:
+      required:
+        - message
+        - reference
+      type: object
+      properties:
+        message:
+          title: Generic information about the failure
+          type: string
+          example: "You have requested an unsupported metric name, please check the metric parameter"
+        reference:
+          title: Generated ID to be able to trace more information about the error in the logs
+          type: string
+          example: c0c62604-e3ab-4008-b882-4effcb4963ae
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: A JWT Token provided by your OIDC Server
+      scheme: bearer
+      bearerFormat: JWT
+x-tagGroups:
+  - name: DORA
+    tags:
+      - data-points
+  - name: Models
+    tags:
+      - data-point
+      - response
+      - error-response
