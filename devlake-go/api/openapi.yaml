@@ -64,6 +64,14 @@ paths:
               - monthly
               - quarterly
             default: weekly
+        - name: project
+          in: query
+          required: true
+          description: >-
+            `required`. Specify the project to collect the metrics from
+          schema:
+            type: string
+            example: "my-project"
         - name: from
           in: query
           description: >-

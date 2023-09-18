@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"html"
 	"log"
@@ -38,14 +39,18 @@ func connectToDatabase() {
 }
 
 type DataPoint struct {
-	Key   string
-	Value int
+	Key   string `json:"key"`
+	Value int    `json:"value"`
+}
+
+type Response struct {
+	Aggregation string      `json:"aggregation"`
+	DataPoints  []DataPoint `json:"dataPoints"`
 }
 
 // TO TO FROM TO PROJECT FROM TO FROM TO
 const WEEKLY_DEPLOYMENT_SQL = `
 with calendar_weeks as(
--- construct the last few calendar months within the selected time period in the top-right corner
     SELECT CAST((FROM_UNIXTIME(?)-INTERVAL (T+U) WEEK) AS date) week
     FROM ( SELECT 0 T
             UNION ALL SELECT  10 UNION ALL SELECT  20 UNION ALL SELECT  30
@@ -59,7 +64,6 @@ with calendar_weeks as(
         (FROM_UNIXTIME(?)-INTERVAL (T+U) WEEK) BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
 ),
  _deployments as(
--- When deploying multiple commits in one pipeline, GitLab and BitBucket may generate more than one deployment. However, DevLake consider these deployments as ONE production deployment and use the last one's finished_date as the finished date.
     SELECT
         YEARWEEK(deployment_finished_date) as week,
         count(cicd_deployment_id) as deployment_count
@@ -74,7 +78,6 @@ with calendar_weeks as(
             and cdc.result = 'SUCCESS'
             and cdc.environment = 'PRODUCTION'
         GROUP BY 1
-		-- WHERE max(cdc.finished_date) BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
     ) _production_deployments
     GROUP BY 1
 )
@@ -91,10 +94,8 @@ FROM
 
 // projectname, from, to, from, to
 const MONTHLY_DEPLOYMENT_SQL = `
--- Metric 1: Number of deployments per month
 with _deployments as(
--- When deploying multiple commits in one pipeline, GitLab and BitBucket may generate more than one deployment. However, DevLake consider these deployments as ONE production deployment and use the last one's finished_date as the finished date.
-    SELECT
+	SELECT
         date_format(deployment_finished_date,'%y/%m') as month,
         count(cicd_deployment_id) as deployment_count
     FROM (
@@ -108,7 +109,6 @@ with _deployments as(
             and cdc.result = 'SUCCESS'
             and cdc.environment = 'PRODUCTION'
         GROUP BY 1
-		-- WHERE max(cdc.finished_date) BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
     ) _production_deployments
     GROUP BY 1
 )
@@ -120,7 +120,6 @@ FROM
     calendar_months cm
     LEFT JOIN _deployments d on cm.month = d.month
 	WHERE cm.month_timestamp BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
-	-- LIMIT 10,20
 `
 
 func queryDeployments(query string, args ...any) ([]DataPoint, error) {
@@ -145,33 +144,42 @@ func queryDeployments(query string, args ...any) ([]DataPoint, error) {
 }
 
 func dfTotalHandler(w http.ResponseWriter, queries url.Values) {
+	projects, exists := queries["project"]
+	if !exists || len(projects) < 1 || len(projects[0]) < 1 {
+		http.Error(w, "project should be provided as a non-empty string", http.StatusBadRequest)
+	}
+	project := projects[0]
+
 	aggregations, exists := queries["aggregation"]
 	aggregation := "weekly"
 	if exists && len(aggregations) > 0 {
 		aggregation = aggregations[0]
 	}
 
+	// TODO Make these query parameters
 	to := time.Now().Unix()
 	from := to - (60 * 60 * 24 * 30 * 6)
 
+	var dataPoints []DataPoint
+	var err error
+
 	switch aggregation {
 	case "weekly":
-		data, err := queryDeployments(WEEKLY_DEPLOYMENT_SQL, to, to, from, to, "my-project", from, to)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Fprintf(w, "data: %v", data)
+		dataPoints, err = queryDeployments(WEEKLY_DEPLOYMENT_SQL, to, to, from, to, project, from, to)
 	case "monthly":
-		data, err := queryDeployments(MONTHLY_DEPLOYMENT_SQL, "my-project", from, to)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Fprintf(w, "data: %v", data)
+		dataPoints, err = queryDeployments(MONTHLY_DEPLOYMENT_SQL, project, from, to)
 	case "quarterly":
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString("quarterly"))
 	default:
 		http.Error(w, "aggregation should be provided as either weekly, monthly or quarterly", http.StatusBadRequest)
 	}
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(Response{Aggregation: aggregation, DataPoints: dataPoints})
 }
 
 func main() {
@@ -183,6 +191,8 @@ func main() {
 			http.Error(w, "type should be provided as either df_average or df_total", http.StatusBadRequest)
 			return
 		}
+		w.Header().Set("Content-Type", "application/json")
+
 		switch metricTypes[0] {
 		case "df_total":
 			dfTotalHandler(w, queries)
