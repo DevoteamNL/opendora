@@ -10,9 +10,16 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
+type ClientInterface interface {
+	QueryTotalDeploymentsWeekly(projectName string, from int64, to int64) ([]models.DataPoint, error)
+	QueryTotalDeploymentsMonthly(projectName string, from int64, to int64) ([]models.DataPoint, error)
+}
 
-func ConnectToDatabase() {
+type Client struct {
+	db *sql.DB
+}
+
+func (client Client) ConnectToDatabase() {
 	cfg := mysql.Config{
 		User:   os.Getenv("DBUSER"),
 		Passwd: os.Getenv("DBPASS"),
@@ -22,22 +29,22 @@ func ConnectToDatabase() {
 	}
 
 	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
+	client.db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	pingErr := db.Ping()
+	pingErr := client.db.Ping()
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
 	fmt.Println("Connected!")
 }
 
-func queryDeployments(query string, args ...any) ([]models.DataPoint, error) {
+func (client Client) queryDeployments(query string, args ...any) ([]models.DataPoint, error) {
 	var dataPoints []models.DataPoint
 
-	rows, err := db.Query(query, args...)
+	rows, err := client.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,10 +62,10 @@ func queryDeployments(query string, args ...any) ([]models.DataPoint, error) {
 	return dataPoints, nil
 }
 
-func QueryTotalDeploymentsWeekly(projectName string, from int64, to int64) ([]models.DataPoint, error) {
-	return queryDeployments(WEEKLY_DEPLOYMENT_SQL, to, to, from, to, projectName, from, to)
+func (client Client) QueryTotalDeploymentsWeekly(projectName string, from int64, to int64) ([]models.DataPoint, error) {
+	return client.queryDeployments(WEEKLY_DEPLOYMENT_SQL, to, to, from, to, projectName, from, to)
 }
 
-func QueryTotalDeploymentsMonthly(projectName string, from int64, to int64) ([]models.DataPoint, error) {
-	return queryDeployments(MONTHLY_DEPLOYMENT_SQL, projectName, from, to)
+func (client Client) QueryTotalDeploymentsMonthly(projectName string, from int64, to int64) ([]models.DataPoint, error) {
+	return client.queryDeployments(MONTHLY_DEPLOYMENT_SQL, projectName, from, to)
 }

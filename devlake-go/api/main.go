@@ -12,10 +12,11 @@ import (
 	"time"
 )
 
-func dfTotalHandler(w http.ResponseWriter, queries url.Values) {
+func dfTotalHandler(client sql_client.ClientInterface, w http.ResponseWriter, queries url.Values) {
 	projects, exists := queries["project"]
 	if !exists || len(projects) < 1 || len(projects[0]) < 1 {
 		http.Error(w, "project should be provided as a non-empty string", http.StatusBadRequest)
+		return
 	}
 	project := projects[0]
 
@@ -34,13 +35,14 @@ func dfTotalHandler(w http.ResponseWriter, queries url.Values) {
 
 	switch aggregation {
 	case "weekly":
-		dataPoints, err = sql_client.QueryTotalDeploymentsWeekly(project, from, to)
+		dataPoints, err = client.QueryTotalDeploymentsWeekly(project, from, to)
 	case "monthly":
-		dataPoints, err = sql_client.QueryTotalDeploymentsMonthly(project, from, to)
+		dataPoints, err = client.QueryTotalDeploymentsMonthly(project, from, to)
 	case "quarterly":
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString("quarterly"))
 	default:
 		http.Error(w, "aggregation should be provided as either weekly, monthly or quarterly", http.StatusBadRequest)
+		return
 	}
 
 	if err != nil {
@@ -51,9 +53,8 @@ func dfTotalHandler(w http.ResponseWriter, queries url.Values) {
 	json.NewEncoder(w).Encode(models.Response{Aggregation: aggregation, DataPoints: dataPoints})
 }
 
-func main() {
-	sql_client.ConnectToDatabase()
-	http.HandleFunc("/dora/api/metric", func(w http.ResponseWriter, r *http.Request) {
+func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		queries := r.URL.Query()
 		metricTypes, exists := queries["type"]
 		if !exists || len(metricTypes) != 1 {
@@ -64,13 +65,19 @@ func main() {
 
 		switch metricTypes[0] {
 		case "df_total":
-			dfTotalHandler(w, queries)
+			dfTotalHandler(client, w, queries)
 		case "df_average":
-			fmt.Fprintf(w, "Hello, %q", html.EscapeString("average"))
+			fmt.Fprint(w, "todo average")
 		default:
 			http.Error(w, "type should be provided as either df_average or df_total", http.StatusBadRequest)
 		}
-	})
+	}
+}
+
+func main() {
+	var client sql_client.Client
+	client.ConnectToDatabase()
+	http.HandleFunc("/dora/api/metric", metricHandler(client))
 
 	log.Fatal(http.ListenAndServe(":10666", nil))
 }
