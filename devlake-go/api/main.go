@@ -37,14 +37,60 @@ func connectToDatabase() {
 	fmt.Println("Connected!")
 }
 
-type Album struct {
-	ID     int64
-	Title  string
-	Artist string
-	Price  float32
+type DataPoint struct {
+	Key   string
+	Value int
 }
 
-const DEPLOYMENT_SQL = `
+// TO TO FROM TO PROJECT FROM TO FROM TO
+const WEEKLY_DEPLOYMENT_SQL = `
+with calendar_weeks as(
+-- construct the last few calendar months within the selected time period in the top-right corner
+    SELECT CAST((FROM_UNIXTIME(?)-INTERVAL (T+U) WEEK) AS date) week
+    FROM ( SELECT 0 T
+            UNION ALL SELECT  10 UNION ALL SELECT  20 UNION ALL SELECT  30
+            UNION ALL SELECT  40 UNION ALL SELECT  50
+        ) T CROSS JOIN ( SELECT 0 U
+            UNION ALL SELECT   1 UNION ALL SELECT   2 UNION ALL SELECT   3
+            UNION ALL SELECT   4 UNION ALL SELECT   5 UNION ALL SELECT   6
+            UNION ALL SELECT   7 UNION ALL SELECT   8 UNION ALL SELECT   9
+        ) U
+    WHERE
+        (FROM_UNIXTIME(?)-INTERVAL (T+U) WEEK) BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
+),
+ _deployments as(
+-- When deploying multiple commits in one pipeline, GitLab and BitBucket may generate more than one deployment. However, DevLake consider these deployments as ONE production deployment and use the last one's finished_date as the finished date.
+    SELECT
+        YEARWEEK(deployment_finished_date) as week,
+        count(cicd_deployment_id) as deployment_count
+    FROM (
+        SELECT
+            cdc.cicd_deployment_id,
+            max(cdc.finished_date) as deployment_finished_date
+        FROM cicd_deployment_commits cdc
+        JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.` + "`table`" + ` = 'cicd_scopes'
+        WHERE
+            pm.project_name = ?
+            and cdc.result = 'SUCCESS'
+            and cdc.environment = 'PRODUCTION'
+        GROUP BY 1
+		-- WHERE max(cdc.finished_date) BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
+    ) _production_deployments
+    GROUP BY 1
+)
+
+SELECT
+    YEARWEEK(cw.week) as year_week,
+    case when d.deployment_count is null then 0 else d.deployment_count end as deployment_count
+FROM
+    calendar_weeks cw
+    LEFT JOIN _deployments d on YEARWEEK(cw.week) = d.week
+	WHERE cw.week BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?)
+	ORDER BY cw.week DESC
+`
+
+// projectname, from, to, from, to
+const MONTHLY_DEPLOYMENT_SQL = `
 -- Metric 1: Number of deployments per month
 with _deployments as(
 -- When deploying multiple commits in one pipeline, GitLab and BitBucket may generate more than one deployment. However, DevLake consider these deployments as ONE production deployment and use the last one's finished_date as the finished date.
@@ -77,37 +123,25 @@ FROM
 	-- LIMIT 10,20
 `
 
-func albumsByArtist(name string) ([]Album, error) {
-	// An albums slice to hold data from returned rows.
-	var albums []Album
+func queryDeployments(query string, args ...any) ([]DataPoint, error) {
+	var dataPoints []DataPoint
 
-	// projectname, from, to, from, to
-	to := time.Now().Unix()
-	from := to - (60 * 60 * 24 * 30 * 6)
-	fmt.Printf("to: %v from: %v\n", to, from)
-	rows, err := db.Query(DEPLOYMENT_SQL, "my-project", from, to)
-	fmt.Printf("query sql")
+	rows, err := db.Query(query, args...)
 	if err != nil {
-		return nil, fmt.Errorf("albumsByArtist %q: %v", name, err)
+		return nil, err
 	}
 	defer rows.Close()
-	// Loop through rows, using Scan to assign column data to struct fields.
-	fmt.Printf("loop sql")
 	for rows.Next() {
-		var month string
-		var count int
-
-		// var alb Album
-		if err := rows.Scan(&month, &count); err != nil {
-			return nil, fmt.Errorf("albumsByArtist %q: %v", name, err)
+		var dataPoint DataPoint
+		if err := rows.Scan(&dataPoint.Key, &dataPoint.Value); err != nil {
+			return nil, err
 		}
-		fmt.Printf("month: %v count: %v\n", month, count)
-		// albums = append(albums, alb)
+		dataPoints = append(dataPoints, dataPoint)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("albumsByArtist %q: %v", name, err)
+		return nil, err
 	}
-	return albums, nil
+	return dataPoints, nil
 }
 
 func dfTotalHandler(w http.ResponseWriter, queries url.Values) {
@@ -116,15 +150,23 @@ func dfTotalHandler(w http.ResponseWriter, queries url.Values) {
 	if exists && len(aggregations) > 0 {
 		aggregation = aggregations[0]
 	}
+
+	to := time.Now().Unix()
+	from := to - (60 * 60 * 24 * 30 * 6)
+
 	switch aggregation {
 	case "weekly":
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString("weekly"))
-	case "monthly":
-		_, err := albumsByArtist("")
+		data, err := queryDeployments(WEEKLY_DEPLOYMENT_SQL, to, to, from, to, "my-project", from, to)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString("monthly"))
+		fmt.Fprintf(w, "data: %v", data)
+	case "monthly":
+		data, err := queryDeployments(MONTHLY_DEPLOYMENT_SQL, "my-project", from, to)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Fprintf(w, "data: %v", data)
 	case "quarterly":
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString("quarterly"))
 	default:
