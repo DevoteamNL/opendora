@@ -15,3 +15,24 @@ If you wish to replace the DevLake teams table fully, you can set the environmen
 ```
 go run ./cmd/group-sync
 ```
+
+## api
+
+This HTTP server provides an endpoint to return metrics from DevLake. The [OpenAPI spec](api/openapi.yaml) outlines the path and query parameters to use the endpoint as well as the expected response.
+
+### To start the server:
+
+- Set environment variables for connecting to the database (your DevLake setup may be different)
+
+```
+export DEVLAKE_DBUSER=merico \
+DEVLAKE_DBPASS=merico \
+DEVLAKE_DBADDRESS=localhost:3306 \
+DEVLAKE_DBNAME=lake
+```
+
+- Run the server
+
+```
+go run ./api
+```

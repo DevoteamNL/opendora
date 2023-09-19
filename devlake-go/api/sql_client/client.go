@@ -28,11 +28,11 @@ func New() Client {
 
 func (client Client) connectToDatabase() {
 	cfg := mysql.Config{
-		User:   os.Getenv("DBUSER"),
-		Passwd: os.Getenv("DBPASS"),
+		User:   os.Getenv("DEVLAKE_DBUSER"),
+		Passwd: os.Getenv("DEVLAKE_DBPASS"),
 		Net:    "tcp",
-		Addr:   "localhost:3306",
-		DBName: "lake",
+		Addr:   os.Getenv("DEVLAKE_DBADDRESS"),
+		DBName: os.Getenv("DEVLAKE_DBNAME"),
 	}
 
 	var err error
@@ -45,7 +45,7 @@ func (client Client) connectToDatabase() {
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
-	log.Println("connected to devlake database")
+	log.Println("connected to DevLake database")
 }
 
 func (client Client) queryDeployments(query string, args ...any) ([]models.DataPoint, error) {
