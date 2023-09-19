@@ -12,7 +12,7 @@ import java.nio.file.Files;
 
 @RestController
 @RequestMapping("/mock-data")
-public class HomeController {
+public class MetadataMockDataController {
 
     @SneakyThrows
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
