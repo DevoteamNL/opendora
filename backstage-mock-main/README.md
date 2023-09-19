@@ -1,25 +1,25 @@
-# Backstage Dora Plugin Backend Mock
+# Backstage Dora Plugin API Mock
 
 This is a mock set up to represent the API used to retrieve Dora metrics from DevLake. It is a simple Spring Rest application.
 
 ### Prerequisites:
-- JDK 11
+
+- JDK 17
 - Maven
 
 ### Running the application
 
-First build the project:
+You can run the application directly with the Spring Boot plugin. For that, just run the below:
+
 ```
-mvn clean
+./mvnw spring-boot:run
 ```
-Then to run the application :
-```
-mvn spring-boot:run
-```
+
 The API should now be available at http://localhost:8080/
 
-### Changing mock data
+### Changing or adding more Mock Endpoints/Data
 
-The mock data served by the api is stored in a JSON file at [src/main/resources/mock-data.json](src/main/resources/mock-data.json).
+Some of the mocked data served by the API endpoints are stored as JSON files at [src/main/resources/mock-data.json](src/main/resources/stubs).
 
-It contains a list of deployments with details about which projects they are from, the pass/fail status, dates, users involved with the deployment etc.
+The mock API is using [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract) to create the response stubs.
+The contracts are defined at [src/main/resources/contracts](src/main/resources/contracts).
