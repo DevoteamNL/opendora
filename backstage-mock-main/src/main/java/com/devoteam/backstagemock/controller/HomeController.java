@@ -1,34 +1,27 @@
 package com.devoteam.backstagemock.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 @RestController
 @RequestMapping("/mock-data")
 public class HomeController {
 
     @SneakyThrows
-    @GetMapping
-    public ResponseEntity<Object> getMockData() {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getMockData() {
+        var file = new ClassPathResource("stubs/home/mock-data.json").getFile();
 
-        ClassPathResource staticDataResource = new ClassPathResource("mock-data.json");
+        var data = Files.readString(file.toPath());
 
-        String staticDataString = IOUtils.toString(staticDataResource.getInputStream(), StandardCharsets.UTF_8);
-
-        return ResponseEntity.ok(new JSONObject(staticDataString).toMap());
-
+        return ResponseEntity.ok(data);
     }
 
 }
