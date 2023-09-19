@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - "backstage-plugin/**"
-      - ".github/workflows/pr-dora-plugin-frontend-workflow.yaml"
+      - ".github/workflows/release-dora-plugin-frontend-workflow.yaml"
 
 jobs:
   build:
