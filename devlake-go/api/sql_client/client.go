@@ -16,10 +16,17 @@ type ClientInterface interface {
 }
 
 type Client struct {
-	db *sql.DB
 }
 
-func (client Client) ConnectToDatabase() {
+var db *sql.DB
+
+func New() Client {
+	client := Client{}
+	client.connectToDatabase()
+	return client
+}
+
+func (client Client) connectToDatabase() {
 	cfg := mysql.Config{
 		User:   os.Getenv("DBUSER"),
 		Passwd: os.Getenv("DBPASS"),
@@ -29,22 +36,24 @@ func (client Client) ConnectToDatabase() {
 	}
 
 	var err error
-	client.db, err = sql.Open("mysql", cfg.FormatDSN())
+	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	pingErr := client.db.Ping()
+	pingErr := db.Ping()
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
-	fmt.Println("Connected!")
+	log.Println("connected to devlake database")
 }
 
 func (client Client) queryDeployments(query string, args ...any) ([]models.DataPoint, error) {
+	if db == nil {
+		return nil, fmt.Errorf("first connect to the database before querying deployments")
+	}
 	var dataPoints []models.DataPoint
-
-	rows, err := client.db.Query(query, args...)
+	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}

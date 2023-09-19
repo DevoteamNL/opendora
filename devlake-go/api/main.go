@@ -5,7 +5,6 @@ import (
 	"devlake-go/group-sync/api/sql_client"
 	"encoding/json"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"net/url"
@@ -39,7 +38,8 @@ func dfTotalHandler(client sql_client.ClientInterface, w http.ResponseWriter, qu
 	case "monthly":
 		dataPoints, err = client.QueryTotalDeploymentsMonthly(project, from, to)
 	case "quarterly":
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString("quarterly"))
+		// TODO implement quarterly aggregation sql
+		dataPoints = []models.DataPoint{}
 	default:
 		http.Error(w, "aggregation should be provided as either weekly, monthly or quarterly", http.StatusBadRequest)
 		return
@@ -75,9 +75,7 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 }
 
 func main() {
-	var client sql_client.Client
-	client.ConnectToDatabase()
-	http.HandleFunc("/dora/api/metric", metricHandler(client))
+	http.HandleFunc("/dora/api/metric", metricHandler(sql_client.New()))
 
 	log.Fatal(http.ListenAndServe(":10666", nil))
 }
