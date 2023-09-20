@@ -42,10 +42,6 @@ export  const  DashboardComponent = () => {
         setChartData(response);
       })
   }, [groupQueryParam, selectedTimeUnit])
-  
-  const updateTimeUnit = (timeUnit: any) => {
-    setSelectedTimeUnit(timeUnit);
-  };
 
   return (
     <Page themeId="tool">
@@ -66,9 +62,7 @@ export  const  DashboardComponent = () => {
                 <Grid container>
                   <Grid item xs={4}>
                     <DropdownComponent
-                      onSelect={(dropdownSelection: string) => {
-                        updateTimeUnit(dropdownSelection);
-                      }}
+                      onSelect={setSelectedTimeUnit}
                       selection={selectedTimeUnit}
                       type="timeUnit"
                     />
