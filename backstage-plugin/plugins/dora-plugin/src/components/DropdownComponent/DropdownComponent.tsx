@@ -20,6 +20,8 @@ function DropdownComponent({ onSelect, selection, type }) {
     }
   }
 
+
+
   return (
     <Box sx={{ display: 'flex', m: 3, flexDirection: 'column' }}>
       <TextField
@@ -30,11 +32,14 @@ function DropdownComponent({ onSelect, selection, type }) {
         select
         label={selectionLabel}
       >
-        <MenuItem key={1} value="Grp1">
-          Group 1
+        <MenuItem key={1} value="Weekly">
+          Weekly
         </MenuItem>
-        <MenuItem key={2} value="Grp2">
-          Group 2
+        <MenuItem key={2} value="Monthly">
+          Monthly
+        </MenuItem>
+        <MenuItem key={3} value="Quarterly">
+          Quarterly
         </MenuItem>
       </TextField>
     </Box>

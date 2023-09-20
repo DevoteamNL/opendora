@@ -24,6 +24,7 @@ export default function SimpleCharts({deploymentFrequencyData}: DeploymentFreque
           data: values,
         },
       ]}
+      height={300}
     />
   );
 }

@@ -5,13 +5,13 @@ import {
   Page,
   Content,
   ContentHeader,
-  HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
 import './DashboardComponent.css';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 import SimpleCharts from '../BarChartComponent/BarChartComponent';
 import DropdownComponent from '../DropdownComponent/DropdownComponent';
+import { useParams } from 'react-router';
 
 import GroupDataService from '../../services/GroupDataService';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
@@ -19,36 +19,43 @@ import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
 export  const  DashboardComponent = () => {
   const [chartData, setChartData] = React.useState<DeploymentFrequencyData | null>(null);
 
+
+  const params= useParams();
+  const componentName = params.name
+  const [groupQueryParam, setGroupQueryParam] = React.useState<string | null>(null);
+  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('Weekly');
+
+
   useEffect(() => {
-    GroupDataService.getMockData().then((response: DeploymentFrequencyData) => {
-      // here we get fetch data for the graphs
-      setChartData(response);
-    });
+    
+    // fetching group
+    GroupDataService.getAncestry(componentName).then((res) => {
+      setGroupQueryParam(res.relations.filter((relation: any) => { return relation.type == "ownedBy"}).map((filteredRelation:any)=> {return filteredRelation.target.name})[0])
+    })
   }, []);
 
-  const [selectedGroup, setSelectedGroup] = React.useState('');
-  const updateGrp = grp => {
-    setSelectedGroup(grp);
-    // TODO
-    // here we refresh query based on grp
-  };
 
-  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('');
-  const updateTimeUnit = timeUnit => {
+  useEffect(() => {
+      if(groupQueryParam)
+      GroupDataService.getMockData(groupQueryParam, selectedTimeUnit).then((response: DeploymentFrequencyData) => {
+        // here we get fetch data for the graphs
+        setChartData(response);
+      })
+  }, [groupQueryParam, selectedTimeUnit])
+  
+  const updateTimeUnit = (timeUnit: any) => {
     setSelectedTimeUnit(timeUnit);
-    // TODO
-    // here we refresh query based on grp
   };
 
   return (
     <Page themeId="tool">
-      <Header title="Welcome to dora-plugin!" subtitle="Optional subtitle">
-        <HeaderLabel label="Owner" value="Team X" />
-        <HeaderLabel label="Lifecycle" value="Alpha" />
+      <Header title="Devoteam DORA plugin" subtitle="Through insight to perfection">
+        {/* <HeaderLabel label="Owner" value="Team X" />
+        <HeaderLabel label="Lifecycle" value="Alpha" /> */}
       </Header>
       <Content>
-        <ContentHeader title="Plugin title">
-          <SupportButton>A description of your plugin goes here.</SupportButton>
+        <ContentHeader title="DORA metrics">
+          <SupportButton>Pluging for displaying DORA metrics</SupportButton>
         </ContentHeader>
         <Grid container spacing={3} direction="column">
           <Grid container>
@@ -57,19 +64,10 @@ export  const  DashboardComponent = () => {
                 <h1>Deployment statistics</h1>
                 <p>Analysis of successful deployments and CFR</p>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <DropdownComponent
-                      onSelect={e => {
-                        updateGrp(e);
-                      }}
-                      selection={selectedGroup}
-                      type="group"
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <DropdownComponent
-                      onSelect={e => {
-                        updateTimeUnit(e);
+                      onSelect={(dropdownSelection: string) => {
+                        updateTimeUnit(dropdownSelection);
                       }}
                       selection={selectedTimeUnit}
                       type="timeUnit"
@@ -79,9 +77,8 @@ export  const  DashboardComponent = () => {
               </div>
             </Grid>
 
-            <Grid item xs={4} className="gridBorder"></Grid>
 
-            <Grid item xs={4} className="gridBorder">
+            <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
                 <HighlightTextBoxComponent
                   title="Average number of deployments per week"
@@ -90,7 +87,7 @@ export  const  DashboardComponent = () => {
                 />
               </div>
             </Grid>
-            <Grid item xs={4} className="gridBorder">
+            <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
                 {/* <p>Overall change failure rate</p>
                     <h1> 3%</h1> */}
@@ -103,7 +100,7 @@ export  const  DashboardComponent = () => {
               </div>
             </Grid>
 
-            <Grid item xs={6} className="gridBorder">
+            <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
                 <SimpleCharts deploymentFrequencyData={chartData} />
               </div>
