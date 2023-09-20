@@ -1,6 +1,6 @@
 
 
-export const getMockData = async (groupQueryParam: string, selectedTimeUnit: string) => {
+const getMockData = async (groupQueryParam: string, selectedTimeUnit: string) => {
   try{
   const data = await fetch('http://localhost:8080/mock-data', {
     method: 'GET',
@@ -12,7 +12,7 @@ export const getMockData = async (groupQueryParam: string, selectedTimeUnit: str
 }
 };
 
-export const getAncestry = async (component:string | undefined) => {
+const getAncestry = async (component:string | undefined) => {
   try{
   const data = await fetch(`http://localhost:7007/api/catalog/entities/by-name/component/default/${component}`, {
     method: 'GET',

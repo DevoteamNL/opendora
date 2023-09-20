@@ -13,7 +13,7 @@ function DropdownComponent( props: DropdownProps) {
   let selection = props.selection;
   let onSelect = props.onSelect;
   // Fetch all the groups here and list them as options
-  let selectionLabel = '';
+  const selectionLabel = type === 'timeUnit' ?? 'Group';
   switch (type) {
     case 'timeUnit': {
       selectionLabel = 'Time Unit';

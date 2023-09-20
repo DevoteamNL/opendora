@@ -2,9 +2,6 @@ import React from 'react';
 import './HighlightTextBoxComponent.css';
 
 export const HighlightTextBoxComponent = (prop: any) => {
-  if (prop.warning) {
-  }
-
   return (
     <div>
       <h1>{prop.title}</h1>
