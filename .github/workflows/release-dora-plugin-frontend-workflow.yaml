@@ -26,6 +26,7 @@ jobs:
           cache: "yarn"
           cache-dependency-path: backstage-plugin/yarn.lock
           registry-url: https://npm.pkg.github.com/
+          always-auth: true
 
       - name: Install dependencies
         working-directory: backstage-plugin/
