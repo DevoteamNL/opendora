@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const getMockData = async (groupQueryParam: string, selectedTimeUnit: string) => {
-  console.log("🚀 ~ file: GroupDataService.ts:4 ~ getMockData ~ groupQueryParam:", groupQueryParam, selectedTimeUnit);
   try{
   const data = await fetch('http://localhost:8080/mock-data', {
     method: 'GET',
