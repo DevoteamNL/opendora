@@ -15,6 +15,7 @@ import { useParams } from 'react-router';
 
 import GroupDataService from '../../services/GroupDataService';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
+import { calculateAverage} from '../../utils/helpers';
 
 export  const  DashboardComponent = () => {
   const [chartData, setChartData] = React.useState<DeploymentFrequencyData | null>(null);
@@ -24,6 +25,7 @@ export  const  DashboardComponent = () => {
   const componentName = params.name
   const [groupQueryParam, setGroupQueryParam] = React.useState<string | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('Weekly');
+  const [deploymentAverage, setDeploymentAverage] = React.useState(0);
 
 
   useEffect(() => {
@@ -40,7 +42,9 @@ export  const  DashboardComponent = () => {
       GroupDataService.getMockData(groupQueryParam, selectedTimeUnit).then((response: DeploymentFrequencyData) => {
         // here we get fetch data for the graphs
         setChartData(response);
-      })
+        setDeploymentAverage(calculateAverage(response));
+
+     })
   }, [groupQueryParam, selectedTimeUnit])
 
   return (
@@ -75,8 +79,8 @@ export  const  DashboardComponent = () => {
             <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
                 <HighlightTextBoxComponent
-                  title="Average number of deployments per week"
-                  highlight="31"
+                  title={selectedTimeUnit + " average number of deployments"}
+                  highlight={deploymentAverage}
                   textColour="positiveHighlight"
                 />
               </div>

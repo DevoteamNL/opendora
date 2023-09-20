@@ -1,9 +1,17 @@
-import React, { Props } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Box, MenuItem, TextField } from '@material-ui/core';
 
-function DropdownComponent({ onSelect, selection, type }) {
-  // TODO
 
+export interface DropdownProps {
+  onSelect: Dispatch<SetStateAction<string>>,
+  selection: string,
+  type: string,
+}
+
+function DropdownComponent( props: DropdownProps) {
+  let type = props.type;
+  let selection = props.selection;
+  let onSelect = props.onSelect;
   // Fetch all the groups here and list them as options
   let selectionLabel = '';
   switch (type) {

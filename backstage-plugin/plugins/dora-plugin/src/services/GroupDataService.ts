@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export const getMockData = async (groupQueryParam: string, selectedTimeUnit: string) => {
   try{
