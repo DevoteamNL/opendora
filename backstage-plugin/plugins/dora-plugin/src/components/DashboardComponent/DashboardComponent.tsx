@@ -51,6 +51,12 @@ export const DashboardComponent = () => {
     );
   }, [groupOwnerRelationship, selectedTimeUnit]);
 
+  const chartOrProgressComponent = chartData ? (
+    <BarChartComponent deploymentFrequencyData={chartData} />
+  ) : (
+    <Progress variant="indeterminate" />
+  );
+
   return (
     <Page themeId="tool">
       <Header
@@ -100,13 +106,11 @@ export const DashboardComponent = () => {
 
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
-                {chartData ? (
-                  <BarChartComponent deploymentFrequencyData={chartData} />
+                {dataError ? (
+                  <ResponseErrorPanel error={dataError} />
                 ) : (
-                  <Progress variant="indeterminate" />
+                  chartOrProgressComponent
                 )}
-
-                {dataError ? <ResponseErrorPanel error={dataError} /> : null}
               </div>
             </Grid>
           </Grid>
