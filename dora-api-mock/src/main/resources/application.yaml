@@ -28,6 +28,26 @@ dora-api-mock:
       parameters:
         type: df_average
         aggregation: quarterly
+    - name: df_count_weekly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_weekly.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+    - name: df_count_monthly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_monthly.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        aggregation: monthly
+    - name: df_count_quarterly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_quarterly.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        aggregation: quarterly
 
 wiremock:
   server:
