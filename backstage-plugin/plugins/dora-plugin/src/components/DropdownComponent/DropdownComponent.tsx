@@ -1,7 +1,13 @@
-import React, { Props } from 'react';
+import React from 'react';
 import { Box, MenuItem, TextField } from '@material-ui/core';
 
-function DropdownComponent({ onSelect, selection, type }) {
+interface DropdownComponentProps {
+  onSelect: (selection: string) => void
+  selection: string,
+  type: 'timeUnit' | 'group',
+}
+
+function DropdownComponent({ onSelect , selection , type }: DropdownComponentProps) {
   // TODO
 
   // Fetch all the groups here and list them as options
