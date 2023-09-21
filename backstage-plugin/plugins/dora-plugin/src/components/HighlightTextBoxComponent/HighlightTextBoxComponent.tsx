@@ -1,14 +1,22 @@
 import React from 'react';
 import './HighlightTextBoxComponent.css';
 
-export const HighlightTextBoxComponent = (prop: any) => {
+interface HighlightTextBoxComponentProps {
+  title: string;
+  textColour: string;
+  highlight: string;
+  text?: string;
+}
+export const HighlightTextBoxComponent = (
+  props: HighlightTextBoxComponentProps,
+) => {
   return (
     <div>
-      <h1>{prop.title}</h1>
-      <div className={prop.textColour}>
-        <div className="highlight">{prop.highlight}</div>
+      <h1>{props.title}</h1>
+      <div className={props.textColour}>
+        <div className="highlight">{props.highlight}</div>
       </div>
-      <div className="notification">{prop.text}</div>
+      <div className="notification">{props.text}</div>
     </div>
   );
 };

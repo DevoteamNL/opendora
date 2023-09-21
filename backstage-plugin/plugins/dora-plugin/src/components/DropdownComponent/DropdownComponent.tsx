@@ -4,32 +4,12 @@ import { Box, MenuItem, TextField } from '@material-ui/core';
 interface DropdownComponentProps {
   onSelect: (selection: string) => void;
   selection: string;
-  type: 'timeUnit' | 'group';
 }
 
 function DropdownComponent({
   onSelect,
   selection,
-  type,
 }: DropdownComponentProps) {
-  // TODO
-
-  // Fetch all the groups here and list them as options
-  let selectionLabel = '';
-  switch (type) {
-    case 'timeUnit': {
-      selectionLabel = 'Time Unit';
-      break;
-    }
-    case 'group': {
-      selectionLabel = 'Group';
-      break;
-    }
-    default: {
-      selectionLabel = 'Label';
-    }
-  }
-
   return (
     <Box sx={{ display: 'flex', m: 3, flexDirection: 'column' }}>
       <TextField
@@ -38,7 +18,7 @@ function DropdownComponent({
         value={selection}
         onChange={e => onSelect(e.target.value)}
         select
-        label={selectionLabel}
+        label="Time Unit"
       >
         <MenuItem key={1} value="Weekly">
           Weekly

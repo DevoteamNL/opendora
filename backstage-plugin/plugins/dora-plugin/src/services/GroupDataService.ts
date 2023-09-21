@@ -1,3 +1,5 @@
+import { DeploymentFrequencyData } from '../models/DeploymentFrequencyData';
+
 export const getMockData = async (
   // TODO #13: Use these parameters in fetch and remove underscore
   _groupQueryParam: string,
@@ -7,31 +9,14 @@ export const getMockData = async (
     const data = await fetch('http://localhost:8080/mock-data', {
       method: 'GET',
     });
-
-    return await data.json();
-  } catch (error) {
-    return {};
-  }
-};
-
-export const getAncestry = async (component: string | undefined) => {
-  try {
-    const data = await fetch(
-      `http://localhost:7007/api/catalog/entities/by-name/component/default/${component}`,
-      {
-        method: 'GET',
-      },
-    );
-
-    return await data.json();
-  } catch (error) {
-    return {};
+    return (await data.json()) as DeploymentFrequencyData;
+  } catch (e) {
+    throw e;
   }
 };
 
 const GroupDataService = {
   getMockData,
-  getAncestry,
 };
 
 export default GroupDataService;
