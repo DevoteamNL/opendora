@@ -6,8 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,9 +18,13 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DeploymentFrequencyMetricTest {
+
+    @Value("${wiremock.server.port}")
+    private int wireMockPort;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -31,7 +37,7 @@ class DeploymentFrequencyMetricTest {
                 hasKey("value")
         );
 
-        var url = "http://localhost:10666/dora/api/metric?type=%s&aggregation=%s".formatted(type, aggregation);
+        var url = "http://localhost:%s/dora/api/metric?type=%s&aggregation=%s".formatted(wireMockPort, type, aggregation);
 
         var result = restTemplate.getForObject(url, String.class);
 
@@ -47,7 +53,10 @@ class DeploymentFrequencyMetricTest {
         return Stream.of(
                 Arguments.of("df_average", "weekly"),
                 Arguments.of("df_average", "monthly"),
-                Arguments.of("df_average", "quarterly")
+                Arguments.of("df_average", "quarterly"),
+                Arguments.of("df_count", "weekly"),
+                Arguments.of("df_count", "monthly"),
+                Arguments.of("df_count", "quarterly")
         );
     }
 
