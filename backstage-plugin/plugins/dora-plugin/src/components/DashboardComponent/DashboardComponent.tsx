@@ -11,8 +11,8 @@ import {
 } from '@backstage/core-components';
 import './DashboardComponent.css';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
-import SimpleCharts from '../BarChartComponent/BarChartComponent';
-import DropdownComponent from '../DropdownComponent/DropdownComponent';
+import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
+import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 
 import GroupDataService from '../../services/GroupDataService';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
@@ -102,7 +102,7 @@ export const DashboardComponent = () => {
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
                 {chartData ? (
-                  <SimpleCharts deploymentFrequencyData={chartData} />
+                  <BarChartComponent deploymentFrequencyData={chartData} />
                 ) : (
                   <Progress variant="indeterminate" />
                 )}

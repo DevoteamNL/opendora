@@ -9,9 +9,9 @@ interface DeploymentFrequencyDataProp {
   deploymentFrequencyData: DeploymentFrequencyData;
 }
 
-export default function SimpleCharts({
+export const BarChartComponent = ({
   deploymentFrequencyData,
-}: DeploymentFrequencyDataProp) {
+}: DeploymentFrequencyDataProp) => {
   const keys = deploymentFrequencyData.dataPoints.map(
     (item: DataPoint) => item.key,
   );
@@ -36,4 +36,4 @@ export default function SimpleCharts({
       height={300}
     />
   );
-}
+};

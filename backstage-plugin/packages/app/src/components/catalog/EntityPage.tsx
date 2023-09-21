@@ -65,10 +65,7 @@ const techdocsContent = (
   </EntityTechdocsContent>
 );
 
-const DORAComponent = (
-  <DoraPluginPage/>
-)
-
+const DORAComponent = <DoraPluginPage />;
 
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
@@ -171,7 +168,6 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
-
   </EntityLayout>
 );
 
@@ -200,7 +196,7 @@ const websiteEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
     <EntityLayout.Route path="/dora-plugin" title="DORA">
-    {DORAComponent}
+      {DORAComponent}
     </EntityLayout.Route>
   </EntityLayout>
 );

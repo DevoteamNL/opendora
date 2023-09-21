@@ -6,10 +6,10 @@ interface DropdownComponentProps {
   selection: string;
 }
 
-function DropdownComponent({
+export const DropdownComponent = ({
   onSelect,
   selection,
-}: DropdownComponentProps) {
+}: DropdownComponentProps) => {
   return (
     <Box sx={{ display: 'flex', m: 3, flexDirection: 'column' }}>
       <TextField
@@ -32,5 +32,4 @@ function DropdownComponent({
       </TextField>
     </Box>
   );
-}
-export default DropdownComponent;
+};
