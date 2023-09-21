@@ -55,7 +55,7 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-import { DashboardComponent } from '@internal/plugin-dora-plugin/src/components/DashboardComponent';
+import { DoraPluginPage } from '@devoteam/plugin-dora-metrics';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -66,7 +66,7 @@ const techdocsContent = (
 );
 
 const DORAComponent = (
-  <DashboardComponent/>
+  <DoraPluginPage/>
 )
 
 

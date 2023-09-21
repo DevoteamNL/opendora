@@ -1,5 +1,5 @@
-import React, {  useEffect } from 'react';
-import {  Grid } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Grid } from '@material-ui/core';
 import {
   Header,
   Page,
@@ -16,36 +16,48 @@ import { useParams } from 'react-router';
 import GroupDataService from '../../services/GroupDataService';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
 
-export  const  DashboardComponent = () => {
-  const [chartData, setChartData] = React.useState<DeploymentFrequencyData | null>(null);
+export const DashboardComponent = () => {
+  const [chartData, setChartData] =
+    React.useState<DeploymentFrequencyData | null>(null);
 
-
-  const params= useParams();
-  const componentName = params.name
-  const [groupQueryParam, setGroupQueryParam] = React.useState<string | null>(null);
+  const params = useParams();
+  const componentName = params.name;
+  const [groupQueryParam, setGroupQueryParam] = React.useState<string | null>(
+    null,
+  );
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('Weekly');
 
-
   useEffect(() => {
-    
     // fetching group
-    GroupDataService.getAncestry(componentName).then((res) => {
-      setGroupQueryParam(res.relations.filter((relation: any) => { return relation.type == "ownedBy"}).map((filteredRelation:any)=> {return filteredRelation.target.name})[0])
-    })
-  }, []);
-
+    GroupDataService.getAncestry(componentName).then(res => {
+      setGroupQueryParam(
+        res.relations
+          .filter((relation: any) => {
+            return relation.type === 'ownedBy';
+          })
+          .map((filteredRelation: any) => {
+            return filteredRelation.target.name;
+          })[0],
+      );
+    });
+  }, [componentName]);
 
   useEffect(() => {
-      if(groupQueryParam)
-      GroupDataService.getMockData(groupQueryParam, selectedTimeUnit).then((response: DeploymentFrequencyData) => {
-        // here we get fetch data for the graphs
-        setChartData(response);
-      })
-  }, [groupQueryParam, selectedTimeUnit])
+    if (groupQueryParam)
+      GroupDataService.getMockData(groupQueryParam, selectedTimeUnit).then(
+        (response: DeploymentFrequencyData) => {
+          // here we get fetch data for the graphs
+          setChartData(response);
+        },
+      );
+  }, [groupQueryParam, selectedTimeUnit]);
 
   return (
     <Page themeId="tool">
-      <Header title="Devoteam DORA plugin" subtitle="Through insight to perfection">
+      <Header
+        title="Devoteam DORA plugin"
+        subtitle="Through insight to perfection"
+      >
         {/* <HeaderLabel label="Owner" value="Team X" />
         <HeaderLabel label="Lifecycle" value="Alpha" /> */}
       </Header>
@@ -70,7 +82,6 @@ export  const  DashboardComponent = () => {
                 </Grid>
               </div>
             </Grid>
-
 
             <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
@@ -101,7 +112,7 @@ export  const  DashboardComponent = () => {
             </Grid>
           </Grid>
 
-          <Grid item></Grid>
+          <Grid item />
         </Grid>
       </Content>
     </Page>
