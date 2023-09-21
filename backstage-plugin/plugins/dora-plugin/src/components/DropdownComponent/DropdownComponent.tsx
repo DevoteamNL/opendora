@@ -20,8 +20,6 @@ function DropdownComponent({ onSelect, selection, type }) {
     }
   }
 
-
-
   return (
     <Box sx={{ display: 'flex', m: 3, flexDirection: 'column' }}>
       <TextField
