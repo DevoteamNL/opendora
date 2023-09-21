@@ -1,4 +1,3 @@
-import type { EntityRelation } from '@backstage/catalog-model';
 import {
   Content,
   ContentHeader,
@@ -8,7 +7,7 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
@@ -24,24 +23,16 @@ export const DashboardComponent = () => {
 
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('Weekly');
 
-  const entity = useEntity();
-  const groupOwnerRelationship = entity.entity.relations?.find(
-    relation => relation.type === 'ownedBy',
-  );
+  const { entity } = useEntity();
+  const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
 
   const [dataError, setDataError] = React.useState<Error | undefined>(
     undefined,
   );
 
   useEffect(() => {
-    if (!groupOwnerRelationship) return;
-    // TODO: Create a fix for this in backstage repo
-    const group = (
-      groupOwnerRelationship as EntityRelation & {
-        target: { name: string; kind: string; namespace: string };
-      }
-    ).target.name;
-    GroupDataService.getMockData(group, selectedTimeUnit).then(
+    if (!groupName) return;
+    GroupDataService.getMockData(groupName, selectedTimeUnit).then(
       response => {
         setChartData(response);
       },
@@ -49,7 +40,7 @@ export const DashboardComponent = () => {
         setDataError(error);
       },
     );
-  }, [groupOwnerRelationship, selectedTimeUnit]);
+  }, [groupName, selectedTimeUnit]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent deploymentFrequencyData={chartData} />
