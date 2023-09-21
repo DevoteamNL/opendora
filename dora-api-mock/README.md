@@ -15,11 +15,20 @@ You can run the application directly with the Spring Boot plugin. For that, just
 ./mvnw spring-boot:run
 ```
 
-The API should now be available at http://localhost:8080/
+The API is now available at http://localhost:10666/ (or at the port as configured in `wiremock.server.port`), exposing the following endpoints:
+
+- GET /dora/api/openapi.yaml: retrieves the DORA API OpenAPI 3.0 specification
+- GET /dora/api/metric: retrieves the DORA metrics (only the `type` and `aggregation` parameters are supported as of now)
+- GET /mock-data: retrieves the mock data, the metadata previously exposed by the mock API
+
+For instance, you can retrieve the Deployment Frequency Average datapoints, weekly aggregated, by running the following command:
+
+```shell
+curl -X GET "http://localhost:10666/dora/api/metric?type=df_average&aggregation=weekly" -H "accept: application/json"
+```
 
 ### Changing or adding more Mock Endpoints/Data
 
-Some of the mocked data served by the API endpoints are stored as JSON files at [src/main/resources/mock-data.json](src/main/resources/stubs).
+The mocked data served by the API endpoints are stored as JSON files at [src/main/resources/stubs](src/main/resources/stubs).
 
-The mock API is using [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract) to create the response stubs.
-The contracts are defined at [src/main/resources/contracts](src/main/resources/contracts).
+The mock API is using [Spring Cloud Contract Wiremock Module](https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-wiremock) to handle the HTTP request/response.
