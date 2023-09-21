@@ -3,25 +3,23 @@ package com.devoteam.backstagemock;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.client.ExpectedCount.once;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 
-@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class MetadataMockDataControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+class MetadataMockDataEndpointTest {
 
     @Test
     @SneakyThrows
     void mockDataEndpointShouldReturnMetadata() {
+        var restTemplate = new RestTemplate();
+        var server = MockRestServiceServer.bindTo(restTemplate).build();
+
         var metadata = Matchers.allOf(
                 Matchers.hasKey("id"),
                 Matchers.hasKey("iid"),
@@ -53,8 +51,7 @@ class MetadataMockDataControllerTest {
                 Matchers.hasKey("web_url")
         );
 
-        this.mockMvc.perform(get("/mock-data"))
-                .andExpect(status().isOk())
+        server.expect(once(), requestTo("http://localhost:10666/mock-data"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.metadata_1").exists())
                 .andExpect(jsonPath("$.metadata_1").value(metadata))
