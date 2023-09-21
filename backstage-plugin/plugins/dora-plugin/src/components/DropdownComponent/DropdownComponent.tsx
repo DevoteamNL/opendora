@@ -1,5 +1,5 @@
-import React from 'react';
 import { Box, MenuItem, TextField } from '@material-ui/core';
+import React from 'react';
 
 interface DropdownComponentProps {
   onSelect: (selection: string) => void;

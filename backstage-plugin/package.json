@@ -51,5 +51,7 @@
       "prettier --write"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "prettier-plugin-organize-imports": "^3.2.3"
+  }
 }

@@ -1,6 +1,6 @@
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { doraPluginPlugin, DoraPluginPage } from '../src/plugin';
+import React from 'react';
+import { DoraPluginPage, doraPluginPlugin } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(doraPluginPlugin)

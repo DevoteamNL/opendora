@@ -1,23 +1,22 @@
-import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import type { EntityRelation } from '@backstage/catalog-model';
 import {
-  Header,
-  Page,
   Content,
   ContentHeader,
-  SupportButton,
+  Header,
+  Page,
   Progress,
   ResponseErrorPanel,
+  SupportButton,
 } from '@backstage/core-components';
-import './DashboardComponent.css';
-import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { Grid } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
+import GroupDataService from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
-
-import GroupDataService from '../../services/GroupDataService';
-import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import type { EntityRelation } from '@backstage/catalog-model';
+import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
+import './DashboardComponent.css';
 
 export const DashboardComponent = () => {
   const [chartData, setChartData] =

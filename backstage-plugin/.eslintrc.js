@@ -8,5 +8,6 @@ module.exports = {
         unnamedComponents: 'arrow-function',
       },
     ],
+    '@typescript-eslint/no-explicit-any': 2,
   },
 };
