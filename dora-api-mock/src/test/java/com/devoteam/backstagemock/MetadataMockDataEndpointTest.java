@@ -1,67 +1,65 @@
 package com.devoteam.backstagemock;
 
-import lombok.SneakyThrows;
-import org.hamcrest.Matchers;
+import com.jayway.jsonpath.Configuration;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 
-import static org.springframework.test.web.client.ExpectedCount.once;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MetadataMockDataEndpointTest {
 
+    @Autowired
+    private TestRestTemplate restTemplate;
+
     @Test
-    @SneakyThrows
     void mockDataEndpointShouldReturnMetadata() {
-        var restTemplate = new RestTemplate();
-        var server = MockRestServiceServer.bindTo(restTemplate).build();
-
-        var metadata = Matchers.allOf(
-                Matchers.hasKey("id"),
-                Matchers.hasKey("iid"),
-                Matchers.hasKey("project_id"),
-                Matchers.hasKey("status"),
-                Matchers.hasKey("ref"),
-                Matchers.hasKey("sha"),
-                Matchers.hasKey("before_sha"),
-                Matchers.hasKey("tag"),
-                Matchers.hasKey("yaml_errors"),
-                Matchers.hasKey("user"),
-                Matchers.hasKey("created_at"),
-                Matchers.hasKey("updated_at"),
-                Matchers.hasKey("started_at"),
-                Matchers.hasKey("finished_at"),
-                Matchers.hasKey("committed_at"),
-                Matchers.hasKey("duration"),
-                Matchers.hasKey("queued_duration"),
-                Matchers.hasKey("coverage"),
-                Matchers.hasKey("web_url")
+        var metadataMatcher = allOf(
+                hasKey("id"),
+                hasKey("iid"),
+                hasKey("project_id"),
+                hasKey("status"),
+                hasKey("ref"),
+                hasKey("sha"),
+                hasKey("before_sha"),
+                hasKey("tag"),
+                hasKey("yaml_errors"),
+                hasKey("user"),
+                hasKey("created_at"),
+                hasKey("updated_at"),
+                hasKey("started_at"),
+                hasKey("finished_at"),
+                hasKey("committed_at"),
+                hasKey("duration"),
+                hasKey("queued_duration"),
+                hasKey("coverage"),
+                hasKey("web_url")
         );
 
-        var user = Matchers.allOf(
-                Matchers.hasKey("id"),
-                Matchers.hasKey("name"),
-                Matchers.hasKey("username"),
-                Matchers.hasKey("state"),
-                Matchers.hasKey("avatar_url"),
-                Matchers.hasKey("web_url")
+        var userMatcher = allOf(
+                hasKey("id"),
+                hasKey("name"),
+                hasKey("username"),
+                hasKey("state"),
+                hasKey("avatar_url"),
+                hasKey("web_url")
         );
 
-        server.expect(once(), requestTo("http://localhost:10666/mock-data"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.metadata_1").exists())
-                .andExpect(jsonPath("$.metadata_1").value(metadata))
-                .andExpect(jsonPath("$.metadata_1.user").value(user))
-                .andExpect(jsonPath("$.metadata_2").exists())
-                .andExpect(jsonPath("$.metadata_2").value(metadata))
-                .andExpect(jsonPath("$.metadata_2.user").value(user))
-                .andExpect(jsonPath("$.metadata_3").exists())
-                .andExpect(jsonPath("$.metadata_3").value(metadata))
-                .andExpect(jsonPath("$.metadata_3.user").value(user));
+        var result = restTemplate.getForObject("http://localhost:10666/mock-data", String.class);
+
+        var json = Configuration.defaultConfiguration().jsonProvider().parse(result);
+        assertThat(json, hasJsonPath("$.metadata_1", is(metadataMatcher)));
+        assertThat(json, hasJsonPath("$.metadata_1.user", is(userMatcher)));
+
+        assertThat(json, hasJsonPath("$.metadata_2", is(metadataMatcher)));
+        assertThat(json, hasJsonPath("$.metadata_2.user", is(userMatcher)));
+
+        assertThat(json, hasJsonPath("$.metadata_3", is(metadataMatcher)));
+        assertThat(json, hasJsonPath("$.metadata_3.user", is(userMatcher)));
     }
 
 }

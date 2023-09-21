@@ -3,6 +3,7 @@ package com.devoteam.backstagemock.config;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import java.nio.file.Files;
 
+@Slf4j
 @Configuration
 class WireMockConfiguration {
 
@@ -20,7 +22,7 @@ class WireMockConfiguration {
         var wireMockServer = new WireMockServer(wireMockPort);
 
         properties.stubs().forEach(stub -> wireMockServer.stubFor(
-                        WireMock.get(WireMock.urlPathEqualTo(stub.path()))
+                        WireMock.get(WireMock.urlPathMatching(stub.path()))
                                 .withQueryParams(stub.queryParameters())
                                 .willReturn(WireMock.aResponse()
                                         .withStatus(HttpStatus.OK.value())
@@ -30,6 +32,8 @@ class WireMockConfiguration {
         );
 
         wireMockServer.start();
+
+        log.info("WireMock server initialized and is running on port {}", wireMockPort);
 
         return wireMockServer;
     }

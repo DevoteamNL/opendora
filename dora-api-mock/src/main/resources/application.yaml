@@ -1,7 +1,7 @@
 dora-api-mock:
   stubs:
     - name: openapi
-      path: /dora/api/openapi.yaml
+      path: \/dora\/api\/openapi.y(a)?ml
       stubFile: openapi.yaml
       mediaType: application/yaml
     - name: mock-data
