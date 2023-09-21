@@ -33,7 +33,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { DoraPluginPage } from '@internal/plugin-dora-plugin';
+import { DoraPluginPage } from '@devoteam/plugin-dora-metrics';
 
 const app = createApp({
   apis,

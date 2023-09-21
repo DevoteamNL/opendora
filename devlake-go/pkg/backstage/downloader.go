@@ -2,14 +2,18 @@ package backstage
 
 import (
 	"context"
-	"devlake-go/group-sync/pkg/config"
-	"log"
+	"fmt"
+	"strings"
 
 	"github.com/tdabasinskas/go-backstage/v2/backstage"
 )
 
-func RetrieveTeams() []backstage.Entity {
-	client, err := backstage.NewClient(config.LookupEnvDefault("BACKSTAGE_URL", "http://localhost:7007/"), "default", nil)
+func RetrieveTeams(baseUrl string) (teams map[string]backstage.Entity, err error) {
+	client, err := backstage.NewClient(baseUrl, "default", nil)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create Backstage client: %w", err)
+	}
+
 	backstageTeams, _, err := client.Catalog.Entities.List(context.Background(), &backstage.ListEntityOptions{
 		Filters: []string{
 			"kind=group",
@@ -19,8 +23,14 @@ func RetrieveTeams() []backstage.Entity {
 	})
 
 	if err != nil {
-		log.Fatal("Cannot retrieve Backstage teams: ", err)
+		return nil, fmt.Errorf("cannot retrieve Backstage teams: %w", err)
 	}
 
-	return backstageTeams
+	backstageTeamMap := make(map[string]backstage.Entity)
+
+	for _, team := range backstageTeams {
+		backstageTeamMap[strings.ToLower(fmt.Sprintf("%s:%s/%s", team.Kind, team.Metadata.Namespace, team.Metadata.Name))] = team
+	}
+
+	return backstageTeamMap, nil
 }

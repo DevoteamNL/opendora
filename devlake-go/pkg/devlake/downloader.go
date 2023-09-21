@@ -2,25 +2,26 @@ package devlake
 
 import (
 	"encoding/csv"
-	"log"
+	"fmt"
 	"net/http"
-	"os"
 )
 
-func RetrieveTeams() [][]string {
-	if _, ok := os.LookupEnv("REPLACE_DEVLAKE_TEAMS"); ok {
-		return [][]string{{"Id", "Name", "Alias", "ParentId", "SortingIndex"}}
-	}
-
-	resp, err := http.Get(teamsApiUrlFromEnv())
+func RetrieveTeams(baseUrl string) (teams map[string][]string, err error) {
+	resp, err := http.Get(baseUrl + teamCsvApiPath)
 	if err != nil {
-		log.Fatal("Cannot retrieve DevLake teams: ", err)
+		return nil, fmt.Errorf("cannot retrieve DevLake teams: %w", err)
 	}
 	csvReader := csv.NewReader(resp.Body)
 	devLakeTeams, err := csvReader.ReadAll()
 	if err != nil {
-		log.Fatal("Cannot read DevLake team CSV format: ", err)
+		return nil, fmt.Errorf("cannot read DevLake team CSV format: %w", err)
 	}
 
-	return devLakeTeams
+	devLakeTeamMap := make(map[string][]string)
+
+	for _, team := range devLakeTeams[1:] {
+		devLakeTeamMap[team[TeamIdColumn]] = team
+	}
+
+	return devLakeTeamMap, nil
 }
