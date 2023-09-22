@@ -20,13 +20,13 @@ export const DropdownComponent = ({
         select
         label="Time Unit"
       >
-        <MenuItem key={1} value="Weekly">
+        <MenuItem key={1} value="weekly">
           Weekly
         </MenuItem>
-        <MenuItem key={2} value="Monthly">
+        <MenuItem key={2} value="monthly">
           Monthly
         </MenuItem>
-        <MenuItem key={3} value="Quarterly">
+        <MenuItem key={3} value="quarterly">
           Quarterly
         </MenuItem>
       </TextField>

@@ -1,12 +1,15 @@
 import { DeploymentFrequencyData } from '../models/DeploymentFrequencyData';
 
 export const getMockData = async (
-  // TODO #13: Use these parameters in fetch and remove underscore
-  _groupQueryParam: string,
-  _selectedTimeUnit: string,
+  groupQueryParam: string,
+  selectedTimeUnit: string,
 ) => {
   try {
-    const data = await fetch('http://localhost:8080/mock-data', {
+    const url = new URL('http://localhost:10666/dora/api/metric');
+    url.searchParams.append('type', 'df_count');
+    url.searchParams.append('aggregation', selectedTimeUnit);
+    url.searchParams.append('team', groupQueryParam);
+    const data = await fetch(url.toString(), {
       method: 'GET',
     });
     return (await data.json()) as DeploymentFrequencyData;

@@ -21,7 +21,7 @@ export const DashboardComponent = () => {
   const [chartData, setChartData] =
     React.useState<DeploymentFrequencyData | null>(null);
 
-  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('Weekly');
+  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
 
   const { entity } = useEntity();
   const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;

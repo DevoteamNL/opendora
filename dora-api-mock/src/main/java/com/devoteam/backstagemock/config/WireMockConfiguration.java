@@ -2,6 +2,7 @@ package com.devoteam.backstagemock.config;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,7 @@ class WireMockConfiguration {
 
     @Bean
     WireMockServer wireMockServer(@Value("${wiremock.server.port}") int wireMockPort, WireMockStubConfigurationProperties properties) {
-        var wireMockServer = new WireMockServer(wireMockPort);
+        var wireMockServer = new WireMockServer(options().port(wireMockPort).stubCorsEnabled(true));
 
         properties.stubs().forEach(stub -> wireMockServer.stubFor(
                         WireMock.get(WireMock.urlPathMatching(stub.path()))
