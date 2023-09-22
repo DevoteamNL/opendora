@@ -19,7 +19,6 @@ The API is now available at http://localhost:10666/ (or at the port as configure
 
 - GET `/dora/api/openapi.yaml`: retrieves the DORA API OpenAPI 3.0 specification
 - GET `/dora/api/metric`: retrieves the DORA metrics (only the `type` and `aggregation` parameters are supported as of now)
-- GET `/mock-data`: retrieves the mock data, the metadata previously exposed by the mock API
 
 For instance, you can retrieve the Deployment Frequency Average datapoints, weekly aggregated, by running the following command:
 

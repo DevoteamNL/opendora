@@ -4,10 +4,6 @@ dora-api-mock:
       path: \/dora\/api\/openapi.y(a)?ml
       stubFile: openapi.yaml
       mediaType: application/yaml
-    - name: mock-data
-      path: /mock-data
-      stubFile: stubs/home/mock-data.json
-      mediaType: application/json
     - name: df_average_weekly
       path: /dora/api/metric
       stubFile: stubs/metrics/df/average_weekly.json
