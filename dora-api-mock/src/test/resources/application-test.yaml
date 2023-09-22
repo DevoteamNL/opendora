@@ -1,0 +1,4 @@
+# enable random port for wiremock
+wiremock:
+  server:
+    port: 0
