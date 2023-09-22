@@ -9,7 +9,7 @@ export const getMockData = async (
     url.searchParams.append('type', 'df_count');
     url.searchParams.append('aggregation', selectedTimeUnit);
     url.searchParams.append('team', groupQueryParam);
-    const data = await fetch(url, {
+    const data = await fetch(url.toString(), {
       method: 'GET',
     });
     return (await data.json()) as DeploymentFrequencyData;
