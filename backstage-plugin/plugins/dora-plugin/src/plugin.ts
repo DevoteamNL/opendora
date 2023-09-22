@@ -16,7 +16,7 @@ export const DoraPluginPage = doraPluginPlugin.provide(
   createRoutableExtension({
     name: 'DoraPluginPage',
     component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
+      import('./components/DashboardComponent').then(m => m.DashboardComponent),
     mountPoint: rootRouteRef,
   }),
 );

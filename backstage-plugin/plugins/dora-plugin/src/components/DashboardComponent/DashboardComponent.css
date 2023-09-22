@@ -1,0 +1,41 @@
+.gridBorder {
+  padding: 8px;
+  margin-top: 20px !important;
+}
+
+.highlight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+}
+
+.highlightTitle {
+  font-size: 100px;
+}
+
+.highlightSubTitle {
+  font-size: 30px;
+}
+
+.gridBoxText {
+  background: #424242;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+}
+
+.gridBoxTitleText {
+  background: #424242;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  margin-bottom: -10px;
+}
+
+.gridBoxObject {
+  background: #424242;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+}
