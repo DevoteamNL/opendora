@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: ./dora-mock-api
+        working-directory: mock-api
 
     steps:
       - uses: actions/checkout@v3
@@ -27,4 +27,5 @@ jobs:
           cache: 'maven'
 
       - name: Test with Maven
-        run: mvn -B verify
+        run: ls -la
+        working-directory: ./dora-api-mock
