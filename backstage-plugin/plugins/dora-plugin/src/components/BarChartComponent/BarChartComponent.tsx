@@ -1,23 +1,24 @@
-import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
+import * as React from 'react';
 import {
   DataPoint,
-  DeploymentFrequencyDataProp,
+  DeploymentFrequencyData,
 } from '../../models/DeploymentFrequencyData';
 
-export default function SimpleCharts({
+interface DeploymentFrequencyDataProp {
+  deploymentFrequencyData: DeploymentFrequencyData;
+}
+
+export const BarChartComponent = ({
   deploymentFrequencyData,
-}: DeploymentFrequencyDataProp) {
-  let keys = ['0'];
-  let values = [0];
-  if (deploymentFrequencyData && deploymentFrequencyData.dataPoints) {
-    keys = deploymentFrequencyData.dataPoints.map(
-      (item: DataPoint) => item.key,
-    );
-    values = deploymentFrequencyData.dataPoints.map(
-      (item: DataPoint) => item.value,
-    );
-  }
+}: DeploymentFrequencyDataProp) => {
+  const keys = deploymentFrequencyData.dataPoints.map(
+    (item: DataPoint) => item.key,
+  );
+  const values = deploymentFrequencyData.dataPoints.map(
+    (item: DataPoint) => item.value,
+  );
+
   return (
     <BarChart
       xAxis={[
@@ -35,4 +36,4 @@ export default function SimpleCharts({
       height={300}
     />
   );
-}
+};

@@ -22,11 +22,13 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "prettier:check": "prettier --check ."
+    "prettier:check": "prettier --check . --config ../../prettier.config.js --ignore-path ../../.prettierignore",
+    "prettier:write": "prettier --write . --config ../../prettier.config.js --ignore-path ../../.prettierignore"
   },
   "dependencies": {
     "@backstage/core-components": "^0.13.4",
     "@backstage/core-plugin-api": "^1.5.3",
+    "@backstage/plugin-catalog-react": "^1.8.4",
     "@backstage/theme": "^0.4.1",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
