@@ -7,17 +7,19 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
-import GroupDataService from '../../services/GroupDataService';
+import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 import './DashboardComponent.css';
 
 export const DashboardComponent = () => {
+  const groupDataService = useApi(groupDataServiceApiRef);
   const [chartData, setChartData] =
     React.useState<DeploymentFrequencyData | null>(null);
 
@@ -32,7 +34,7 @@ export const DashboardComponent = () => {
 
   useEffect(() => {
     if (!groupName) return;
-    GroupDataService.getMockData(groupName, selectedTimeUnit).then(
+    groupDataService.getMockData(groupName, selectedTimeUnit).then(
       response => {
         setChartData(response);
       },
@@ -40,7 +42,7 @@ export const DashboardComponent = () => {
         setDataError(error);
       },
     );
-  }, [groupName, selectedTimeUnit]);
+  }, [groupName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent deploymentFrequencyData={chartData} />
