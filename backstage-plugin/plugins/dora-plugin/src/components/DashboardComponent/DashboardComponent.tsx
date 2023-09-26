@@ -16,12 +16,14 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 import './DashboardComponent.css';
+import { calculateAverage } from '../../utils/helpers';
 
 export const DashboardComponent = () => {
   const [chartData, setChartData] =
     React.useState<DeploymentFrequencyData | null>(null);
 
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
+  const [deploymentAverage, setDeploymentAverage] = React.useState(0);
 
   const { entity } = useEntity();
   const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
@@ -35,13 +37,13 @@ export const DashboardComponent = () => {
     GroupDataService.getMockData(groupName, selectedTimeUnit).then(
       response => {
         setChartData(response);
+        setDeploymentAverage(calculateAverage(response));
       },
       (error: Error) => {
         setDataError(error);
       },
     );
   }, [groupName, selectedTimeUnit]);
-
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent deploymentFrequencyData={chartData} />
   ) : (
@@ -78,8 +80,8 @@ export const DashboardComponent = () => {
             <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
                 <HighlightTextBoxComponent
-                  title="Average number of deployments per week"
-                  highlight="31"
+                  title={selectedTimeUnit.toUpperCase() + " average number of deployments"}
+                  highlight={deploymentAverage.toString()}
                   textColour="positiveHighlight"
                 />
               </div>
@@ -87,9 +89,9 @@ export const DashboardComponent = () => {
             <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
                 <HighlightTextBoxComponent
-                  title="Overall change failure rate"
-                  highlight="5.2%"
-                  text="*calculated on failures and incidents"
+                  title="Placeholder"
+                  highlight="Placeholder"
+                  text="*Placeholder info"
                   textColour="warning"
                 />
               </div>
