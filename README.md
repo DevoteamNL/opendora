@@ -24,6 +24,6 @@ This contains the docker image (todo) and configuration scripts to setup DevLake
 
 ### dev-environment
 
-Contains a initial docker compose with the services needed to test the metrics in the dev's local environment.
+Contains an initial docker compose with the services needed to test the metrics in the dev's local environment.
 
 [More details](dev-environment/README.md)

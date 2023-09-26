@@ -10,7 +10,7 @@
 ### Apache DevLake
 
 Before running the Dev Environment, some minor configurations needs to be performed. This development environment
-already provide default values for the majority of them but at least an encryption key (`DEVLAKE_ENCRYPTION_SECRET`) needs to be provided.
+already provides default values for the majority of them but at least an encryption key (`DEVLAKE_ENCRYPTION_SECRET`) needs to be provided.
 
 To generate one, run the below:
 
@@ -18,7 +18,7 @@ To generate one, run the below:
 openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1
 ```
 
-It can be configured globally, and it will be pick up by the docker compose, or it can be added to the `.env` file.
+It can be configured globally, and it will be picked up by the docker compose, or it can be added to the `.env` file.
 
 Some environment variables can be customised. The list below has all of them as well as their default values:
 
