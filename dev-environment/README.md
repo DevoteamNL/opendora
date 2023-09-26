@@ -58,13 +58,18 @@ To start it, run the below:
 - Docker Compose v1.*
 
 ```shell
-docker-compose -p dashboard up -d
+docker-compose --profile dashboard up -d
 ```
 
 - Docker Compose v2.*
 
 ```shell
-docker compose -p dashboard up -d
+docker compose --profile dashboard up -d
 ```
+
+After that, the services will be accessible on the below:
+
+- DevLake Configuration UI: http://localhost:4000
+- Grafana Dashboards (if started with profile `dashboard`): http://localhost:3000 (initial credential: `admin`/`admin`)
 
 For more information about Docker Compose, check their official documentation: [Docker Compose](https://docs.docker.com/compose/)
