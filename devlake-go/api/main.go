@@ -10,6 +10,11 @@ import (
 )
 
 func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
+	serviceMap := map[string]service.Service{
+		"df_total":   service.DfTotalService{Client: client},
+		"df_average": service.DfAverageService{Client: client},
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		queries := r.URL.Query()
 		parameters, err := validation.ValidServiceParameters(queries)
@@ -18,19 +23,14 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-
-		services := map[string]service.Service{
-			"df_total": service.DfTotalService{Client: client},
-		}
-
-		response, err := services[parameters.TypeQuery].ServeRequest(parameters)
+		response, err := serviceMap[parameters.TypeQuery].ServeRequest(parameters)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 	}
 }

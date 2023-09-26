@@ -1,6 +1,8 @@
 package service
 
-import "devlake-go/group-sync/api/models"
+import (
+	"devlake-go/group-sync/api/models"
+)
 
 type ServiceParameters struct {
 	TypeQuery   string
