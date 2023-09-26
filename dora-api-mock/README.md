@@ -2,7 +2,7 @@
 
 This is a mock set up to represent the API used to retrieve Dora metrics from DevLake. It is a simple Spring Rest application.
 
-### Prerequisites:
+### Prerequisites
 
 - JDK 17
 - Maven
