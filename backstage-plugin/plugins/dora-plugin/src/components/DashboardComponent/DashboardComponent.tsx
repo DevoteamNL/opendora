@@ -34,14 +34,16 @@ export const DashboardComponent = () => {
 
   useEffect(() => {
     if (!groupName) return;
-    groupDataService.getMockData(groupName, selectedTimeUnit).then(
-      response => {
-        setChartData(response);
-      },
-      (error: Error) => {
-        setDataError(error);
-      },
-    );
+    groupDataService
+      .retrieveDeploymentFrequencyTotal(groupName, selectedTimeUnit)
+      .then(
+        response => {
+          setChartData(response);
+        },
+        (error: Error) => {
+          setDataError(error);
+        },
+      );
   }, [groupName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
