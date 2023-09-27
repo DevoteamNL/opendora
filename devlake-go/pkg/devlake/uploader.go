@@ -19,7 +19,7 @@ func teamMapToCsvSlice(teamMap map[string][]string) [][]string {
 	return entries
 }
 
-func UpdateTeams(baseUrl string, devLakeTeamMap map[string][]string) (response []byte, err error) {
+func UpdateTeams(baseUrl string, user string, pass string, devLakeTeamMap map[string][]string) (response []byte, err error) {
 	var buf bytes.Buffer
 	csvWriter := csv.NewWriter(&buf)
 
@@ -47,6 +47,7 @@ func UpdateTeams(baseUrl string, devLakeTeamMap map[string][]string) (response [
 	}
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
+	req.SetBasicAuth(user, pass)
 
 	var httpClient http.Client
 	resp, err := httpClient.Do(req)

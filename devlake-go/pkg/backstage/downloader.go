@@ -19,7 +19,6 @@ func RetrieveTeams(baseUrl string) (teams map[string]backstage.Entity, err error
 			"kind=group",
 		},
 		Fields: []string{},
-		Order:  []backstage.ListEntityOrder{{Direction: backstage.OrderDescending, Field: "metadata.name"}},
 	})
 
 	if err != nil {
