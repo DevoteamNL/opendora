@@ -8,6 +8,8 @@ This will retrieve all Backstage entities of type `Group` and insert/remove them
 
 By default, the script will look for DevLake at http://localhost:4000/ and Backstage at http://localhost:7007/ but this can be changed using environment variables, respectively: `BACKSTAGE_URL` and `DEVLAKE_URL`. **Make sure to include the trailing forward slash `/`**
 
+By default, the script will look for use DevLake admin credentials user:`devlake` and password:`merico`. This can be changed using environment variables, respectively: `DEVLAKE_ADMIN_USER` and `DEVLAKE_ADMIN_PASS`.
+
 ### To run the script:
 
 ```
