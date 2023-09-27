@@ -41,7 +41,6 @@ export const DashboardComponent = () => {
       .then(
         response => {
           setChartData(response);
-          setDeploymentAverage(calculateAverage(response));
         },
         (error: Error) => {
           setDataError(error);
@@ -85,8 +84,8 @@ export const DashboardComponent = () => {
             <Grid item xs={6} className="gridBorder">
               <div className="gridBoxText">
                 <HighlightTextBoxComponent
-                  title={selectedTimeUnit.toUpperCase() + " average number of deployments"}
-                  highlight={deploymentAverage.toString()}
+                  title={`${selectedTimeUnit.toUpperCase()} average number of deployments`}
+                  highlight={calculateAverage(chartData).toString()}
                   textColour="positiveHighlight"
                 />
               </div>
