@@ -21,3 +21,9 @@ This is a scaffold [Backstage](https://backstage.io) app used to configure an en
 This contains the docker image (todo) and configuration scripts to setup DevLake to properly ingest the DORA metrics from a GitLab repo and group them according to Backstage groups.
 
 [More details](devlake-go/README.md)
+
+### dev-environment
+
+Contains an initial docker compose with the services needed to test the metrics in the dev's local environment.
+
+[More details](dev-environment/README.md)

@@ -7,11 +7,12 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
-import GroupDataService from '../../services/GroupDataService';
+import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
@@ -19,6 +20,7 @@ import './DashboardComponent.css';
 import { calculateAverage } from '../../utils/helpers';
 
 export const DashboardComponent = () => {
+  const groupDataService = useApi(groupDataServiceApiRef);
   const [chartData, setChartData] =
     React.useState<DeploymentFrequencyData | null>(null);
 
@@ -34,16 +36,19 @@ export const DashboardComponent = () => {
 
   useEffect(() => {
     if (!groupName) return;
-    GroupDataService.getMockData(groupName, selectedTimeUnit).then(
-      response => {
-        setChartData(response);
-        setDeploymentAverage(calculateAverage(response));
-      },
-      (error: Error) => {
-        setDataError(error);
-      },
-    );
-  }, [groupName, selectedTimeUnit]);
+    groupDataService
+      .retrieveDeploymentFrequencyTotal(groupName, selectedTimeUnit)
+      .then(
+        response => {
+          setChartData(response);
+          setDeploymentAverage(calculateAverage(response));
+        },
+        (error: Error) => {
+          setDataError(error);
+        },
+      );
+  }, [groupName, selectedTimeUnit, groupDataService]);
+
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent deploymentFrequencyData={chartData} />
   ) : (
