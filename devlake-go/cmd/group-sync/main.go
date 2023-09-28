@@ -14,15 +14,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	devlakeApiUrl := config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/")
-	devLakeTeamMap, err := devlake.RetrieveTeams(devlakeApiUrl)
+	devLakeApiUrl := config.LookupEnvDefault("DEVLAKE_URL", "http://localhost:4000/")
+	devLakeAdminUser := config.LookupEnvDefault("DEVLAKE_ADMIN_USER", "devlake")
+	devLakeAdminPass := config.LookupEnvDefault("DEVLAKE_ADMIN_PASS", "merico")
+	devLakeTeamMap, err := devlake.RetrieveTeams(devLakeApiUrl, devLakeAdminUser, devLakeAdminPass)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	conversion.BackstageTeamsToDevLakeTeams(backstageTeamMap, devLakeTeamMap)
 
-	response, err := devlake.UpdateTeams(devlakeApiUrl, devLakeTeamMap)
+	response, err := devlake.UpdateTeams(devLakeApiUrl, devLakeAdminUser, devLakeAdminPass, devLakeTeamMap)
 	if err != nil {
 		log.Fatal(err)
 	}

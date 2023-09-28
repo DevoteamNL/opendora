@@ -24,7 +24,7 @@ func TestRetrieveTeams(t *testing.T) {
 	testServer := httptest.NewServer(csvGetHandler(t))
 	defer testServer.Close()
 
-	csv, err := RetrieveTeams(testServer.URL)
+	csv, err := RetrieveTeams(testServer.URL, "devlake", "merico")
 	if err != nil {
 		t.Fatalf("unexpected error retrieving teams: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestRetrieveTeams(t *testing.T) {
 }
 
 func TestNoServerGetRequest(t *testing.T) {
-	csv, err := RetrieveTeams("http://localhost/no-server")
+	csv, err := RetrieveTeams("http://localhost/no-server", "devlake", "merico")
 
 	if err == nil || csv != nil {
 		t.Errorf("Expected no connection to the server to return an error, got: %v", csv)
