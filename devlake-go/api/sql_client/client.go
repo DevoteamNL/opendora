@@ -11,7 +11,7 @@ import (
 )
 
 type ClientInterface interface {
-	QueryDeployments(query string, params any) ([]models.DataPoint, error)
+	QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error)
 }
 
 type Client struct {
@@ -53,7 +53,7 @@ type QueryParams struct {
 	Project string
 }
 
-func (client Client) QueryDeployments(query string, params any) ([]models.DataPoint, error) {
+func (client Client) QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error) {
 	if db == nil {
 		return nil, fmt.Errorf("first connect to the database before querying deployments")
 	}

@@ -25,7 +25,7 @@ with calendar_weeks as(
         FROM cicd_deployment_commits cdc
         JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.` + "`table`" + ` = 'cicd_scopes'
         WHERE
-            pm.project_name = :project
+            pm.project_name LIKE :project
             and cdc.result = 'SUCCESS'
             and cdc.environment = 'PRODUCTION'
         GROUP BY 1
@@ -55,7 +55,7 @@ with _deployments as(
         FROM cicd_deployment_commits cdc
         JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.` + "`table`" + ` = 'cicd_scopes'
         WHERE
-            pm.project_name = :project
+            pm.project_name LIKE :project
             and cdc.result = 'SUCCESS'
             and cdc.environment = 'PRODUCTION'
         GROUP BY 1
