@@ -33,7 +33,7 @@ func validProjectQuery(queries url.Values) (string, bool) {
 	projects, exists := queries["project"]
 
 	if !exists || len(projects) == 0 {
-		return "%", true
+		return "", true
 	}
 	if len(projects) > 1 || len(projects[0]) == 0 {
 		return "", false

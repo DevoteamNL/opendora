@@ -25,7 +25,7 @@ with calendar_weeks as(
         FROM cicd_deployment_commits cdc
         JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.` + "`table`" + ` = 'cicd_scopes'
         WHERE
-            pm.project_name LIKE :project
+            (:project = "" OR pm.project_name = :project)
             and cdc.result = 'SUCCESS'
             and cdc.environment = 'PRODUCTION'
         GROUP BY 1
@@ -34,8 +34,8 @@ with calendar_weeks as(
 )
 
 SELECT
-    YEARWEEK(cw.week) as deployment_key,
-    case when d.deployment_count is null then 0 else d.deployment_count end as deployment_value
+    YEARWEEK(cw.week) as data_key,
+    case when d.deployment_count is null then 0 else d.deployment_count end as data_value
 FROM
     calendar_weeks cw
     LEFT JOIN _deployments d on YEARWEEK(cw.week) = d.week
@@ -55,7 +55,7 @@ with _deployments as(
         FROM cicd_deployment_commits cdc
         JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.` + "`table`" + ` = 'cicd_scopes'
         WHERE
-            pm.project_name LIKE :project
+            (:project = "" OR pm.project_name = :project)
             and cdc.result = 'SUCCESS'
             and cdc.environment = 'PRODUCTION'
         GROUP BY 1
@@ -64,8 +64,8 @@ with _deployments as(
 )
 
 SELECT
-    cm.month as deployment_key,
-    case when d.deployment_count is null then 0 else d.deployment_count end as deployment_value
+    cm.month as data_key,
+    case when d.deployment_count is null then 0 else d.deployment_count end as data_value
 FROM
     calendar_months cm
     LEFT JOIN _deployments d on cm.month = d.month
