@@ -72,7 +72,9 @@ func Test_metricHandler(t *testing.T) {
 func Test_databaseError(t *testing.T) {
 	w := httptest.NewRecorder()
 	errorClient := sql_client.MockClient{
-		WeeklyErrorToReturn: fmt.Errorf("error from weekly query"),
+		MockDataMap: map[string]sql_client.MockDataReturn{
+			sql_client.WEEKLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from weekly query")},
+		},
 	}
 
 	metricHandler(errorClient)(w, httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df_total", nil))

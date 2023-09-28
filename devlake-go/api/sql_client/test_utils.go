@@ -2,28 +2,20 @@ package sql_client
 
 import "devlake-go/group-sync/api/models"
 
+type MockDataReturn struct {
+	Data []models.DataPoint
+	Err  error
+}
 type MockClient struct {
-	WeeklyDataPointsToReturn  []models.DataPoint
-	WeeklyErrorToReturn       error
-	MonthlyDataPointsToReturn []models.DataPoint
-	MonthlyErrorToReturn      error
+	MockDataMap map[string]MockDataReturn
 }
 
-func (client MockClient) QueryTotalDeploymentsWeekly(projectName string, from int64, to int64) ([]models.DataPoint, error) {
-	if client.WeeklyDataPointsToReturn != nil {
-		return client.WeeklyDataPointsToReturn, nil
+func (client MockClient) QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error) {
+	if client.MockDataMap[query].Data != nil {
+		return client.MockDataMap[query].Data, nil
 	}
-	if client.WeeklyErrorToReturn != nil {
-		return nil, client.WeeklyErrorToReturn
-	}
-	return []models.DataPoint{}, nil
-}
-func (client MockClient) QueryTotalDeploymentsMonthly(projectName string, from int64, to int64) ([]models.DataPoint, error) {
-	if client.MonthlyDataPointsToReturn != nil {
-		return client.MonthlyDataPointsToReturn, nil
-	}
-	if client.MonthlyErrorToReturn != nil {
-		return nil, client.MonthlyErrorToReturn
+	if client.MockDataMap[query].Err != nil {
+		return nil, client.MockDataMap[query].Err
 	}
 	return []models.DataPoint{}, nil
 }

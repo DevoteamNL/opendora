@@ -140,13 +140,13 @@ func Test_validProjectQuery(t *testing.T) {
 		{
 			name:          "should be valid when no project is provided",
 			values:        url.Values{},
-			expectProject: "",
+			expectProject: "%",
 			expectValid:   true,
 		},
 		{
 			name:          "should be valid when no project is provided",
 			values:        url.Values{"project": {}},
-			expectProject: "",
+			expectProject: "%",
 			expectValid:   true,
 		},
 		{
@@ -215,7 +215,7 @@ func Test_ValidServiceParameters(t *testing.T) {
 		{
 			name:                    "should return service parameters with defaults for aggregation and project",
 			values:                  url.Values{"type": {"df_total"}},
-			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_total", Aggregation: "weekly", Project: "", To: 0, From: 0},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_total", Aggregation: "weekly", Project: "%", To: 0, From: 0},
 			expectError:             "",
 		},
 	}
