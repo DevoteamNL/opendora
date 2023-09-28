@@ -1,12 +1,13 @@
 {
-  "name": "@internal/plugin-dora-plugin",
+  "name": "@devoteam/plugin-dora-metrics",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
+  "repository": "https://github.com/DevoteamNL/dora-backstage-plugin/",
   "publishConfig": {
-    "access": "public",
+    "access": "restricted",
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
@@ -20,33 +21,40 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "prettier:check": "prettier --check . --config ../../prettier.config.js --ignore-path ../../.prettierignore",
+    "prettier:write": "prettier --write . --config ../../prettier.config.js --ignore-path ../../.prettierignore"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.12.5",
-    "@backstage/core-plugin-api": "^1.5.0",
-    "@backstage/theme": "^0.2.18",
+    "@backstage/core-components": "^0.13.4",
+    "@backstage/core-plugin-api": "^1.5.3",
+    "@backstage/plugin-catalog-react": "^1.8.4",
+    "@backstage/theme": "^0.4.1",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.57",
+    "@mui/x-charts": "^6.0.0-alpha.11",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0"
+    "react": "^16.13.1 || ^17.0.0",
+    "react-router": "^6.16.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.22.4",
-    "@backstage/core-app-api": "^1.6.0",
-    "@backstage/dev-utils": "^1.0.13",
-    "@backstage/test-utils": "^1.2.6",
+    "@backstage/cli": "^0.22.12",
+    "@backstage/core-app-api": "^1.9.1",
+    "@backstage/dev-utils": "^1.0.20",
+    "@backstage/test-utils": "^1.4.2",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^14.0.0",
     "@types/node": "*",
-    "msw": "^1.0.0",
-    "cross-fetch": "^3.1.5"
+    "cross-fetch": "^3.1.5",
+    "msw": "^1.0.0"
   },
   "files": [
-    "dist"
-  ]
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
 }

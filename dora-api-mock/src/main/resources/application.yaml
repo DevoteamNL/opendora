@@ -1,0 +1,50 @@
+dora-api-mock:
+  stubs:
+    - name: openapi
+      path: \/dora\/api\/openapi.y(a)?ml
+      stubFile: openapi.yaml
+      mediaType: application/yaml
+    - name: df_average_weekly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/average_weekly.json
+      mediaType: application/json
+      parameters:
+        type: df_average
+    - name: df_average_monthly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/average_monthly.json
+      mediaType: application/json
+      parameters:
+        type: df_average
+        aggregation: monthly
+    - name: df_average_quarterly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/average_quarterly.json
+      mediaType: application/json
+      parameters:
+        type: df_average
+        aggregation: quarterly
+    - name: df_count_weekly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_weekly.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+    - name: df_count_monthly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_monthly.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        aggregation: monthly
+    - name: df_count_quarterly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_quarterly.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        aggregation: quarterly
+
+wiremock:
+  server:
+    port: 10666
