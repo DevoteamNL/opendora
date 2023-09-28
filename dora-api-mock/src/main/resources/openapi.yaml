@@ -66,19 +66,13 @@ paths:
         - name: project
           in: query
           description: >-
-            `optional`. Specify the project to which the data points should be retrieved
+            `optional`. Specify the project/repo/component to which the data points should be retrieved
           schema:
             type: string
         - name: team
           in: query
           description: >-
             `optional`. Specify the team to which the data points should be retrieved
-          schema:
-            type: string
-        - name: repoUrl
-          in: query
-          description: >-
-            `optional`. Specify the repo URL to which the data points should be retrieved
           schema:
             type: string
         - name: from
