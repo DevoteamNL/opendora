@@ -10,20 +10,16 @@ type DfTotalService struct {
 }
 
 func (dfTotalService DfTotalService) ServeRequest(params ServiceParameters) (models.Response, error) {
-
-	var dataPoints []models.DataPoint
-	var err error
-
-	if params.Aggregation == "weekly" {
-		dataPoints, err = dfTotalService.Client.QueryTotalDeploymentsWeekly(params.Project, params.From, params.To)
-	}
-	if params.Aggregation == "monthly" {
-		dataPoints, err = dfTotalService.Client.QueryTotalDeploymentsMonthly(params.Project, params.From, params.To)
-	}
 	if params.Aggregation == "quarterly" {
 		// TODO implement quarterly aggregation sql
-		dataPoints = []models.DataPoint{}
+		return models.Response{Aggregation: params.Aggregation, DataPoints: []models.DataPoint{}}, nil
 	}
+	aggregationQueryMap := map[string]string{
+		"weekly":  sql_client.WEEKLY_DEPLOYMENT_SQL,
+		"monthly": sql_client.MONTHLY_DEPLOYMENT_SQL,
+	}
+
+	dataPoints, err := dfTotalService.Client.QueryDeployments(aggregationQueryMap[params.Aggregation], sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 
 	return models.Response{Aggregation: params.Aggregation, DataPoints: dataPoints}, err
 }
