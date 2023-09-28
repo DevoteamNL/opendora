@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestDfTotalService_ServeRequest(t *testing.T) {
+func TestDfCountService_ServeRequest(t *testing.T) {
 
 	exampleWeeklyDataPoints := []models.DataPoint{{Key: "202338", Value: 0}, {Key: "202337", Value: 1}, {Key: "202336", Value: 2}}
 	exampleMonthlyDataPoints := []models.DataPoint{{Key: "23/04", Value: 6}, {Key: "23/03", Value: 5}, {Key: "23/02", Value: 4}}
@@ -22,7 +22,7 @@ func TestDfTotalService_ServeRequest(t *testing.T) {
 	}{
 		{
 			name:   "should return an error with an unexpected error from the database",
-			params: ServiceParameters{TypeQuery: "df_total", Aggregation: "weekly", Project: "", To: 0, From: 0},
+			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
 					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Err: fmt.Errorf("error from weekly query")},
@@ -34,7 +34,7 @@ func TestDfTotalService_ServeRequest(t *testing.T) {
 		},
 		{
 			name:   "should return an error with an unexpected error from the database",
-			params: ServiceParameters{TypeQuery: "df_total", Aggregation: "monthly", Project: "", To: 0, From: 0},
+			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "monthly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
 					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Err: fmt.Errorf("error from weekly query")},
@@ -46,7 +46,7 @@ func TestDfTotalService_ServeRequest(t *testing.T) {
 		},
 		{
 			name:   "should return weekly data points from the database",
-			params: ServiceParameters{TypeQuery: "df_total", Aggregation: "weekly", Project: "", To: 0, From: 0},
+			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
 					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Data: exampleWeeklyDataPoints},
@@ -58,7 +58,7 @@ func TestDfTotalService_ServeRequest(t *testing.T) {
 		},
 		{
 			name:   "should return monthly data points from the database",
-			params: ServiceParameters{TypeQuery: "df_total", Aggregation: "monthly", Project: "", To: 0, From: 0},
+			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "monthly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
 					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Data: exampleWeeklyDataPoints},
@@ -71,8 +71,8 @@ func TestDfTotalService_ServeRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dfTotalService := DfTotalService{Client: tt.mockClient}
-			got, err := dfTotalService.ServeRequest(tt.params)
+			dfCountService := DfCountService{Client: tt.mockClient}
+			got, err := dfCountService.ServeRequest(tt.params)
 
 			if err == nil && tt.expectError != "" {
 				t.Errorf("expected '%v' got no error", tt.expectError)
@@ -81,7 +81,7 @@ func TestDfTotalService_ServeRequest(t *testing.T) {
 				t.Errorf("expected '%v' got '%v'", tt.expectError, err)
 			}
 			if !reflect.DeepEqual(got, tt.expectResponse) {
-				t.Errorf("DfTotalService.ServeRequest() = %v, want %v", got, tt.expectResponse)
+				t.Errorf("DfCountService.ServeRequest() = %v, want %v", got, tt.expectResponse)
 			}
 		})
 	}

@@ -20,23 +20,23 @@ func Test_metricHandler(t *testing.T) {
 			name:             "should throw 400 response when not specifying metric type",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?", nil),
 			expectStatusCode: 400,
-			expectBody:       "type should be provided as either df_average or df_total\n",
+			expectBody:       "type should be provided as either df_average or df_count\n",
 		},
 		{
 			name:             "should throw 400 response when specifying nonsense metric type",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=not_metric", nil),
-			expectBody:       "type should be provided as either df_average or df_total\n",
+			expectBody:       "type should be provided as either df_average or df_count\n",
 			expectStatusCode: 400,
 		},
 		{
 			name:             "should throw 400 response when specifying multiple metric types",
-			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df_total&type=df_average", nil),
-			expectBody:       "type should be provided as either df_average or df_total\n",
+			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df_count&type=df_average", nil),
+			expectBody:       "type should be provided as either df_average or df_count\n",
 			expectStatusCode: 400,
 		},
 		{
-			name:             "should return data response when specifying df_total and a project",
-			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?project=my-project&type=df_total", nil),
+			name:             "should return data response when specifying df_count and a project",
+			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?project=my-project&type=df_count", nil),
 			expectBody:       `{"aggregation":"weekly","dataPoints":[]}` + "\n",
 			expectStatusCode: 200,
 		},
@@ -77,7 +77,7 @@ func Test_databaseError(t *testing.T) {
 		},
 	}
 
-	metricHandler(errorClient)(w, httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df_total", nil))
+	metricHandler(errorClient)(w, httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df_count", nil))
 
 	res := w.Result()
 	defer res.Body.Close()

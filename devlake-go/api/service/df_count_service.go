@@ -5,11 +5,11 @@ import (
 	"devlake-go/group-sync/api/sql_client"
 )
 
-type DfTotalService struct {
+type DfCountService struct {
 	Client sql_client.ClientInterface
 }
 
-func (dfTotalService DfTotalService) ServeRequest(params ServiceParameters) (models.Response, error) {
+func (dfCountService DfCountService) ServeRequest(params ServiceParameters) (models.Response, error) {
 	if params.Aggregation == "quarterly" {
 		// TODO implement quarterly aggregation sql
 		return models.Response{Aggregation: params.Aggregation, DataPoints: []models.DataPoint{}}, nil
@@ -19,7 +19,7 @@ func (dfTotalService DfTotalService) ServeRequest(params ServiceParameters) (mod
 		"monthly": sql_client.MONTHLY_DEPLOYMENT_SQL,
 	}
 
-	dataPoints, err := dfTotalService.Client.QueryDeployments(aggregationQueryMap[params.Aggregation], sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
+	dataPoints, err := dfCountService.Client.QueryDeployments(aggregationQueryMap[params.Aggregation], sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 
 	return models.Response{Aggregation: params.Aggregation, DataPoints: dataPoints}, err
 }

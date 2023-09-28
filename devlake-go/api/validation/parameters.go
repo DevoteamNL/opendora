@@ -13,7 +13,7 @@ func validTypeQuery(queries url.Values) (string, bool) {
 		return "", false
 	}
 	query := metricTypes[0]
-	return query, query == "df_total" || query == "df_average"
+	return query, query == "df_count" || query == "df_average"
 }
 
 func validAggregationQuery(queries url.Values) (string, bool) {
@@ -45,7 +45,7 @@ func validProjectQuery(queries url.Values) (string, bool) {
 func ValidServiceParameters(queries url.Values) (service.ServiceParameters, error) {
 	typeQuery, valid := validTypeQuery(queries)
 	if !valid {
-		return service.ServiceParameters{}, fmt.Errorf("type should be provided as either df_average or df_total")
+		return service.ServiceParameters{}, fmt.Errorf("type should be provided as either df_average or df_count")
 	}
 	aggregation, valid := validAggregationQuery(queries)
 	if !valid {

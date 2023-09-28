@@ -11,7 +11,7 @@ import (
 
 func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
 	serviceMap := map[string]service.Service{
-		"df_total":   service.DfTotalService{Client: client},
+		"df_count":   service.DfCountService{Client: client},
 		"df_average": service.DfAverageService{Client: client},
 	}
 

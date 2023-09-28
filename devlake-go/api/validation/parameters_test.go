@@ -27,7 +27,7 @@ func Test_validTypeQuery(t *testing.T) {
 		},
 		{
 			name:            "should not be valid when multiple types are provided",
-			values:          url.Values{"type": {"df_total", "df_average"}},
+			values:          url.Values{"type": {"df_count", "df_average"}},
 			expectTypeQuery: "",
 			expectValid:     false,
 		},
@@ -38,9 +38,9 @@ func Test_validTypeQuery(t *testing.T) {
 			expectValid:     false,
 		},
 		{
-			name:            "should be valid for df_total",
-			values:          url.Values{"type": {"df_total"}},
-			expectTypeQuery: "df_total",
+			name:            "should be valid for df_count",
+			values:          url.Values{"type": {"df_count"}},
+			expectTypeQuery: "df_count",
 			expectValid:     true,
 		},
 		{
@@ -198,24 +198,24 @@ func Test_ValidServiceParameters(t *testing.T) {
 			name:                    "should return an error for an invalid type parameter",
 			values:                  url.Values{"type": {"not_a_type"}},
 			expectServiceParameters: service.ServiceParameters{},
-			expectError:             "type should be provided as either df_average or df_total",
+			expectError:             "type should be provided as either df_average or df_count",
 		},
 		{
 			name:                    "should return an error for an invalid aggregation parameter",
-			values:                  url.Values{"type": {"df_total"}, "aggregation": {"not_an_aggregation"}},
+			values:                  url.Values{"type": {"df_count"}, "aggregation": {"not_an_aggregation"}},
 			expectServiceParameters: service.ServiceParameters{},
 			expectError:             "aggregation should be provided as either weekly, monthly or quarterly",
 		},
 		{
 			name:                    "should return an error for an invalid project parameter",
-			values:                  url.Values{"type": {"df_total"}, "project": {""}},
+			values:                  url.Values{"type": {"df_count"}, "project": {""}},
 			expectServiceParameters: service.ServiceParameters{},
 			expectError:             "project should be provided as a non-empty string or omitted",
 		},
 		{
 			name:                    "should return service parameters with defaults for aggregation and project",
-			values:                  url.Values{"type": {"df_total"}},
-			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_total", Aggregation: "weekly", Project: "%", To: 0, From: 0},
+			values:                  url.Values{"type": {"df_count"}},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "%", To: 0, From: 0},
 			expectError:             "",
 		},
 	}
@@ -238,7 +238,7 @@ func Test_ValidServiceParameters(t *testing.T) {
 }
 
 func Test_ServiceParametersDefaultDate(t *testing.T) {
-	parameters, err := ValidServiceParameters(url.Values{"type": {"df_total"}})
+	parameters, err := ValidServiceParameters(url.Values{"type": {"df_count"}})
 
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
