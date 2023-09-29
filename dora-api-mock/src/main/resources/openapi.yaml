@@ -9,28 +9,28 @@ info:
   version: v1
   x-logo:
     altText: Devoteam Logo
-    backgroundColor: '#FFFFFF'
+    backgroundColor: "#FFFFFF"
     url: https://voortekst.nl/storage/clients/mqjWxe5KUrI1sytG3RPXtlKy9qgvLBuXgcqpwljm.png
     href: /
 servers:
-- url: http://localhost:10666/dora/api
+  - url: http://localhost:10666/dora/api
 security:
-- BearerAuth: []
+  - BearerAuth: []
 tags:
-- name: data-point
-  description: <SchemaDefinition schemaRef="#/components/schemas/DataPoint" />
-  x-displayName: DataPoint
-- name: response
-  description: <SchemaDefinition schemaRef="#/components/schemas/Response" />
-  x-displayName: Response
-- name: error-response
-  description: <SchemaDefinition schemaRef="#/components/schemas/ErrorResponse" />
-  x-displayName: ErrorResponse
+  - name: data-point
+    description: <SchemaDefinition schemaRef="#/components/schemas/DataPoint" />
+    x-displayName: DataPoint
+  - name: response
+    description: <SchemaDefinition schemaRef="#/components/schemas/Response" />
+    x-displayName: Response
+  - name: error-response
+    description: <SchemaDefinition schemaRef="#/components/schemas/ErrorResponse" />
+    x-displayName: ErrorResponse
 paths:
   /metric:
     get:
       tags:
-      - data-points
+        - data-points
       summary: Query data points for a given DORA Metric
       description: |+
         Returns the data points for the requested metric according to the informed filters. The below are the metrics currently supported:
@@ -50,8 +50,8 @@ paths:
           schema:
             type: string
             enum:
-            - df_average
-            - df_count
+              - df_average
+              - df_count
         - name: aggregation
           in: query
           description: >-
@@ -59,14 +59,14 @@ paths:
           schema:
             type: string
             enum:
-            - weekly
-            - monthly
-            - quarterly
+              - weekly
+              - monthly
+              - quarterly
             default: weekly
         - name: project
           in: query
           description: >-
-            `optional`. Specify the project to which the data points should be retrieved
+            `optional`. Specify the project/repo/component to which the data points should be retrieved
           schema:
             type: string
         - name: team
@@ -82,7 +82,7 @@ paths:
           schema:
             type: string
             format: date-time
-            example: '2020-01-01T00:00:00Z'
+            example: "2020-01-01T00:00:00Z"
         - name: to
           in: query
           description: >-
@@ -90,7 +90,7 @@ paths:
           schema:
             type: string
             format: date-time
-            example: '2020-01-31T23:59:59Z'
+            example: "2020-01-31T23:59:59Z"
         - name: x-correlation-id
           in: header
           description: Unique identifer associated with the request
@@ -104,9 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Response'
+                $ref: "#/components/schemas/Response"
           headers:
             x-correlation-id:
               description: Unique identifer associated with the request
@@ -119,7 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           headers:
             x-correlation-id:
               description: Unique identifer associated with the request
@@ -152,7 +150,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: Failed to connect to DevLake's DB
                 reference: c0c62604-e3ab-4008-b882-4effcb4963ae
@@ -164,14 +162,14 @@ paths:
                 format: uuid
               example: c0c62604-e3ab-4008-b882-4effcb4963ae
       security:
-      - BearerAuth: []
+        - BearerAuth: []
 components:
   schemas:
     DataPoint:
       type: object
       required:
-      - key
-      - value
+        - key
+        - value
       properties:
         key:
           title: The key/label for the datapoint
@@ -183,8 +181,8 @@ components:
     Response:
       type: object
       required:
-      - aggregation
-      - dataPoints
+        - aggregation
+        - dataPoints
       properties:
         aggregation:
           title: Unit of aggregation used
@@ -193,11 +191,11 @@ components:
         dataPoints:
           type: array
           items:
-            $ref: '#/components/schemas/DataPoint'
+            $ref: "#/components/schemas/DataPoint"
     ErrorResponse:
       required:
-      - message
-      - reference
+        - message
+        - reference
       type: object
       properties:
         message:
@@ -215,11 +213,11 @@ components:
       scheme: bearer
       bearerFormat: JWT
 x-tagGroups:
-- name: DORA
-  tags:
-  - data-points
-- name: Models
-  tags:
-  - data-point
-  - response
-  - error-response
+  - name: DORA
+    tags:
+      - data-points
+  - name: Models
+    tags:
+      - data-point
+      - response
+      - error-response
