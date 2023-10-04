@@ -1,7 +1,7 @@
 export interface Config {
-  'dora-metrics': {
+  'open-dora': {
     /**
-     * DORA API root URL
+     * OpenDORA API root URL
      * @visibility frontend
      */
     apiBaseUrl: string;

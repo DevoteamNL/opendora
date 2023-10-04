@@ -55,7 +55,7 @@ export const DashboardComponent = () => {
   return (
     <Page themeId="tool">
       <Header
-        title="Devoteam DORA plugin"
+        title="OpenDORA (by Devoteam)"
         subtitle="Through insight to perfection"
       />
       <Content>

@@ -33,7 +33,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { DoraPluginPage } from '@devoteam/plugin-dora-metrics';
+import { OpenDoraPluginPage } from '@devoteam/plugin-open-dora';
 
 const app = createApp({
   apis,
@@ -92,7 +92,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/dora-plugin" element={<DoraPluginPage />} />
+    <Route path="/dora-plugin" element={<OpenDoraPluginPage />} />
   </FlatRoutes>
 );
 

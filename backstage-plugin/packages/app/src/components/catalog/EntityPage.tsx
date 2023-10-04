@@ -52,7 +52,7 @@ import {
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-import { DoraPluginPage } from '@devoteam/plugin-dora-metrics';
+import { OpenDoraPluginPage } from '@devoteam/plugin-open-dora';
 import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 
@@ -64,7 +64,7 @@ const techdocsContent = (
   </EntityTechdocsContent>
 );
 
-const DORAComponent = <DoraPluginPage />;
+const DORAComponent = <OpenDoraPluginPage />;
 
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
@@ -194,7 +194,7 @@ const websiteEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
-    <EntityLayout.Route path="/dora-plugin" title="DORA">
+    <EntityLayout.Route path="/open-dora-plugin" title="OpenDORA">
       {DORAComponent}
     </EntityLayout.Route>
   </EntityLayout>

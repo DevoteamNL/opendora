@@ -1,12 +1,12 @@
 import { createDevApp } from '@backstage/dev-utils';
 import React from 'react';
-import { DoraPluginPage, doraPluginPlugin } from '../src/plugin';
+import { OpenDoraPluginPage, openDoraPlugin } from '../src/plugin';
 
 createDevApp()
-  .registerPlugin(doraPluginPlugin)
+  .registerPlugin(openDoraPlugin)
   .addPage({
-    element: <DoraPluginPage />,
+    element: <OpenDoraPluginPage />,
     title: 'Root Page',
-    path: '/dora-plugin',
+    path: '/open-dora-plugin',
   })
   .render();
