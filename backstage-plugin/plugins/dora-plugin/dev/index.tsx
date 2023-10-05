@@ -1,6 +1,6 @@
 import { createDevApp } from '@backstage/dev-utils';
 import React from 'react';
-import { OpenDoraPluginPage, openDoraPlugin } from '../src/plugin';
+import { openDoraPlugin, OpenDoraPluginPage } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(openDoraPlugin)
