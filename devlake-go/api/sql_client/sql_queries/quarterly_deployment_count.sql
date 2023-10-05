@@ -28,7 +28,7 @@ _deployments AS(
             FROM
                 cicd_deployment_commits cdc
                 JOIN project_mapping pm ON cdc.cicd_scope_id = pm.row_id
-                AND pm.` + "` TABLE `" + ` = 'cicd_scopes'
+                AND pm.`table` = 'cicd_scopes'
             WHERE
                 (
                     :project = ""
