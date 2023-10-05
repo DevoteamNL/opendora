@@ -1,80 +1,17 @@
-WITH calendar_weeks AS(
+WITH RECURSIVE calendar_weeks AS (
     SELECT
-        CAST(
-            (
-                FROM_UNIXTIME(:to) - INTERVAL (ten_unit + unit) WEEK
-            ) AS date
-        ) week
+        STR_TO_DATE(
+            CONCAT(YEARWEEK(FROM_UNIXTIME(:from)), ' Sunday'),
+            '%X%V %W'
+        ) AS week_date
+    UNION
+    ALL
+    SELECT
+        DATE_ADD(week_date, INTERVAL 1 WEEK)
     FROM
-        (
-            SELECT
-                0 ten_unit
-            UNION
-            ALL
-            SELECT
-                10
-            UNION
-            ALL
-            SELECT
-                20
-            UNION
-            ALL
-            SELECT
-                30
-            UNION
-            ALL
-            SELECT
-                40
-            UNION
-            ALL
-            SELECT
-                50
-        ) ten_unit
-        CROSS JOIN (
-            SELECT
-                0 unit
-            UNION
-            ALL
-            SELECT
-                1
-            UNION
-            ALL
-            SELECT
-                2
-            UNION
-            ALL
-            SELECT
-                3
-            UNION
-            ALL
-            SELECT
-                4
-            UNION
-            ALL
-            SELECT
-                5
-            UNION
-            ALL
-            SELECT
-                6
-            UNION
-            ALL
-            SELECT
-                7
-            UNION
-            ALL
-            SELECT
-                8
-            UNION
-            ALL
-            SELECT
-                9
-        ) unit
+        calendar_weeks
     WHERE
-        (
-            FROM_UNIXTIME(:to) - INTERVAL (ten_unit + unit) WEEK
-        ) BETWEEN FROM_UNIXTIME(:from)
-        AND FROM_UNIXTIME(:to)
+        week_date < FROM_UNIXTIME(:to)
 ),
 _deployments AS(
     SELECT
@@ -103,16 +40,13 @@ _deployments AS(
         1
 )
 SELECT
-    YEARWEEK(cw.week) AS data_key,
+    YEARWEEK(cw.week_date) AS data_key,
     CASE
         WHEN d.deployment_count IS NULL THEN 0
         ELSE d.deployment_count
     END AS data_value
 FROM
     calendar_weeks cw
-    LEFT JOIN _deployments d ON YEARWEEK(cw.week) = d.week
-WHERE
-    cw.week BETWEEN FROM_UNIXTIME(:from)
-    AND FROM_UNIXTIME(:to)
+    LEFT JOIN _deployments d ON YEARWEEK(cw.week_date) = d.week
 ORDER BY
-    cw.week DESC
+    cw.week_date DESC
