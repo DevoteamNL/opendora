@@ -3,6 +3,7 @@ package service
 import (
 	"devlake-go/group-sync/api/models"
 	"devlake-go/group-sync/api/sql_client"
+	"devlake-go/group-sync/api/sql_client/sql_queries"
 )
 
 type DfCountService struct {
@@ -10,13 +11,10 @@ type DfCountService struct {
 }
 
 func (dfCountService DfCountService) ServeRequest(params ServiceParameters) (models.Response, error) {
-	if params.Aggregation == "quarterly" {
-		// TODO implement quarterly aggregation sql
-		return models.Response{Aggregation: params.Aggregation, DataPoints: []models.DataPoint{}}, nil
-	}
 	aggregationQueryMap := map[string]string{
-		"weekly":  sql_client.WEEKLY_DEPLOYMENT_SQL,
-		"monthly": sql_client.MONTHLY_DEPLOYMENT_SQL,
+		"weekly":    sql_queries.WEEKLY_DEPLOYMENT_SQL,
+		"monthly":   sql_queries.MONTHLY_DEPLOYMENT_SQL,
+		"quarterly": sql_queries.QUARTERLY_DEPLOYMENT_SQL,
 	}
 
 	dataPoints, err := dfCountService.Client.QueryDeployments(aggregationQueryMap[params.Aggregation], sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})

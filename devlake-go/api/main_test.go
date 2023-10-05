@@ -2,6 +2,7 @@ package main
 
 import (
 	"devlake-go/group-sync/api/sql_client"
+	"devlake-go/group-sync/api/sql_client/sql_queries"
 	"fmt"
 	"io"
 	"net/http"
@@ -73,7 +74,7 @@ func Test_databaseError(t *testing.T) {
 	w := httptest.NewRecorder()
 	errorClient := sql_client.MockClient{
 		MockDataMap: map[string]sql_client.MockDataReturn{
-			sql_client.WEEKLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from weekly query")},
+			sql_queries.WEEKLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from weekly query")},
 		},
 	}
 
