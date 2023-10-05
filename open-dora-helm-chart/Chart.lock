@@ -1,0 +1,6 @@
+dependencies:
+- name: devlake
+  repository: https://apache.github.io/incubator-devlake-helm-chart
+  version: 0.17.0
+digest: sha256:87113ead0939e1f55c03a9f6b68ee477efd6a1b539bebdddc82367fd25d30469
+generated: "2023-10-05T12:18:00.2787018+02:00"

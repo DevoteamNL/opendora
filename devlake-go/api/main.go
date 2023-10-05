@@ -5,6 +5,7 @@ import (
 	"devlake-go/group-sync/api/sql_client"
 	"devlake-go/group-sync/api/validation"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -38,6 +39,10 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 
 func main() {
 	http.HandleFunc("/dora/api/metric", metricHandler(sql_client.New()))
-
+	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		fmt.Fprintf(w, "ok")
+	})
 	log.Fatal(http.ListenAndServe(":10666", nil))
 }
