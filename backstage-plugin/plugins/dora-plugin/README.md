@@ -1,6 +1,6 @@
-# dora-plugin
+# OpenDORA
 
-Welcome to the dora-plugin plugin!
+Welcome to the OpenDORA plugin!
 
 _This plugin was created through the Backstage CLI_
 

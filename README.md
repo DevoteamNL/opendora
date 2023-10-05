@@ -1,6 +1,6 @@
-# Backstage DORA Plugin
+# OpenDORA (by Devoteam)
 
-This repo contains all the projects needed to start development on the backstage plugin for DORA metrics.
+This repo contains all the projects needed to start development on the OpenDORA backstage plugin for DORA metrics.
 
 ## Contents
 

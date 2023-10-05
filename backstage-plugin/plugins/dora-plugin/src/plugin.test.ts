@@ -1,7 +1,7 @@
-import { doraPluginPlugin } from './plugin';
+import { openDoraPlugin } from './plugin';
 
 describe('dora-plugin', () => {
   it('should export plugin', () => {
-    expect(doraPluginPlugin).toBeDefined();
+    expect(openDoraPlugin).toBeDefined();
   });
 });
