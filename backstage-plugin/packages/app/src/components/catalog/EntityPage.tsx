@@ -52,7 +52,7 @@ import {
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-import { OpenDoraPluginPage } from '@devoteam/plugin-open-dora';
+import { OpenDoraPluginPage } from '@devoteam/open-dora-backstage-plugin';
 import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 
