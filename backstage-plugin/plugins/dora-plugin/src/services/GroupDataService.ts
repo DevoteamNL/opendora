@@ -2,7 +2,7 @@ import { ConfigApi, createApiRef } from '@backstage/core-plugin-api';
 import { DeploymentFrequencyData } from '../models/DeploymentFrequencyData';
 
 export const groupDataServiceApiRef = createApiRef<GroupDataService>({
-  id: 'plugin.dora-metrics.group-data',
+  id: 'plugin.open-dora.group-data',
 });
 
 export class GroupDataService {
@@ -12,7 +12,7 @@ export class GroupDataService {
     groupQueryParam: string,
     selectedTimeUnit: string,
   ) {
-    const baseUrl = this.options.configApi.getString('dora-metrics.apiBaseUrl');
+    const baseUrl = this.options.configApi.getString('open-dora.apiBaseUrl');
     const url = new URL(baseUrl);
     url.pathname = 'dora/api/metric';
     url.searchParams.append('type', 'df_count');
