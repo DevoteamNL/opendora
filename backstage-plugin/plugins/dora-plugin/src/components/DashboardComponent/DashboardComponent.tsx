@@ -1,6 +1,5 @@
 import {
   Content,
-  ContentHeader,
   Header,
   Page,
   Progress,
@@ -15,7 +14,6 @@ import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
 import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
-import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 import './DashboardComponent.css';
 
 export const DashboardComponent = () => {
@@ -56,18 +54,14 @@ export const DashboardComponent = () => {
     <Page themeId="tool">
       <Header
         title="OpenDORA (by Devoteam)"
-        subtitle="Through insight to perfection"
-      />
+        subtitle="Through insight to perfection">
+        <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
+      </Header>
       <Content>
-        <ContentHeader title="DORA metrics">
-          <SupportButton>Plugin for displaying DORA metrics</SupportButton>
-        </ContentHeader>
         <Grid container spacing={3} direction="column">
           <Grid container>
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
-                <h1>Deployment statistics</h1>
-                <p>Analysis of successful deployments and CFR</p>
                 <Grid container>
                   <Grid item xs={4}>
                     <DropdownComponent
@@ -79,28 +73,9 @@ export const DashboardComponent = () => {
               </div>
             </Grid>
 
-            <Grid item xs={6} className="gridBorder">
-              <div className="gridBoxText">
-                <HighlightTextBoxComponent
-                  title="Average number of deployments per week"
-                  highlight="31"
-                  textColour="positiveHighlight"
-                />
-              </div>
-            </Grid>
-            <Grid item xs={6} className="gridBorder">
-              <div className="gridBoxText">
-                <HighlightTextBoxComponent
-                  title="Overall change failure rate"
-                  highlight="5.2%"
-                  text="*calculated on failures and incidents"
-                  textColour="warning"
-                />
-              </div>
-            </Grid>
-
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
+                <h1>Deployment Frequency</h1>
                 {dataError ? (
                   <ResponseErrorPanel error={dataError} />
                 ) : (
