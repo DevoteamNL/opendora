@@ -3,6 +3,7 @@ package service
 import (
 	"devlake-go/group-sync/api/models"
 	"devlake-go/group-sync/api/sql_client"
+	"devlake-go/group-sync/api/sql_client/sql_queries"
 	"fmt"
 	"reflect"
 	"testing"
@@ -12,6 +13,7 @@ func TestDfCountService_ServeRequest(t *testing.T) {
 
 	exampleWeeklyDataPoints := []models.DataPoint{{Key: "202338", Value: 0}, {Key: "202337", Value: 1}, {Key: "202336", Value: 2}}
 	exampleMonthlyDataPoints := []models.DataPoint{{Key: "23/04", Value: 6}, {Key: "23/03", Value: 5}, {Key: "23/02", Value: 4}}
+	exampleQuarterlyDataPoints := []models.DataPoint{{Key: "2024-01-01", Value: 6}, {Key: "2023-10-01", Value: 5}, {Key: "2023-07-01", Value: 4}}
 
 	tests := []struct {
 		name           string
@@ -25,8 +27,9 @@ func TestDfCountService_ServeRequest(t *testing.T) {
 			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
-					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Err: fmt.Errorf("error from weekly query")},
-					sql_client.MONTHLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from monthly query")},
+					sql_queries.WEEKLY_DEPLOYMENT_SQL:    {Err: fmt.Errorf("error from weekly query")},
+					sql_queries.MONTHLY_DEPLOYMENT_SQL:   {Err: fmt.Errorf("error from monthly query")},
+					sql_queries.QUARTERLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from quarterly query")},
 				},
 			},
 			expectResponse: models.Response{Aggregation: "weekly", DataPoints: nil},
@@ -37,20 +40,35 @@ func TestDfCountService_ServeRequest(t *testing.T) {
 			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "monthly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
-					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Err: fmt.Errorf("error from weekly query")},
-					sql_client.MONTHLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from monthly query")},
+					sql_queries.WEEKLY_DEPLOYMENT_SQL:    {Err: fmt.Errorf("error from weekly query")},
+					sql_queries.MONTHLY_DEPLOYMENT_SQL:   {Err: fmt.Errorf("error from monthly query")},
+					sql_queries.QUARTERLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from quarterly query")},
 				},
 			},
 			expectResponse: models.Response{Aggregation: "monthly", DataPoints: nil},
 			expectError:    "error from monthly query",
 		},
 		{
+			name:   "should return an error with an unexpected error from the database",
+			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "quarterly", Project: "", To: 0, From: 0},
+			mockClient: sql_client.MockClient{
+				MockDataMap: map[string]sql_client.MockDataReturn{
+					sql_queries.WEEKLY_DEPLOYMENT_SQL:    {Err: fmt.Errorf("error from weekly query")},
+					sql_queries.MONTHLY_DEPLOYMENT_SQL:   {Err: fmt.Errorf("error from monthly query")},
+					sql_queries.QUARTERLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from quarterly query")},
+				},
+			},
+			expectResponse: models.Response{Aggregation: "quarterly", DataPoints: nil},
+			expectError:    "error from quarterly query",
+		},
+		{
 			name:   "should return weekly data points from the database",
 			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
-					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Data: exampleWeeklyDataPoints},
-					sql_client.MONTHLY_DEPLOYMENT_SQL: {Data: exampleMonthlyDataPoints},
+					sql_queries.WEEKLY_DEPLOYMENT_SQL:    {Data: exampleWeeklyDataPoints},
+					sql_queries.MONTHLY_DEPLOYMENT_SQL:   {Data: exampleMonthlyDataPoints},
+					sql_queries.QUARTERLY_DEPLOYMENT_SQL: {Data: exampleQuarterlyDataPoints},
 				},
 			},
 			expectResponse: models.Response{Aggregation: "weekly", DataPoints: exampleWeeklyDataPoints},
@@ -61,11 +79,25 @@ func TestDfCountService_ServeRequest(t *testing.T) {
 			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "monthly", Project: "", To: 0, From: 0},
 			mockClient: sql_client.MockClient{
 				MockDataMap: map[string]sql_client.MockDataReturn{
-					sql_client.WEEKLY_DEPLOYMENT_SQL:  {Data: exampleWeeklyDataPoints},
-					sql_client.MONTHLY_DEPLOYMENT_SQL: {Data: exampleMonthlyDataPoints},
+					sql_queries.WEEKLY_DEPLOYMENT_SQL:    {Data: exampleWeeklyDataPoints},
+					sql_queries.MONTHLY_DEPLOYMENT_SQL:   {Data: exampleMonthlyDataPoints},
+					sql_queries.QUARTERLY_DEPLOYMENT_SQL: {Data: exampleQuarterlyDataPoints},
 				},
 			},
 			expectResponse: models.Response{Aggregation: "monthly", DataPoints: exampleMonthlyDataPoints},
+			expectError:    "",
+		},
+		{
+			name:   "should return quarterly data points from the database",
+			params: ServiceParameters{TypeQuery: "df_count", Aggregation: "quarterly", Project: "", To: 0, From: 0},
+			mockClient: sql_client.MockClient{
+				MockDataMap: map[string]sql_client.MockDataReturn{
+					sql_queries.WEEKLY_DEPLOYMENT_SQL:    {Data: exampleWeeklyDataPoints},
+					sql_queries.MONTHLY_DEPLOYMENT_SQL:   {Data: exampleMonthlyDataPoints},
+					sql_queries.QUARTERLY_DEPLOYMENT_SQL: {Data: exampleQuarterlyDataPoints},
+				},
+			},
+			expectResponse: models.Response{Aggregation: "quarterly", DataPoints: exampleQuarterlyDataPoints},
 			expectError:    "",
 		},
 	}
