@@ -32,7 +32,11 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		json.NewEncoder(w).Encode(response)
+		responseError := json.NewEncoder(w).Encode(response)
+		if responseError != nil {
+			http.Error(w, responseError.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
