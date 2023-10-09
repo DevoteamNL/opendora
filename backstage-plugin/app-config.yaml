@@ -103,5 +103,5 @@ catalog:
     #   rules:
     #     - allow: [User, Group]
 
-dora-metrics:
+open-dora:
   apiBaseUrl: http://localhost:10666

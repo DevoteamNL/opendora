@@ -1,1 +1,1 @@
-export { DoraPluginPage, doraPluginPlugin } from './plugin';
+export { openDoraPlugin, OpenDoraPluginPage } from './plugin';

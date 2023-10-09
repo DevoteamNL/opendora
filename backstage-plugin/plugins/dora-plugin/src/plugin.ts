@@ -10,8 +10,8 @@ import {
   groupDataServiceApiRef,
 } from './services/GroupDataService';
 
-export const doraPluginPlugin = createPlugin({
-  id: 'dora-plugin',
+export const openDoraPlugin = createPlugin({
+  id: 'opendora',
   routes: {
     root: rootRouteRef,
   },
@@ -24,9 +24,9 @@ export const doraPluginPlugin = createPlugin({
   ],
 });
 
-export const DoraPluginPage = doraPluginPlugin.provide(
+export const OpenDoraPluginPage = openDoraPlugin.provide(
   createRoutableExtension({
-    name: 'DoraPluginPage',
+    name: 'OpenDoraPluginPage',
     component: () =>
       import('./components/DashboardComponent').then(m => m.DashboardComponent),
     mountPoint: rootRouteRef,
