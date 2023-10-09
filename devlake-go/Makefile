@@ -30,8 +30,9 @@ static:
 
 .PHONY: clean vet lint format bench cover cover-report
 clean:
-	@rm -rf ./bin/* 2>/dev/null
-	@rm -rf ./release/* 2>/dev/null
+	@rm -rf ./bin 2>/dev/null
+	@rm -rf ./release 2>/dev/null
+	@rm -f cover.*
 
 vet:
 	@echo "--> Running go vet"

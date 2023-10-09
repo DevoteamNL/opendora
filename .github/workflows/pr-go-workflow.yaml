@@ -28,6 +28,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.54
+          working-directory: devlake-go
 
       - name: Install dependencies
         run: go get ./...
