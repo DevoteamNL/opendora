@@ -33,5 +33,9 @@ COPY --from=builder /usr/share/ca-certificates /usr/share/ca-certificates
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
 
 WORKDIR ${HOMEDIR}
+
 USER 1000
+
+EXPOSE 10666
+
 ENTRYPOINT [ "/opt/opendora/api" ]
