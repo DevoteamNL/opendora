@@ -10,7 +10,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import { DeploymentFrequencyData } from '../../models/DeploymentFrequencyData';
+import { MetricData } from '../../models/MetricData';
 import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
@@ -18,8 +18,7 @@ import './DashboardComponent.css';
 
 export const DashboardComponent = () => {
   const groupDataService = useApi(groupDataServiceApiRef);
-  const [chartData, setChartData] =
-    React.useState<DeploymentFrequencyData | null>(null);
+  const [chartData, setChartData] = React.useState<MetricData | null>(null);
 
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
 
@@ -33,7 +32,7 @@ export const DashboardComponent = () => {
   useEffect(() => {
     if (!groupName) return;
     groupDataService
-      .retrieveDeploymentFrequencyTotal(groupName, selectedTimeUnit)
+      .retrieveMetricDataPoints('df_count', groupName, selectedTimeUnit)
       .then(
         response => {
           setChartData(response);
@@ -45,7 +44,7 @@ export const DashboardComponent = () => {
   }, [groupName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
-    <BarChartComponent deploymentFrequencyData={chartData} />
+    <BarChartComponent metricData={chartData} />
   ) : (
     <Progress variant="indeterminate" />
   );
@@ -54,7 +53,8 @@ export const DashboardComponent = () => {
     <Page themeId="tool">
       <Header
         title="OpenDORA (by Devoteam)"
-        subtitle="Through insight to perfection">
+        subtitle="Through insight to perfection"
+      >
         <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
       </Header>
       <Content>
