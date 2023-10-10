@@ -24,6 +24,29 @@ dora-api-mock:
       parameters:
         type: df_average
         aggregation: quarterly
+    - name: df_average_weekly_component
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/average_weekly_component.json
+      mediaType: application/json
+      parameters:
+        type: df_average
+        project: .+
+    - name: df_average_monthly_component
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/average_monthly_component.json
+      mediaType: application/json
+      parameters:
+        type: df_average
+        aggregation: monthly
+        project: .+
+    - name: df_average_quarterly_component
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/average_quarterly_component.json
+      mediaType: application/json
+      parameters:
+        type: df_average
+        aggregation: quarterly
+        project: .+
     - name: df_count_weekly
       path: /dora/api/metric
       stubFile: stubs/metrics/df/count_weekly.json
@@ -44,6 +67,29 @@ dora-api-mock:
       parameters:
         type: df_count
         aggregation: quarterly
+    - name: df_count_weekly_component
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_weekly_component.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        project: .+
+    - name: df_count_monthly_component
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_monthly_component.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        aggregation: monthly
+        project: .+
+    - name: df_count_quarterly_component
+      path: /dora/api/metric
+      stubFile: stubs/metrics/df/count_quarterly_component.json
+      mediaType: application/json
+      parameters:
+        type: df_count
+        aggregation: quarterly
+        project: .+
 
 wiremock:
   server:

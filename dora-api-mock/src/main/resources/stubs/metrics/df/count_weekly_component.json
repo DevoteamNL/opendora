@@ -1,0 +1,29 @@
+{
+  "aggregation": "weekly",
+  "dataPoints": [
+    {
+      "key": "07/08/2023 (Week 32)",
+      "value": 2
+    },
+    {
+      "key": "14/08/2023 (Week 33)",
+      "value": 3
+    },
+    {
+      "key": "21/08/2023 (Week 34)",
+      "value": 1
+    },
+    {
+      "key": "28/08/2023 (Week 35)",
+      "value": 2
+    },
+    {
+      "key": "04/09/2023 (Week 36)",
+      "value": 4
+    },
+    {
+      "key": "11/09/2023 (Week 37)",
+      "value": 3
+    }
+  ]
+}
