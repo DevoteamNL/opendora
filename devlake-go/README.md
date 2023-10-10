@@ -13,7 +13,7 @@ By default, the script will look for use DevLake admin credentials user:`devlake
 ### To run the script
 
 ```shell
-make run sync
+make run-sync
 ```
 
 ## api

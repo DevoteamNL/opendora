@@ -9,7 +9,7 @@ BUILD_TIME=$(shell date '+%s')
 LFLAGS ?= -X main.gitsha=${SHA} -X main.compiled=${BUILD_TIME}
 
 IMAGE_VERSION ?= latest
-IMAGE ?= devoteam/opendora-backend-api:$(IMAGE_VERSION)
+IMAGE ?= devoteamnl/opendora-backend-api:$(IMAGE_VERSION)
 
 export DOCKER_CLI_EXPERIMENTAL=enabled
 
@@ -82,7 +82,8 @@ cover-report: cover
 docker-build:
 	@docker buildx create --use --name=crossplat --node=crossplat && \
 	docker buildx build \
-           		--output "type=docker,push=false" \
+				--platform linux/amd64,linux/arm64 \
+           		--output "type=image,push=false" \
            		--tag $(IMAGE) \
            		.
 
