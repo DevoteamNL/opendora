@@ -1,9 +1,9 @@
 package main
 
 import (
-	"devlake-go/group-sync/api/sql_client"
-	"devlake-go/group-sync/api/sql_client/sql_queries"
 	"fmt"
+	"github.com/devoteamnl/opendora/api/sql_client"
+	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -74,7 +74,7 @@ func Test_databaseError(t *testing.T) {
 	w := httptest.NewRecorder()
 	errorClient := sql_client.MockClient{
 		MockDataMap: map[string]sql_client.MockDataReturn{
-			sql_queries.WEEKLY_DEPLOYMENT_SQL: {Err: fmt.Errorf("error from weekly query")},
+			sql_queries.WeeklyDeploymentSql: {Err: fmt.Errorf("error from weekly query")},
 		},
 	}
 

@@ -1,8 +1,8 @@
 package validation
 
 import (
-	"devlake-go/group-sync/api/service"
 	"fmt"
+	"github.com/devoteamnl/opendora/api/service"
 	"net/url"
 	"time"
 )

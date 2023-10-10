@@ -1,6 +1,6 @@
 package sql_client
 
-import "devlake-go/group-sync/api/models"
+import "github.com/devoteamnl/opendora/api/models"
 
 type MockDataReturn struct {
 	Data []models.DataPoint

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"devlake-go/group-sync/api/service"
-	"devlake-go/group-sync/api/sql_client"
-	"devlake-go/group-sync/api/validation"
 	"encoding/json"
+	"github.com/devoteamnl/opendora/api/service"
+	"github.com/devoteamnl/opendora/api/sql_client"
+	"github.com/devoteamnl/opendora/api/validation"
 	"log"
 	"net/http"
 )
