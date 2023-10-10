@@ -28,7 +28,7 @@ _deployments AS(
             WHERE
                 (
                     :project = ""
-                    OR repos.name = :project
+                    OR repos.name LIKE CONCAT('%/',:project)
                 )
                 AND cdc.result = 'SUCCESS'
                 AND cdc.environment = 'PRODUCTION'
