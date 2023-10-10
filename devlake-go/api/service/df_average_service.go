@@ -1,8 +1,8 @@
 package service
 
 import (
-	"devlake-go/group-sync/api/models"
-	"devlake-go/group-sync/api/sql_client"
+	"github.com/devoteamnl/opendora/api/models"
+	"github.com/devoteamnl/opendora/api/sql_client"
 )
 
 type DfAverageService struct {

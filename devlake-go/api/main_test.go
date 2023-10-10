@@ -1,9 +1,9 @@
 package main
 
 import (
-	"devlake-go/group-sync/api/sql_client"
-	"devlake-go/group-sync/api/sql_client/sql_queries"
 	"fmt"
+	"github.com/devoteamnl/opendora/api/sql_client"
+	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 	"io"
 	"net/http"
 	"net/http/httptest"

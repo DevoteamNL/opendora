@@ -1,10 +1,10 @@
 package service
 
 import (
-	"devlake-go/group-sync/api/models"
-	"devlake-go/group-sync/api/sql_client"
-	"devlake-go/group-sync/api/sql_client/sql_queries"
 	"fmt"
+	"github.com/devoteamnl/opendora/api/models"
+	"github.com/devoteamnl/opendora/api/sql_client"
+	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 	"reflect"
 	"testing"
 )

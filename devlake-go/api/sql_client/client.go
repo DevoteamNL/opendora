@@ -1,8 +1,8 @@
 package sql_client
 
 import (
-	"devlake-go/group-sync/api/models"
 	"fmt"
+	"github.com/devoteamnl/opendora/api/models"
 	"log"
 	"os"
 
