@@ -24,6 +24,10 @@ devlake:
     database: lake
     # root password for mysql, only used when use_external=false
     rootPassword: admin
+  lake:
+    encryptionSecret:
+      # Random secret, this should not be included as a static value in the repo/chart and instead be generated when installing the chart. Here temporarily for dev purposes
+      secret: ZVBUUCGRVEJLXHTGLBYIWDGGOEFJCWRQWOHSLVJUANHDHKWXYWLMXVSKMDOKDBOLQIOORFZZVWPHUIFVAXPKFYHRPTZXKWGDCDHYCHIVAXXYTYENQVWWWXARLYAVMSXI
 
 replicaCount: 1
 
