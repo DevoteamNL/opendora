@@ -27,12 +27,11 @@ _deployments AS(
                 max(cdc.finished_date) AS deployment_finished_date
             FROM
                 cicd_deployment_commits cdc
-                JOIN project_mapping pm ON cdc.cicd_scope_id = pm.row_id
-                AND pm.`table` = 'cicd_scopes'
+                JOIN repos ON cdc.repo_id = repos.id
             WHERE
                 (
                     :project = ""
-                    OR pm.project_name = :project
+                    OR repos.name = :project
                 )
                 AND cdc.result = 'SUCCESS'
                 AND cdc.environment = 'PRODUCTION'
