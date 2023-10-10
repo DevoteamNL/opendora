@@ -1,4 +1,4 @@
-export interface DeploymentFrequencyData {
+export interface MetricData {
   aggregation: string;
   dataPoints: DataPoint[];
 }
