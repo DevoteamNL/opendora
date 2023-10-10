@@ -16,13 +16,13 @@ RUN make static
 
 WORKDIR ${HOMEDIR}
 
-RUN cp /app/bin/opendora-api .
+RUN cp /app/bin/opendora-api api
 
 RUN echo "opendora:x:1000:opendora" >> /etc/group && \
     echo "opendora:x:1000:1000:opendora user:${HOMEDIR}:/sbin/nologin" >> /etc/passwd && \
     chown -R opendora:opendora ${HOMEDIR} && \
     chmod -R g+rw ${HOMEDIR} && \
-    chmod +x opendora-api
+    chmod +x api
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} scratch
 ARG HOMEDIR

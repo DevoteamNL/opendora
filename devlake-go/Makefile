@@ -82,8 +82,7 @@ cover-report: cover
 docker-build:
 	@docker buildx create --use --name=crossplat --node=crossplat && \
 	docker buildx build \
-				--platform linux/amd64,linux/arm64 \
-           		--output "type=image,push=false" \
+           		--output "type=docker,push=false" \
            		--tag $(IMAGE) \
            		.
 
