@@ -24,15 +24,20 @@ export const DashboardComponent = () => {
 
   const { entity } = useEntity();
   const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
+  const entityName = entity.metadata.name;
 
   const [dataError, setDataError] = React.useState<Error | undefined>(
     undefined,
   );
 
   useEffect(() => {
-    if (!groupName) return;
     groupDataService
-      .retrieveMetricDataPoints('df_count', groupName, selectedTimeUnit)
+      .retrieveMetricDataPoints({
+        type: 'df_count',
+        team: groupName,
+        aggregation: selectedTimeUnit,
+        project: entityName,
+      })
       .then(
         response => {
           setChartData(response);
@@ -41,7 +46,7 @@ export const DashboardComponent = () => {
           setDataError(error);
         },
       );
-  }, [groupName, selectedTimeUnit, groupDataService]);
+  }, [groupName, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />

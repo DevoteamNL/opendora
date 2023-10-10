@@ -8,17 +8,20 @@ export const groupDataServiceApiRef = createApiRef<GroupDataService>({
 export class GroupDataService {
   constructor(private options: { configApi: ConfigApi }) {}
 
-  async retrieveMetricDataPoints(
-    metricQueryParam: string,
-    groupQueryParam: string,
-    selectedTimeUnit: string,
-  ) {
+  async retrieveMetricDataPoints(params: {
+    type: string;
+    team?: string;
+    project?: string;
+    aggregation?: string;
+  }) {
     const baseUrl = this.options.configApi.getString('open-dora.apiBaseUrl');
     const url = new URL(baseUrl);
     url.pathname = 'dora/api/metric';
-    url.searchParams.append('type', metricQueryParam);
-    url.searchParams.append('aggregation', selectedTimeUnit);
-    url.searchParams.append('team', groupQueryParam);
+    for (const [key, value] of Object.entries(params)) {
+      if (value) {
+        url.searchParams.append(key, value);
+      }
+    }
     const data = await fetch(url.toString(), {
       method: 'GET',
     });
