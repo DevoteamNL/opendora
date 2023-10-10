@@ -62,7 +62,14 @@ func (client Client) QueryDeployments(query string, params QueryParams) ([]model
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+
+	defer func(rows *sqlx.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(rows)
+
 	for rows.Next() {
 		dataPoint := models.DataPoint{}
 		if err := rows.StructScan(&dataPoint); err != nil {
