@@ -1,6 +1,12 @@
 ARG HOMEDIR=/opt/opendora
 
-FROM golang:1.21 AS builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.21 AS builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
 ARG HOMEDIR
 
 ADD . /app/
@@ -18,7 +24,7 @@ RUN echo "opendora:x:1000:opendora" >> /etc/group && \
     chmod -R g+rw ${HOMEDIR} && \
     chmod +x opendora-api
 
-FROM scratch
+FROM --platform=${TARGETPLATFORM:-linux/amd64} scratch
 ARG HOMEDIR
 
 LABEL Name="OpenDORA API" \
