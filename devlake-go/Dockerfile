@@ -12,7 +12,7 @@ ARG HOMEDIR
 ADD . /app/
 WORKDIR /app/
 
-RUN make static
+RUN make build-static
 
 WORKDIR ${HOMEDIR}
 
