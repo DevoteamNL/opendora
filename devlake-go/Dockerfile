@@ -28,9 +28,10 @@ FROM --platform=${TARGETPLATFORM:-linux/amd64} scratch
 ARG HOMEDIR
 
 LABEL Name="OpenDORA API" \
-      Release=https://github.com/devoteamnl/opendora \
+      Release=https://github.com/devoteamnl/opendora/releases \
       Url=https://github.com/devoteamnl/opendora \
-      Help=https://github.com/devoteamnl/opendora/issues
+      Help=https://github.com/devoteamnl/opendora/issues \
+      org.opencontainers.image.source=https://github.com/devoteamnl/opendora
 
 COPY --chown=1000:1000 --from=builder ${HOMEDIR} ${HOMEDIR}
 COPY --from=builder /etc/passwd /etc/passwd
