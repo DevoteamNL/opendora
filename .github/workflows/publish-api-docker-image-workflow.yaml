@@ -35,9 +35,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            devoteamnl/opendora/opendora-api
-            ghcr.io/devoteamnl/opendora/opendora-api
+          images: ghcr.io/devoteamnl/opendora/opendora-api
           tags: |
             type=schedule
             type=ref,event=branch
