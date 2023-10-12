@@ -1,4 +1,4 @@
-name: Check Plugin
+name: Verify Backstage Plugin
 on:
   workflow_dispatch:
   pull_request:
@@ -16,7 +16,7 @@ jobs:
       run:
         working-directory: backstage-plugin/plugins/dora-plugin
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: setup nodejs
         uses: actions/setup-node@v3

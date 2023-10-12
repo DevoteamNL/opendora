@@ -1,4 +1,4 @@
-name: pr-go-packages
+name: Verify Go Module
 
 on:
   workflow_dispatch:
@@ -12,12 +12,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+
     defaults:
       run:
-        working-directory: devlake-go
+        working-directory: backstage-plugin/devlake-go
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
