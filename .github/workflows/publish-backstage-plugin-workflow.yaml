@@ -8,15 +8,17 @@ on:
       - main
     paths:
       - "backstage-plugin/**"
-      - ".github/workflows/release-dora-plugin-frontend-workflow.yaml"
+      - ".github/workflows/publish-backstage-plugin-workflow.yaml"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     defaults:
       run:
         working-directory: backstage-plugin/plugins/dora-plugin
+
     steps:
       - uses: actions/checkout@v4
 

@@ -12,10 +12,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     defaults:
       run:
-        working-directory: backstage-plugin/devlake-go
+        working-directory: devlake-go
 
     steps:
       - uses: actions/checkout@v4
