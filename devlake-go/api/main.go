@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/devoteamnl/opendora/api/service"
 	"github.com/devoteamnl/opendora/api/sql_client"
 	"github.com/devoteamnl/opendora/api/validation"
-	"fmt"
 	"log"
 	"net/http"
 )
