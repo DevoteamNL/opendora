@@ -1,10 +1,10 @@
 package main
 
 import (
-	"devlake-go/group-sync/api/service"
-	"devlake-go/group-sync/api/sql_client"
-	"devlake-go/group-sync/api/validation"
 	"encoding/json"
+	"github.com/devoteamnl/opendora/api/service"
+	"github.com/devoteamnl/opendora/api/sql_client"
+	"github.com/devoteamnl/opendora/api/validation"
 	"fmt"
 	"log"
 	"net/http"
@@ -33,7 +33,11 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		json.NewEncoder(w).Encode(response)
+		responseError := json.NewEncoder(w).Encode(response)
+		if responseError != nil {
+			http.Error(w, responseError.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }
 

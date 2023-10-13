@@ -1,23 +1,16 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import * as React from 'react';
-import {
-  DataPoint,
-  DeploymentFrequencyData,
-} from '../../models/DeploymentFrequencyData';
+import { DataPoint, MetricData } from '../../models/MetricData';
 
 interface DeploymentFrequencyDataProp {
-  deploymentFrequencyData: DeploymentFrequencyData;
+  metricData: MetricData;
 }
 
 export const BarChartComponent = ({
-  deploymentFrequencyData,
+  metricData,
 }: DeploymentFrequencyDataProp) => {
-  const keys = deploymentFrequencyData.dataPoints.map(
-    (item: DataPoint) => item.key,
-  );
-  const values = deploymentFrequencyData.dataPoints.map(
-    (item: DataPoint) => item.value,
-  );
+  const keys = metricData.dataPoints.map((item: DataPoint) => item.key);
+  const values = metricData.dataPoints.map((item: DataPoint) => item.value);
 
   return (
     <BarChart

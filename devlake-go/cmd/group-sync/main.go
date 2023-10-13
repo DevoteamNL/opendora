@@ -1,10 +1,10 @@
 package main
 
 import (
-	"devlake-go/group-sync/pkg/backstage"
-	"devlake-go/group-sync/pkg/config"
-	"devlake-go/group-sync/pkg/conversion"
-	"devlake-go/group-sync/pkg/devlake"
+	"github.com/devoteamnl/opendora/pkg/backstage"
+	"github.com/devoteamnl/opendora/pkg/config"
+	"github.com/devoteamnl/opendora/pkg/conversion"
+	"github.com/devoteamnl/opendora/pkg/devlake"
 	"log"
 )
 

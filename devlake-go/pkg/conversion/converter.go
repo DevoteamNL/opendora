@@ -1,7 +1,7 @@
 package conversion
 
 import (
-	"devlake-go/group-sync/pkg/devlake"
+	"github.com/devoteamnl/opendora/pkg/devlake"
 	"log"
 	"slices"
 

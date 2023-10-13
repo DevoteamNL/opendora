@@ -1,7 +1,7 @@
 package service
 
 import (
-	"devlake-go/group-sync/api/models"
+	"github.com/devoteamnl/opendora/api/models"
 )
 
 type ServiceParameters struct {
