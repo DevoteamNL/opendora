@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/devoteamnl/opendora/api/service"
 	"github.com/devoteamnl/opendora/api/sql_client"
 	"github.com/devoteamnl/opendora/api/validation"
@@ -42,6 +43,10 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 
 func main() {
 	http.HandleFunc("/dora/api/metric", metricHandler(sql_client.New()))
-
+	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		fmt.Fprintf(w, "ok")
+	})
 	log.Fatal(http.ListenAndServe(":10666", nil))
 }
