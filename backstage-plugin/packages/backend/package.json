@@ -34,6 +34,7 @@
     "@backstage/plugin-search-backend-module-pg": "^0.5.11",
     "@backstage/plugin-search-backend-node": "^1.2.6",
     "@backstage/plugin-techdocs-backend": "^1.6.7",
+    "@devoteam/plugin-catalog-backend-module-opendora": "^0.1.0",
     "app": "link:../app",
     "better-sqlite3": "^8.0.0",
     "dockerode": "^3.3.1",

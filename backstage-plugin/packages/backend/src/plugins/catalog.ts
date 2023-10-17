@@ -3,12 +3,14 @@ import { ScaffolderEntitiesProcessor } from '@backstage/plugin-scaffolder-backen
 import { GitlabDiscoveryEntityProvider } from '@backstage/plugin-catalog-backend-module-gitlab';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
+import { OpenDoraDevLakeProcessor } from '@devoteam/plugin-catalog-backend-module-opendora';
 
 export default async function createPlugin(
   env: PluginEnvironment,
 ): Promise<Router> {
   const builder = await CatalogBuilder.create(env);
   builder.addProcessor(new ScaffolderEntitiesProcessor());
+  builder.addProcessor(new OpenDoraDevLakeProcessor(env.config));
   builder.addEntityProvider(
     ...GitlabDiscoveryEntityProvider.fromConfig(env.config, {
       logger: env.logger,

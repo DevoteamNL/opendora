@@ -124,3 +124,8 @@ catalog:
 
 open-dora:
   apiBaseUrl: http://localhost:10666
+  devLakeBaseUrl: http://localhost:4000
+  # Connection to GitLab setup with a read-access token.
+  devLakeConnectionId: 1
+  # Default DevLake dev environment username/password: devlake/merico
+  devLakeBasicAuth: Basic ZGV2bGFrZTptZXJpY28=
