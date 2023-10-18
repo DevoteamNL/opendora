@@ -1,22 +1,26 @@
-name: Check Plugin
+name: Publish OpenDORA Backstage Plugin NPM Package
+
 on:
   workflow_dispatch:
-  pull_request:
+  release:
+    types: [published]
     branches:
       - main
     paths:
       - "backstage-plugin/**"
-      - ".github/workflows/pr-dora-plugin-frontend-workflow.yaml"
+      - ".github/workflows/publish-backstage-plugin-workflow.yaml"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     defaults:
       run:
         working-directory: backstage-plugin/plugins/dora-plugin
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: setup nodejs
         uses: actions/setup-node@v3
@@ -24,6 +28,8 @@ jobs:
           node-version: 18.x
           cache: "yarn"
           cache-dependency-path: backstage-plugin/yarn.lock
+          registry-url: https://npm.pkg.github.com/
+          always-auth: true
 
       - name: Install dependencies
         working-directory: backstage-plugin/
@@ -47,3 +53,8 @@ jobs:
       # TODO: Reenable tests once written for plugin, check that they work in new version of backstage.
       # - name: test
       #   run: yarn backstage-cli package test
+
+      - name: publish
+        run: yarn publish --non-interactive
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
