@@ -55,6 +55,6 @@ jobs:
       #   run: yarn backstage-cli package test
 
       - name: publish
-        run: yarn publish --non-interactive --verbose
+        run: yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
