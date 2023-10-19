@@ -37,15 +37,17 @@ _deployments AS(
         ) _production_deployments
     GROUP BY
         1
+),
+count AS (
+    SELECT
+        YEARWEEK(cw.week_date) AS data_key,
+        CASE
+            WHEN d.deployment_count IS NULL THEN 0
+            ELSE d.deployment_count
+        END AS data_value
+    FROM
+        calendar_weeks cw
+        LEFT JOIN _deployments d ON YEARWEEK(cw.week_date) = d.week
+    ORDER BY
+        cw.week_date DESC
 )
-SELECT
-    YEARWEEK(cw.week_date) AS data_key,
-    CASE
-        WHEN d.deployment_count IS NULL THEN 0
-        ELSE d.deployment_count
-    END AS data_value
-FROM
-    calendar_weeks cw
-    LEFT JOIN _deployments d ON YEARWEEK(cw.week_date) = d.week
-ORDER BY
-    cw.week_date DESC

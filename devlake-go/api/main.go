@@ -3,17 +3,19 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/devoteamnl/opendora/api/service"
 	"github.com/devoteamnl/opendora/api/sql_client"
 	"github.com/devoteamnl/opendora/api/validation"
-	"log"
-	"net/http"
 )
 
 func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
+	dfService := service.DfService{Client: client}
 	serviceMap := map[string]service.Service{
-		"df_count":   service.DfCountService{Client: client},
-		"df_average": service.DfAverageService{Client: client},
+		"df_count":   dfService,
+		"df_average": dfService,
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {

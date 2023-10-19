@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/devoteamnl/opendora/api/sql_client"
-	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/devoteamnl/opendora/api/sql_client"
+	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
 func Test_metricHandler(t *testing.T) {
@@ -74,7 +75,7 @@ func Test_databaseError(t *testing.T) {
 	w := httptest.NewRecorder()
 	errorClient := sql_client.MockClient{
 		MockDataMap: map[string]sql_client.MockDataReturn{
-			sql_queries.WeeklyDeploymentSql: {Err: fmt.Errorf("error from weekly query")},
+			sql_queries.WeeklyDeploymentSql + sql_queries.CountSql: {Err: fmt.Errorf("error from weekly query")},
 		},
 	}
 

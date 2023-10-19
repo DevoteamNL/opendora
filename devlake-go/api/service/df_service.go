@@ -6,18 +6,25 @@ import (
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
-type DfCountService struct {
+type DfService struct {
 	Client sql_client.ClientInterface
 }
 
-func (dfCountService DfCountService) ServeRequest(params ServiceParameters) (models.Response, error) {
+func (service DfService) ServeRequest(params ServiceParameters) (models.Response, error) {
 	aggregationQueryMap := map[string]string{
 		"weekly":    sql_queries.WeeklyDeploymentSql,
 		"monthly":   sql_queries.MonthlyDeploymentSql,
 		"quarterly": sql_queries.QuarterlyDeploymentSql,
 	}
 
-	dataPoints, err := dfCountService.Client.QueryDeployments(aggregationQueryMap[params.Aggregation], sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
+	typeQueryMap := map[string]string{
+		"df_count":   sql_queries.CountSql,
+		"df_average": sql_queries.AverageSql,
+	}
+
+	query := aggregationQueryMap[params.Aggregation] + typeQueryMap[params.TypeQuery]
+
+	dataPoints, err := service.Client.QueryDeployments(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 
 	return models.Response{Aggregation: params.Aggregation, DataPoints: dataPoints}, err
 }
