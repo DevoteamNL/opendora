@@ -16,27 +16,11 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 
-export const DashboardComponent = () => {
-  try {
-    const { entity } = useEntity();
-    const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
-    const entityName = entity.metadata.name;
-    return (
-      <DoraDashboardComponent
-        entityName={entityName}
-        entityGroup={groupName}
-      ></DoraDashboardComponent>
-    );
-  } catch {
-    return <DoraDashboardComponent />;
-  }
-};
-
 interface DoraDashboardComponentProps {
   entityName?: string;
   entityGroup?: string;
 }
-const DoraDashboardComponent = ({
+export const DashboardComponent = ({
   entityName,
   entityGroup,
 }: DoraDashboardComponentProps) => {
@@ -112,5 +96,15 @@ const DoraDashboardComponent = ({
         </Grid>
       </Content>
     </Page>
+  );
+};
+
+export const EntityDashboardComponent = () => {
+  const { entity } = useEntity();
+  const entityGroup = getEntityRelations(entity, 'ownedBy')[0]?.name;
+  const entityName = entity.metadata.name;
+
+  return (
+    <DashboardComponent entityName={entityName} entityGroup={entityGroup} />
   );
 };
