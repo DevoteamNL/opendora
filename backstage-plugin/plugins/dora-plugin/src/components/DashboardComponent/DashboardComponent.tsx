@@ -16,19 +16,30 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 
-const useEntityDetails = () => {
+export const DashboardComponent = () => {
   try {
     const { entity } = useEntity();
     const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
     const entityName = entity.metadata.name;
-
-    return { group: groupName, name: entityName };
-  } catch (e: unknown) {
-    return { group: undefined, name: undefined };
+    return (
+      <DoraDashboardComponent
+        entityName={entityName}
+        entityGroup={groupName}
+      ></DoraDashboardComponent>
+    );
+  } catch {
+    return <DoraDashboardComponent />;
   }
 };
 
-export const DashboardComponent = () => {
+interface DoraDashboardComponentProps {
+  entityName?: string;
+  entityGroup?: string;
+}
+const DoraDashboardComponent = ({
+  entityName,
+  entityGroup,
+}: DoraDashboardComponentProps) => {
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
   const [dataError, setDataError] = React.useState<Error | undefined>(
@@ -36,15 +47,14 @@ export const DashboardComponent = () => {
   );
 
   const groupDataService = useApi(groupDataServiceApiRef);
-  const entity = useEntityDetails();
 
   useEffect(() => {
     groupDataService
       .retrieveMetricDataPoints({
         type: 'df_count',
-        team: entity.group,
+        team: entityGroup,
         aggregation: selectedTimeUnit,
-        project: entity.name,
+        project: entityName,
       })
       .then(
         response => {
@@ -54,7 +64,7 @@ export const DashboardComponent = () => {
           setDataError(error);
         },
       );
-  }, [entity, selectedTimeUnit, groupDataService]);
+  }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />
