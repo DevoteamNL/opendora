@@ -16,27 +16,37 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 
+const useEntityDetails = () => {
+  try {
+    const { entity } = useEntity();
+    const groupName = entity
+      ? getEntityRelations(entity, 'ownedBy')[0]?.name
+      : undefined;
+    const entityName = entity?.metadata.name;
+
+    return { group: groupName, name: entityName };
+  } catch (e: unknown) {
+    return { group: undefined, name: undefined };
+  }
+};
+
 export const DashboardComponent = () => {
-  const groupDataService = useApi(groupDataServiceApiRef);
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
-
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-
-  const { entity } = useEntity();
-  const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
-  const entityName = entity.metadata.name;
-
   const [dataError, setDataError] = React.useState<Error | undefined>(
     undefined,
   );
+
+  const groupDataService = useApi(groupDataServiceApiRef);
+  const entity = useEntityDetails();
 
   useEffect(() => {
     groupDataService
       .retrieveMetricDataPoints({
         type: 'df_count',
-        team: groupName,
+        team: entity.group,
         aggregation: selectedTimeUnit,
-        project: entityName,
+        project: entity.name,
       })
       .then(
         response => {
@@ -46,7 +56,7 @@ export const DashboardComponent = () => {
           setDataError(error);
         },
       );
-  }, [groupName, entityName, selectedTimeUnit, groupDataService]);
+  }, [entity, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />
