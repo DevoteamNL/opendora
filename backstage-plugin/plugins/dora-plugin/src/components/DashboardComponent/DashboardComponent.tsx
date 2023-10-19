@@ -19,10 +19,8 @@ import './DashboardComponent.css';
 const useEntityDetails = () => {
   try {
     const { entity } = useEntity();
-    const groupName = entity
-      ? getEntityRelations(entity, 'ownedBy')[0]?.name
-      : undefined;
-    const entityName = entity?.metadata.name;
+    const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
+    const entityName = entity.metadata.name;
 
     return { group: groupName, name: entityName };
   } catch (e: unknown) {
