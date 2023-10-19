@@ -10,7 +10,7 @@ type DfService struct {
 	Client sql_client.ClientInterface
 }
 
-func (dfCountService DfService) ServeRequest(params ServiceParameters) (models.Response, error) {
+func (service DfService) ServeRequest(params ServiceParameters) (models.Response, error) {
 	aggregationQueryMap := map[string]string{
 		"weekly":    sql_queries.WeeklyDeploymentSql,
 		"monthly":   sql_queries.MonthlyDeploymentSql,
@@ -24,7 +24,7 @@ func (dfCountService DfService) ServeRequest(params ServiceParameters) (models.R
 
 	query := aggregationQueryMap[params.Aggregation] + typeQueryMap[params.TypeQuery]
 
-	dataPoints, err := dfCountService.Client.QueryDeployments(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
+	dataPoints, err := service.Client.QueryDeployments(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 
 	return models.Response{Aggregation: params.Aggregation, DataPoints: dataPoints}, err
 }
