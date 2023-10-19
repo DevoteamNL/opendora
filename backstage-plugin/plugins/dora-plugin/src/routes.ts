@@ -1,5 +1,5 @@
 import { createRouteRef } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'dora-plugin',
+  id: 'open-dora',
 });

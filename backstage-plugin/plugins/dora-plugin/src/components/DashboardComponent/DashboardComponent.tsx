@@ -16,25 +16,27 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 
-export const DashboardComponent = () => {
-  const groupDataService = useApi(groupDataServiceApiRef);
+export interface DashboardComponentProps {
+  entityName?: string;
+  entityGroup?: string;
+}
+export const DashboardComponent = ({
+  entityName,
+  entityGroup,
+}: DashboardComponentProps) => {
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
-
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-
-  const { entity } = useEntity();
-  const groupName = getEntityRelations(entity, 'ownedBy')[0]?.name;
-  const entityName = entity.metadata.name;
-
   const [dataError, setDataError] = React.useState<Error | undefined>(
     undefined,
   );
+
+  const groupDataService = useApi(groupDataServiceApiRef);
 
   useEffect(() => {
     groupDataService
       .retrieveMetricDataPoints({
         type: 'df_count',
-        team: groupName,
+        team: entityGroup,
         aggregation: selectedTimeUnit,
         project: entityName,
       })
@@ -46,7 +48,7 @@ export const DashboardComponent = () => {
           setDataError(error);
         },
       );
-  }, [groupName, entityName, selectedTimeUnit, groupDataService]);
+  }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />
@@ -94,5 +96,15 @@ export const DashboardComponent = () => {
         </Grid>
       </Content>
     </Page>
+  );
+};
+
+export const EntityDashboardComponent = () => {
+  const { entity } = useEntity();
+  const entityGroup = getEntityRelations(entity, 'ownedBy')[0]?.name;
+  const entityName = entity.metadata.name;
+
+  return (
+    <DashboardComponent entityName={entityName} entityGroup={entityGroup} />
   );
 };
