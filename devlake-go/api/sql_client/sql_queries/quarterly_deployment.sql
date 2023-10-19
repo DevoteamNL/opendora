@@ -40,15 +40,17 @@ _deployments AS(
         ) _production_deployments
     GROUP BY
         1
+),
+count AS (
+    SELECT
+        cq.quarter_date AS data_key,
+        CASE
+            WHEN d.deployment_count IS NULL THEN 0
+            ELSE d.deployment_count
+        END AS data_value
+    FROM
+        calendar_quarters cq
+        LEFT JOIN _deployments d ON cq.quarter_date = d.quarter_date
+    ORDER BY
+        cq.quarter_date DESC
 )
-SELECT
-    cq.quarter_date AS data_key,
-    CASE
-        WHEN d.deployment_count IS NULL THEN 0
-        ELSE d.deployment_count
-    END AS data_value
-FROM
-    calendar_quarters cq
-    LEFT JOIN _deployments d ON cq.quarter_date = d.quarter_date
-ORDER BY
-    cq.quarter_date DESC

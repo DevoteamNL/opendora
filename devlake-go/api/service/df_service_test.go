@@ -2,14 +2,15 @@ package service
 
 import (
 	"fmt"
+	"reflect"
+	"testing"
+
 	"github.com/devoteamnl/opendora/api/models"
 	"github.com/devoteamnl/opendora/api/sql_client"
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
-	"reflect"
-	"testing"
 )
 
-func TestDfCountService_ServeRequest(t *testing.T) {
+func TestDfService_ServeRequest(t *testing.T) {
 
 	exampleWeeklyDataPoints := []models.DataPoint{{Key: "202338", Value: 0}, {Key: "202337", Value: 1}, {Key: "202336", Value: 2}}
 	exampleMonthlyDataPoints := []models.DataPoint{{Key: "23/04", Value: 6}, {Key: "23/03", Value: 5}, {Key: "23/02", Value: 4}}
@@ -103,7 +104,7 @@ func TestDfCountService_ServeRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dfCountService := DfCountService{Client: tt.mockClient}
+			dfCountService := DfService{Client: tt.mockClient}
 			got, err := dfCountService.ServeRequest(tt.params)
 
 			if err == nil && tt.expectError != "" {
