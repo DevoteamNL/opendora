@@ -16,14 +16,14 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 
-interface DoraDashboardComponentProps {
+export interface DashboardComponentProps {
   entityName?: string;
   entityGroup?: string;
 }
 export const DashboardComponent = ({
   entityName,
   entityGroup,
-}: DoraDashboardComponentProps) => {
+}: DashboardComponentProps) => {
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
   const [dataError, setDataError] = React.useState<Error | undefined>(
