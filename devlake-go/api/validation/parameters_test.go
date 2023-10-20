@@ -1,9 +1,11 @@
 package validation
 
 import (
-	"github.com/devoteamnl/opendora/api/service"
 	"net/url"
 	"testing"
+	"time"
+
+	"github.com/devoteamnl/opendora/api/service"
 )
 
 func Test_validTypeQuery(t *testing.T) {
@@ -183,8 +185,74 @@ func Test_validProjectQuery(t *testing.T) {
 	}
 }
 
+func Test_validTimeQueries(t *testing.T) {
+	defaultTime := time.Date(2010, 2, 3, 4, 5, 6, 7, time.UTC)
+	tests := []struct {
+		name        string
+		values      url.Values
+		expectTime  time.Time
+		expectValid bool
+	}{
+		{
+			name:        "should be valid when no to is provided",
+			values:      url.Values{},
+			expectTime:  defaultTime,
+			expectValid: true,
+		},
+		{
+			name:        "should be valid when no project is provided",
+			values:      url.Values{"to": {}},
+			expectTime:  defaultTime,
+			expectValid: true,
+		},
+		{
+			name:        "should not be valid when multiple projects are provided",
+			values:      url.Values{"to": {"2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z"}},
+			expectTime:  defaultTime,
+			expectValid: false,
+		},
+		{
+			name:        "should not be valid when an empty to is provided",
+			values:      url.Values{"to": {""}},
+			expectTime:  defaultTime,
+			expectValid: false,
+		},
+		{
+			name:        "should not be valid when an to is in the wrong format",
+			values:      url.Values{"to": {"not-a-date"}},
+			expectTime:  defaultTime,
+			expectValid: false,
+		},
+		{
+			name:        "should not be valid when an to is in the wrong format",
+			values:      url.Values{"to": {"Mon, 02 Jan 2006 15:04:05 MST"}},
+			expectTime:  defaultTime,
+			expectValid: false,
+		},
+		{
+			name:        "should be valid for a single formatted time value",
+			values:      url.Values{"to": {"2023-01-01T00:00:00Z"}},
+			expectTime:  time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectValid: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			timeValue, valid := validTimeQuery(tt.values, "to", defaultTime)
+
+			if valid != tt.expectValid {
+				t.Errorf("expected '%t' got '%t'", tt.expectValid, valid)
+			}
+			if tt.expectValid && timeValue != tt.expectTime {
+				t.Errorf("expected '%v' got '%v'", tt.expectTime, timeValue)
+			}
+		})
+	}
+}
+
 func partialParameterMatch(parametersA service.ServiceParameters, parametersB service.ServiceParameters) bool {
-	return parametersA.TypeQuery == parametersB.TypeQuery && parametersA.Aggregation == parametersB.Aggregation && parametersA.Project == parametersB.Project
+	return parametersA.TypeQuery == parametersB.TypeQuery && parametersA.Aggregation == parametersB.Aggregation && parametersA.Project == parametersB.Project && parametersA.To == parametersB.To && parametersA.From == parametersB.From
 }
 
 func Test_ValidServiceParameters(t *testing.T) {
@@ -213,9 +281,21 @@ func Test_ValidServiceParameters(t *testing.T) {
 			expectError:             "project should be provided as a non-empty string or omitted",
 		},
 		{
-			name:                    "should return service parameters with defaults for aggregation and project",
+			name:                    "should return an error for an invalid to parameter",
+			values:                  url.Values{"type": {"df_count"}, "to": {"not-a-date"}},
+			expectServiceParameters: service.ServiceParameters{},
+			expectError:             "to should be provided as a RFC3339 formatted date string or omitted",
+		},
+		{
+			name:                    "should return an error for an invalid from parameter",
+			values:                  url.Values{"type": {"df_count"}, "from": {"not-a-date"}},
+			expectServiceParameters: service.ServiceParameters{},
+			expectError:             "from should be provided as a RFC3339 formatted date string or omitted",
+		},
+		{
+			name:                    "should return service parameters with defaults for aggregation, project, to and from",
 			values:                  url.Values{"type": {"df_count"}},
-			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: 0, From: 0},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: time.Now().Unix(), From: time.Now().Add(-time.Hour * 24 * 30 * 6).Unix()},
 			expectError:             "",
 		},
 	}
@@ -234,16 +314,5 @@ func Test_ValidServiceParameters(t *testing.T) {
 				t.Errorf("expected '%v' got '%v'", tt.expectServiceParameters, parameters)
 			}
 		})
-	}
-}
-
-func Test_ServiceParametersDefaultDate(t *testing.T) {
-	parameters, err := ValidServiceParameters(url.Values{"type": {"df_count"}})
-
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if parameters.From != parameters.To-(60*60*24*30*6) {
-		t.Errorf("expected the 'from' parameter to be 6 months before the 'to'  parameter. got from '%v', to '%v'", parameters.From, parameters.To)
 	}
 }

@@ -2,9 +2,10 @@ package validation
 
 import (
 	"fmt"
-	"github.com/devoteamnl/opendora/api/service"
 	"net/url"
 	"time"
+
+	"github.com/devoteamnl/opendora/api/service"
 )
 
 func validTypeQuery(queries url.Values) (string, bool) {
@@ -42,6 +43,21 @@ func validProjectQuery(queries url.Values) (string, bool) {
 	return projects[0], true
 }
 
+func validTimeQuery(queries url.Values, key string, defaultValue time.Time) (time.Time, bool) {
+	times, exists := queries[key]
+
+	if !exists || len(times) == 0 {
+		return defaultValue, true
+	}
+	if len(times) > 1 || len(times[0]) == 0 {
+		return defaultValue, false
+	}
+
+	timeValue, err := time.Parse(time.RFC3339, times[0])
+
+	return timeValue, err == nil
+}
+
 func ValidServiceParameters(queries url.Values) (service.ServiceParameters, error) {
 	typeQuery, valid := validTypeQuery(queries)
 	if !valid {
@@ -56,8 +72,14 @@ func ValidServiceParameters(queries url.Values) (service.ServiceParameters, erro
 	if !valid {
 		return service.ServiceParameters{}, fmt.Errorf("project should be provided as a non-empty string or omitted")
 	}
-	to := time.Now().Unix()
-	from := to - (60 * 60 * 24 * 30 * 6)
+	to, valid := validTimeQuery(queries, "to", time.Now())
+	if !valid {
+		return service.ServiceParameters{}, fmt.Errorf("to should be provided as a RFC3339 formatted date string or omitted")
+	}
+	from, valid := validTimeQuery(queries, "from", time.Now().Add(-time.Hour*24*30*6))
+	if !valid {
+		return service.ServiceParameters{}, fmt.Errorf("from should be provided as a RFC3339 formatted date string or omitted")
+	}
 
-	return service.ServiceParameters{TypeQuery: typeQuery, Aggregation: aggregation, Project: project, To: to, From: from}, nil
+	return service.ServiceParameters{TypeQuery: typeQuery, Aggregation: aggregation, Project: project, To: to.Unix(), From: from.Unix()}, nil
 }
