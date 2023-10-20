@@ -3,7 +3,7 @@ import './HighlightTextBoxComponent.css';
 
 interface HighlightTextBoxComponentProps {
   title: string;
-  textColour: string;
+  textColour: 'warning' | 'critical' | 'positiveHighlight';
   highlight: string;
   text?: string;
 }
