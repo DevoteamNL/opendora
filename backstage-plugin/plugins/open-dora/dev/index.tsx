@@ -6,7 +6,7 @@ createDevApp()
   .registerPlugin(openDoraPlugin)
   .addPage({
     element: <OpenDoraPluginPage />,
-    title: 'Root Page',
+    title: 'OpenDORA Dev Page',
     path: '/open-dora-plugin',
   })
   .render();
