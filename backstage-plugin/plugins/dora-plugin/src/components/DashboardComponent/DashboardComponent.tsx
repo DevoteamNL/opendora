@@ -25,9 +25,10 @@ export const DashboardComponent = ({
   entityGroup,
 }: DashboardComponentProps) => {
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
+  const [chartDataAverage, setChartDataAverage] = React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-  const [dataError, setDataError] = React.useState<Error | undefined>(
-    undefined,
+  const [dataError, setDataError] = React.useState<{countError: Error | null, averageError: Error | null}>(
+    {countError: null, averageError: null}
   );
 
   const groupDataService = useApi(groupDataServiceApiRef);
@@ -42,16 +43,45 @@ export const DashboardComponent = ({
       })
       .then(
         response => {
-          setChartData(response);
+          setChartDataAverage(response);
         },
         (error: Error) => {
-          setDataError(error);
-        },
+          setDataError({
+            ...dataError,
+            countError: error,
+          });
+        }
       );
-  }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
+
+
+    groupDataService
+    .retrieveMetricDataPoints({
+      type: 'df_average',
+      team: entityGroup,
+      aggregation: selectedTimeUnit,
+      project: entityName,
+    })
+    .then(
+      response => {
+        setChartData(response);
+      },
+      (error: Error) => {
+        setDataError({
+          ...dataError,
+          averageError: error,
+        });
+      },
+    );
+  }, [entityGroup, entityName, selectedTimeUnit, groupDataService, dataError]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />
+  ) : (
+    <Progress variant="indeterminate" />
+  );
+
+  const chartOrProgressComponentAverage = chartDataAverage ? (
+    <BarChartComponent metricData={chartDataAverage} />
   ) : (
     <Progress variant="indeterminate" />
   );
@@ -83,10 +113,20 @@ export const DashboardComponent = ({
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
                 <h1>Deployment Frequency</h1>
-                {dataError ? (
-                  <ResponseErrorPanel error={dataError} />
+                {dataError.countError ? (
+                  <ResponseErrorPanel error={dataError.countError} />
                 ) : (
                   chartOrProgressComponent
+                )}
+              </div>
+            </Grid>
+            <Grid item xs={12} className="gridBorder">
+              <div className="gridBoxText">
+                <h1>Deployment Frequency Average</h1>
+                {dataError.averageError ? (
+                  <ResponseErrorPanel error={dataError.averageError} />
+                ) : (
+                  chartOrProgressComponentAverage
                 )}
               </div>
             </Grid>
