@@ -138,4 +138,11 @@ describe('DashboardComponent', () => {
     expect(queryByRole('progressbar')).toBeNull();
     expect(queryByText('data_key')).not.toBeNull();
   });
+
+  it('should show the error returned from the service', async () => {
+    const { queryByText } = await renderDashboardComponent(
+      jest.fn().mockRejectedValue({ status: 500, message: 'server error' }),
+    );
+    expect(queryByText('server error')).not.toBeNull();
+  });
 });
