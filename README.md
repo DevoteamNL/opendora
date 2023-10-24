@@ -12,7 +12,7 @@ This is a basic Spring application used to provide a mock for the DORA API metri
 
 ### backstage-plugin
 
-This is a scaffold [Backstage](https://backstage.io) app used to configure an environment to develop the plugin.
+This is a [Backstage](https://backstage.io) plugin setup used to develop the frontend plugin.
 
 [More details](backstage-plugin/README.md)
 
