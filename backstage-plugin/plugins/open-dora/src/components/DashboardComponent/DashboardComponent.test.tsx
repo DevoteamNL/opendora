@@ -1,31 +1,40 @@
 import React from 'react';
-import { DashboardComponent } from './DashboardComponent';
+import {
+  DashboardComponent,
+  EntityDashboardComponent,
+} from './DashboardComponent';
 import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
 import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { ApiProvider } from '@backstage/core-app-api';
 import { fireEvent, screen, act } from '@testing-library/react';
 import { MetricData } from '../../models/MetricData';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+
+async function renderComponentWithApis(
+  component: JSX.Element,
+  mockData?: jest.Mock<MetricData>,
+) {
+  const groupDataApiMock = {
+    retrieveMetricDataPoints:
+      mockData ??
+      jest.fn().mockResolvedValue({
+        aggregation: 'weekly',
+        dataPoints: [{ key: '10/23', value: 1.0 }],
+      }),
+  };
+  const apiRegistry = TestApiRegistry.from([
+    groupDataServiceApiRef,
+    groupDataApiMock,
+  ]);
+
+  return await renderInTestApp(
+    <ApiProvider apis={apiRegistry}>{component}</ApiProvider>,
+  );
+}
 
 describe('DashboardComponent', () => {
-  async function renderDashboardComponent(mockData?: jest.Mock<MetricData>) {
-    const groupDataApiMock = {
-      retrieveMetricDataPoints:
-        mockData ??
-        jest.fn().mockResolvedValue({
-          aggregation: 'weekly',
-          dataPoints: [{ key: '10/23', value: 1.0 }],
-        }),
-    };
-    const apiRegistry = TestApiRegistry.from([
-      groupDataServiceApiRef,
-      groupDataApiMock,
-    ]);
-
-    return await renderInTestApp(
-      <ApiProvider apis={apiRegistry}>
-        <DashboardComponent />
-      </ApiProvider>,
-    );
+  function renderDashboardComponent(mockData?: jest.Mock<MetricData>) {
+    return renderComponentWithApis(<DashboardComponent />, mockData);
   }
 
   it('should show a dropdown with the aggregation choices', async () => {
@@ -144,5 +153,43 @@ describe('DashboardComponent', () => {
       jest.fn().mockRejectedValue({ status: 500, message: 'server error' }),
     );
     expect(queryByText('server error')).not.toBeNull();
+  });
+});
+
+describe('EntityDashboardComponent', () => {
+  function renderEntityDashboardComponent(mockData?: jest.Mock<MetricData>) {
+    return renderComponentWithApis(
+      <EntityProvider
+        entity={{
+          apiVersion: 'version',
+          kind: 'entity-kind',
+          metadata: {
+            name: 'entity-name',
+          },
+          relations: [
+            { targetRef: 'kind:namespace/owner-name', type: 'ownedBy' },
+          ],
+        }}
+      >
+        <EntityDashboardComponent />
+      </EntityProvider>,
+      mockData,
+    );
+  }
+
+  it('should send component info to the service from the context', async () => {
+    const apiMock = jest.fn().mockResolvedValue({
+      aggregation: 'weekly',
+      dataPoints: [{ key: 'first_key', value: 1.0 }],
+    });
+
+    await renderEntityDashboardComponent(apiMock);
+
+    expect(apiMock).toHaveBeenLastCalledWith({
+      type: 'df_count',
+      aggregation: 'weekly',
+      project: 'entity-name',
+      team: 'owner-name',
+    });
   });
 });
