@@ -2,7 +2,7 @@
 
 ## Setup
 
-Follow [installation instructions](./plugins/open-dora).
+Follow [installation instructions](./plugins/open-dora/README.md).
 
 ## Local development
 
