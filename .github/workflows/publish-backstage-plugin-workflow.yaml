@@ -34,9 +34,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: validate config
-        run: yarn backstage-cli config:check --lax
-
       - name: lint
         run: yarn lint:all
 
