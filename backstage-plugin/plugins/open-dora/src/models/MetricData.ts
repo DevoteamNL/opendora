@@ -4,6 +4,6 @@ export interface MetricData {
 }
 
 export interface DataPoint {
-  key: 'string';
+  key: string;
   value: number;
 }

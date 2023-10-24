@@ -1,5 +1,4 @@
 import React from 'react';
-import { renderInTestApp, renderWithEffects } from '@backstage/test-utils';
 import { HighlightTextBoxComponent } from './HighlightTextBoxComponent';
 import { render } from '@testing-library/react';
 
