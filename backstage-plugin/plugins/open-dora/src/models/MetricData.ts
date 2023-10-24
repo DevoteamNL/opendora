@@ -1,5 +1,5 @@
 export interface MetricData {
-  aggregation: string;
+  aggregation: 'weekly' | 'monthly' | 'quarterly';
   dataPoints: DataPoint[];
 }
 
