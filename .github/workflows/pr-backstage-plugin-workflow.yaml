@@ -10,7 +10,8 @@ on:
       - ".github/workflows/pr-backstage-plugin-workflow.yaml"
 
 jobs:
-  build:
+  verify:
+    name: install, lint, format, type-check, build, test
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -43,6 +44,5 @@ jobs:
       - name: build
         run: yarn build:all
 
-      # TODO: Reenable tests once written for plugin, check that they work in new version of backstage.
-      # - name: test
-      #   run: yarn test:all
+      - name: test
+        run: yarn test:all

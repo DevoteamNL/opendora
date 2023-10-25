@@ -1,9 +1,9 @@
 export interface MetricData {
-  aggregation: string;
+  aggregation: 'weekly' | 'monthly' | 'quarterly';
   dataPoints: DataPoint[];
 }
 
 export interface DataPoint {
-  key: 'string';
+  key: string;
   value: number;
 }
