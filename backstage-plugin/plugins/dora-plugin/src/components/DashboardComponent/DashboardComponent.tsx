@@ -15,6 +15,7 @@ import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
+import { ChartErrors } from '../../models/CustomErrors';
 
 export interface DashboardComponentProps {
   entityName?: string;
@@ -27,7 +28,7 @@ export const DashboardComponent = ({
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
   const [chartDataAverage, setChartDataAverage] = React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-  const [dataError, setDataError] = React.useState<{countError: Error | null, averageError: Error | null}>(
+  const [dataError, setDataError] = React.useState<ChartErrors>(
     {countError: null, averageError: null}
   );
 

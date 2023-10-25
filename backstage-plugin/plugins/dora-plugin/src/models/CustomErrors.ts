@@ -1,5 +1,5 @@
 
 export interface ChartErrors {
-    count: Error | undefined;
-    average: Error | undefined;
+    countError: Error | null;
+    averageError: Error | null;
   }
