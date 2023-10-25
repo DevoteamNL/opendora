@@ -72,11 +72,14 @@ func ValidServiceParameters(queries url.Values) (service.ServiceParameters, erro
 	if !valid {
 		return service.ServiceParameters{}, fmt.Errorf("project should be provided as a non-empty string or omitted")
 	}
-	to, valid := validTimeQuery(queries, "to", time.Now())
+
+	now := time.Now()
+	to, valid := validTimeQuery(queries, "to", now)
+
 	if !valid {
 		return service.ServiceParameters{}, fmt.Errorf("to should be provided as a RFC3339 formatted date string or omitted")
 	}
-	from, valid := validTimeQuery(queries, "from", time.Now().Add(-time.Hour*24*30*6))
+	from, valid := validTimeQuery(queries, "from", now.AddDate(0, -6, 0))
 	if !valid {
 		return service.ServiceParameters{}, fmt.Errorf("from should be provided as a RFC3339 formatted date string or omitted")
 	}

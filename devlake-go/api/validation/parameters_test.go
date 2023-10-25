@@ -295,7 +295,7 @@ func Test_ValidServiceParameters(t *testing.T) {
 		{
 			name:                    "should return service parameters with defaults for aggregation, project, to and from",
 			values:                  url.Values{"type": {"df_count"}},
-			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: time.Now().Unix(), From: time.Now().Add(-time.Hour * 24 * 30 * 6).Unix()},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: time.Now().Unix(), From: time.Now().AddDate(0, -6, 0).Unix()},
 			expectError:             "",
 		},
 	}
