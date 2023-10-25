@@ -9,6 +9,7 @@ import { ApiProvider } from '@backstage/core-app-api';
 import { fireEvent, screen, act } from '@testing-library/react';
 import { MetricData } from '../../models/MetricData';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { EntityRelation } from '@backstage/catalog-model';
 
 async function renderComponentWithApis(
   component: JSX.Element,
@@ -157,7 +158,10 @@ describe('DashboardComponent', () => {
 });
 
 describe('EntityDashboardComponent', () => {
-  function renderEntityDashboardComponent(mockData?: jest.Mock<MetricData>) {
+  function renderEntityDashboardComponent(
+    mockData?: jest.Mock<MetricData>,
+    relations?: EntityRelation[],
+  ) {
     return renderComponentWithApis(
       <EntityProvider
         entity={{
@@ -166,9 +170,7 @@ describe('EntityDashboardComponent', () => {
           metadata: {
             name: 'entity-name',
           },
-          relations: [
-            { targetRef: 'kind:namespace/owner-name', type: 'ownedBy' },
-          ],
+          relations: relations,
         }}
       >
         <EntityDashboardComponent />
@@ -183,13 +185,30 @@ describe('EntityDashboardComponent', () => {
       dataPoints: [{ key: 'first_key', value: 1.0 }],
     });
 
-    await renderEntityDashboardComponent(apiMock);
+    await renderEntityDashboardComponent(apiMock, [
+      { targetRef: 'kind:namespace/owner-name', type: 'ownedBy' },
+    ]);
 
     expect(apiMock).toHaveBeenLastCalledWith({
       type: 'df_count',
       aggregation: 'weekly',
       project: 'entity-name',
       team: 'owner-name',
+    });
+  });
+
+  it('should send component info without owner info', async () => {
+    const apiMock = jest.fn().mockResolvedValue({
+      aggregation: 'weekly',
+      dataPoints: [{ key: 'first_key', value: 1.0 }],
+    });
+
+    await renderEntityDashboardComponent(apiMock);
+
+    expect(apiMock).toHaveBeenLastCalledWith({
+      type: 'df_count',
+      aggregation: 'weekly',
+      project: 'entity-name',
     });
   });
 });
