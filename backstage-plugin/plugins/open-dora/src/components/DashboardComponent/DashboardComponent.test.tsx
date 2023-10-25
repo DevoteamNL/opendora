@@ -9,7 +9,7 @@ import { ApiProvider } from '@backstage/core-app-api';
 import { fireEvent, screen, act } from '@testing-library/react';
 import { MetricData } from '../../models/MetricData';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { EntityRelation } from '@backstage/catalog-model';
+import type { EntityRelation } from '@backstage/catalog-model';
 
 async function renderComponentWithApis(
   component: JSX.Element,
