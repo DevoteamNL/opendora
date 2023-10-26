@@ -1,0 +1,84 @@
+name: "Bug Report"
+description: "Submit a bug report to help us improve"
+title: "Bug Report: <title>"
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: We value your time and effort to submit this bug report.
+  - type: textarea
+    id: description
+    validations:
+      required: true
+    attributes:
+      label: "Description"
+      description: "A clear and concise description of what the bug is."
+      placeholder: "It bugs out when ..."
+  - type: textarea
+    id: expected-behavior
+    validations:
+      required: true
+    attributes:
+      label: "Expected behavior"
+      description: "What did you think should happen?"
+      placeholder: "It should ..."
+  - type: textarea
+    id: actual-behavior
+    validations:
+      required: true
+    attributes:
+      label: "Actual Behavior"
+      description: "What did actually happen? Add screenshots, if applicable."
+      placeholder: "It actually ..."
+  - type: textarea
+    id: steps-to-reproduce
+    validations:
+      required: true
+    attributes:
+      label: "Reproduction steps"
+      description: "How do you trigger this bug? Please walk us through it step by step."
+      placeholder:
+        "Provide a link to a live example, or an unambiguous set of steps to reproduce this bug. Include code or configuration to reproduce, if relevant.\n
+        1. Go to '...'\n
+        2. Click on '....'\n
+        3. Scroll down to '....'"
+  - type: textarea
+    id: environment
+    validations:
+      required: false
+    attributes:
+      label: "Your Environment"
+      description: "Provide System Information
+        Provide Output of `yarn backstage-cli info`"
+      placeholder: "Include as many relevant details about the environment you experienced the bug in.
+        - OS: [e.g. Amazon Linux 2]
+        - Backstage [e.g. 0.24.0]
+        - Helm [e.g. 3.6.0]
+        - Kubernetes [e.g. 1.19.0]
+        - DevLake [e.g. 0.19.0-beta6]
+        - MySQL [e.g. 5.7]      
+      "
+  - type: textarea
+    id: context
+    validations:
+      required: false
+    attributes:
+      label: "Context of the bug"
+      description: "Provide logs, screenshots or HTTP responses/errors"
+      placeholder: "Attach logs from Kubernetes or Backstage where relevant. Attach screenshots of UI bugs."
+  - type: checkboxes
+    id: no-duplicate-issues
+    attributes:
+      label: "Have you spent some time to check if this bug has been raised before?"
+      options:
+        - label: "I checked and didn't find similar issue"
+          required: true
+  - type: dropdown
+    attributes:
+      label: Are you willing to submit PR?
+      description: This is absolutely not required, but we are happy to guide you in the contribution process.
+      options:
+        - Yes I am willing to submit a PR!
+        - No, but I'm happy to collaborate on a PR with someone else
+        - No, I don't have time to work on this right now
