@@ -72,7 +72,7 @@ func validToFromQueries(queries url.Values) (to time.Time, from time.Time, err e
 	if toShouldUseDefault && fromShouldUseDefault {
 		return now, now.AddDate(0, -6, 0), nil
 	}
-	if !(!toShouldUseDefault && !fromShouldUseDefault) {
+	if toShouldUseDefault || fromShouldUseDefault {
 		err = fmt.Errorf("both to and from should be provided or both should be omitted")
 	} else if to.Compare(now) > 0 {
 		err = fmt.Errorf("to should not be a date in the future")
