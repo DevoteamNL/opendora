@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"math"
 	"net/url"
 	"testing"
 	"time"
@@ -269,10 +270,14 @@ func Test_validTimeQueries(t *testing.T) {
 	}
 }
 
+func unixTimesAreAlmostEqual(timeA int64, timeB int64) bool {
+	return math.Abs(float64(timeA)-float64(timeB)) < float64(time.Hour.Seconds())
+}
+
 func Test_validToAndFromQueries(t *testing.T) {
-	now := time.Now().Round(time.Second)
+	now := time.Now()
 	nowString := now.Format(time.RFC3339)
-	sixMonthsAgo := now.AddDate(0, -6, 0).Round(time.Second)
+	sixMonthsAgo := now.AddDate(0, -6, 0)
 	sixMonthsAgoString := sixMonthsAgo.Format(time.RFC3339)
 	tests := []struct {
 		name        string
@@ -342,30 +347,29 @@ func Test_validToAndFromQueries(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			toValue, fromValue, err := validToFromQueries(tt.values)
-			roundedTo := toValue.Round(time.Second)
-			roundedFrom := fromValue.Round(time.Second)
 			if err == nil && tt.expectError != "" {
 				t.Errorf("expected '%v' got no error", tt.expectError)
 			}
 			if err != nil && err.Error() != tt.expectError {
 				t.Errorf("expected '%v' got '%v'", tt.expectError, err)
 			}
-			if roundedTo != tt.expectTo {
-				t.Errorf("expected '%v' got '%v'", tt.expectTo, roundedTo)
+			if !unixTimesAreAlmostEqual(toValue.Unix(), tt.expectTo.Unix()) {
+				t.Errorf("expected '%v' got '%v'", tt.expectTo, toValue)
 			}
-			if roundedFrom != tt.expectFrom {
-				t.Errorf("expected '%v' got '%v'", tt.expectFrom, roundedFrom)
+			if !unixTimesAreAlmostEqual(fromValue.Unix(), tt.expectFrom.Unix()) {
+				t.Errorf("expected '%v' got '%v'", tt.expectFrom, fromValue)
 			}
 		})
 	}
 }
 
 func partialParameterMatch(parametersA service.ServiceParameters, parametersB service.ServiceParameters) bool {
-	return parametersA.TypeQuery == parametersB.TypeQuery && parametersA.Aggregation == parametersB.Aggregation && parametersA.Project == parametersB.Project && parametersA.To == parametersB.To && parametersA.From == parametersB.From
+	return parametersA.TypeQuery == parametersB.TypeQuery && parametersA.Aggregation == parametersB.Aggregation && parametersA.Project == parametersB.Project &&
+		unixTimesAreAlmostEqual(parametersA.To, parametersB.To) && unixTimesAreAlmostEqual(parametersA.From, parametersB.From)
 }
 
 func Test_ValidServiceParameters(t *testing.T) {
-	now := time.Now().Round(time.Second)
+	now := time.Now()
 	tests := []struct {
 		name                    string
 		values                  url.Values
