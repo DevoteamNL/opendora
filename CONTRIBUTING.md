@@ -24,7 +24,7 @@
   - VSCode: [Go extension](https://marketplace.visualstudio.com/items?itemName=golang.go)
   - IntelliJ IDEA: [Go formatting](https://www.jetbrains.com/help/idea/integration-with-go-tools.html#gofmt)
 
-## Code/Git/project hygiene
+## Code/Git hygiene
 
 ### Code
 
@@ -38,7 +38,7 @@
 
 - Keep PRs small.
 
-- Create a new feature branch off of `main` to work on a small, self-contained change. Create a PR to merge to `main`. Once this PR has been accepted, merge to `main` and delete the feature branch.
+<!-- TODO Add this as a repo setting and remove this section -->
 
 - Name branches semantically. An **optional/recommended** format is `feature/#12-deployment-frequency-average-ui`, where:
 
@@ -51,14 +51,6 @@
   - `#12` is the issue number that these changes are related to/based off of.
   - `deployment-frequency-average-ui` is a general description of the changes.
 
-- Write useful commit messages. It is **optional** to include the issue number in the commit message. Write a brief description of what was changed, and if it could be ambiguous, why.
+<!-- TODO Add commit template -->
 
-### Project
-
-- If the issue is part of a milestone or roadmap, add any opened PR's number/link to the issue comments.
-
-- When picking up a task, assign it to yourself and move it to `In Progress`
-
-- Multiple PRs can be made for the same task. Once the last PR for the task is opened, move the task to `Review`.
-
-- Once the last PR is merged. Move the task to `Done` and close the issue.
+- Write useful commit messages. It is **optional** to include the issue number in the commit message. Write a brief description of what was changed, and if it could be ambiguous, why. Use [Conventional Commits formatting](https://www.conventionalcommits.org/en/v1.0.0/)
