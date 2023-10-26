@@ -315,6 +315,20 @@ func Test_validToAndFromQueries(t *testing.T) {
 			expectError: "from should be provided as a RFC3339 formatted date string or omitted",
 		},
 		{
+			name:        "should return error if to is in the future",
+			values:      url.Values{"to": {now.AddDate(1, 0, 0).Format(time.RFC3339)}, "from": {"2023-01-01T00:00:00Z"}},
+			expectTo:    now.AddDate(1, 0, 0),
+			expectFrom:  time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectError: "to should not be a date in the future",
+		},
+		{
+			name:        "should return error if from is after to",
+			values:      url.Values{"to": {"2023-03-01T00:00:00Z"}, "from": {"2023-09-01T00:00:00Z"}},
+			expectTo:    time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
+			expectFrom:  time.Date(2023, 9, 1, 0, 0, 0, 0, time.UTC),
+			expectError: "from should be a date before to",
+		},
+		{
 			name:        "should return parsed to and from if they are both provided and valid",
 			values:      url.Values{"to": {"2023-08-01T00:00:00Z"}, "from": {"2023-05-01T00:00:00Z"}},
 			expectTo:    time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC),
