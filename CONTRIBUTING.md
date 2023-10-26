@@ -1,29 +1,3 @@
-# How to contribute to OpenDORA
-
-#### **Did you find a bug?**
-
-- **Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/DevoteamNL/opendora/issues).
-
-- If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/DevoteamNL/opendora/issues/new).
-
-#### **Did you write a patch that fixes a bug?**
-
-- Open a new GitHub pull request with the patch.
-
-- Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
-
-- Before submitting, please read our [Contribution guidelines](#contribution-guidelines) to know more about coding conventions, verifications, git usage, and project planning.
-
-#### **Do you intend to add a new feature or change an existing one?**
-
-- If you're unable to find an open issue with a similar suggestion, [open a new one](https://github.com/DevoteamNL/opendora/issues/new).
-
-- Open a new GitHub pull request with the implementation.
-
-- Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
-
-- You can also [check our roadmap](https://github.com/orgs/DevoteamNL/projects/39) for planned work and upcoming features.
-
 # Contribution guidelines
 
 ## Code style
