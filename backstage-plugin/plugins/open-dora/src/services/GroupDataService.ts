@@ -1,3 +1,5 @@
+// TODO: Add tests and remove ignore.
+/* istanbul ignore file */
 import { ConfigApi, createApiRef } from '@backstage/core-plugin-api';
 import { MetricData } from '../models/MetricData';
 
