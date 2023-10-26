@@ -271,7 +271,9 @@ func Test_validTimeQueries(t *testing.T) {
 
 func Test_validToAndFromQueries(t *testing.T) {
 	now := time.Now().Round(time.Second)
+	nowString := now.Format(time.RFC3339)
 	sixMonthsAgo := now.AddDate(0, -6, 0).Round(time.Second)
+	sixMonthsAgoString := sixMonthsAgo.Format(time.RFC3339)
 	tests := []struct {
 		name        string
 		values      url.Values
@@ -281,16 +283,16 @@ func Test_validToAndFromQueries(t *testing.T) {
 	}{
 		{
 			name:        "should return error when to is provided but not from",
-			values:      url.Values{"to": {"2023-01-01T00:00:00Z"}},
-			expectTo:    time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			values:      url.Values{"to": {sixMonthsAgoString}},
+			expectTo:    sixMonthsAgo,
 			expectFrom:  time.Time{},
 			expectError: "both to and from should be provided or both should be omitted",
 		},
 		{
 			name:        "should return error when from is provided but not to",
-			values:      url.Values{"from": {"2023-01-01T00:00:00Z"}},
+			values:      url.Values{"from": {sixMonthsAgoString}},
 			expectTo:    time.Time{},
-			expectFrom:  time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectFrom:  sixMonthsAgo,
 			expectError: "both to and from should be provided or both should be omitted",
 		},
 		{
@@ -302,37 +304,37 @@ func Test_validToAndFromQueries(t *testing.T) {
 		},
 		{
 			name:        "should return error if to is invalid",
-			values:      url.Values{"to": {"not-a-date"}, "from": {"2023-01-01T00:00:00Z"}},
+			values:      url.Values{"to": {"not-a-date"}, "from": {sixMonthsAgoString}},
 			expectTo:    time.Time{},
 			expectFrom:  time.Time{},
 			expectError: "to should be provided as a RFC3339 formatted date string or omitted",
 		},
 		{
 			name:        "should return error if from is invalid",
-			values:      url.Values{"to": {"2023-01-01T00:00:00Z"}, "from": {"not-a-date"}},
-			expectTo:    time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			values:      url.Values{"to": {sixMonthsAgoString}, "from": {"not-a-date"}},
+			expectTo:    sixMonthsAgo,
 			expectFrom:  time.Time{},
 			expectError: "from should be provided as a RFC3339 formatted date string or omitted",
 		},
 		{
 			name:        "should return error if to is in the future",
-			values:      url.Values{"to": {now.AddDate(1, 0, 0).Format(time.RFC3339)}, "from": {"2023-01-01T00:00:00Z"}},
+			values:      url.Values{"to": {now.AddDate(1, 0, 0).Format(time.RFC3339)}, "from": {sixMonthsAgoString}},
 			expectTo:    now.AddDate(1, 0, 0),
-			expectFrom:  time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectFrom:  sixMonthsAgo,
 			expectError: "to should not be a date in the future",
 		},
 		{
 			name:        "should return error if from is after to",
-			values:      url.Values{"to": {"2023-03-01T00:00:00Z"}, "from": {"2023-09-01T00:00:00Z"}},
-			expectTo:    time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
-			expectFrom:  time.Date(2023, 9, 1, 0, 0, 0, 0, time.UTC),
+			values:      url.Values{"to": {sixMonthsAgoString}, "from": {nowString}},
+			expectTo:    sixMonthsAgo,
+			expectFrom:  now,
 			expectError: "from should be a date before to",
 		},
 		{
 			name:        "should return parsed to and from if they are both provided and valid",
-			values:      url.Values{"to": {"2023-08-01T00:00:00Z"}, "from": {"2023-05-01T00:00:00Z"}},
-			expectTo:    time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC),
-			expectFrom:  time.Date(2023, 5, 1, 0, 0, 0, 0, time.UTC),
+			values:      url.Values{"to": {now.AddDate(0, -1, 0).Format(time.RFC3339)}, "from": {sixMonthsAgoString}},
+			expectTo:    now.AddDate(0, -1, 0),
+			expectFrom:  sixMonthsAgo,
 			expectError: "",
 		},
 	}
@@ -363,6 +365,7 @@ func partialParameterMatch(parametersA service.ServiceParameters, parametersB se
 }
 
 func Test_ValidServiceParameters(t *testing.T) {
+	now := time.Now().Round(time.Second)
 	tests := []struct {
 		name                    string
 		values                  url.Values
@@ -402,7 +405,7 @@ func Test_ValidServiceParameters(t *testing.T) {
 		{
 			name:                    "should return service parameters with defaults for aggregation, project, to and from",
 			values:                  url.Values{"type": {"df_count"}},
-			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: time.Now().Unix(), From: time.Now().AddDate(0, -6, 0).Unix()},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: now.Unix(), From: now.AddDate(0, -6, 0).Unix()},
 			expectError:             "",
 		},
 	}
