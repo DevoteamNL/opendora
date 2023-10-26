@@ -43,19 +43,41 @@ func validProjectQuery(queries url.Values) (string, bool) {
 	return projects[0], true
 }
 
-func validTimeQuery(queries url.Values, key string, defaultValue time.Time) (time.Time, bool) {
+func validTimeQueries(queries url.Values, key string) (value time.Time, usesDefault bool, valid bool) {
 	times, exists := queries[key]
-
-	if !exists || len(times) == 0 {
-		return defaultValue, true
+	usesDefault = !exists || len(times) == 0
+	valid = len(times) <= 1
+	if usesDefault || !valid {
+		return
 	}
-	if len(times) > 1 || len(times[0]) == 0 {
-		return defaultValue, false
+	value, err := time.Parse(time.RFC3339, times[0])
+	valid = err == nil
+	return
+}
+
+func validToFromQueries(queries url.Values) (to time.Time, from time.Time, err error) {
+	now := time.Now()
+
+	to, toShouldUseDefault, valid := validTimeQueries(queries, "to")
+	if !valid {
+		err = fmt.Errorf("to should be provided as a RFC3339 formatted date string or omitted")
+		return
+	}
+	from, fromShouldUseDefault, valid := validTimeQueries(queries, "from")
+	if !valid {
+		err = fmt.Errorf("from should be provided as a RFC3339 formatted date string or omitted")
+		return
 	}
 
-	timeValue, err := time.Parse(time.RFC3339, times[0])
+	if toShouldUseDefault && fromShouldUseDefault {
+		return now, now.AddDate(0, -6, 0), nil
+	}
+	if !(!toShouldUseDefault && !fromShouldUseDefault) {
+		err = fmt.Errorf("both to and from should be provided or both should be omitted")
+		return
+	}
 
-	return timeValue, err == nil
+	return
 }
 
 func ValidServiceParameters(queries url.Values) (service.ServiceParameters, error) {
@@ -73,15 +95,10 @@ func ValidServiceParameters(queries url.Values) (service.ServiceParameters, erro
 		return service.ServiceParameters{}, fmt.Errorf("project should be provided as a non-empty string or omitted")
 	}
 
-	now := time.Now()
-	to, valid := validTimeQuery(queries, "to", now)
+	to, from, err := validToFromQueries(queries)
 
-	if !valid {
-		return service.ServiceParameters{}, fmt.Errorf("to should be provided as a RFC3339 formatted date string or omitted")
-	}
-	from, valid := validTimeQuery(queries, "from", now.AddDate(0, -6, 0))
-	if !valid {
-		return service.ServiceParameters{}, fmt.Errorf("from should be provided as a RFC3339 formatted date string or omitted")
+	if err != nil {
+		return service.ServiceParameters{}, err
 	}
 
 	return service.ServiceParameters{TypeQuery: typeQuery, Aggregation: aggregation, Project: project, To: to.Unix(), From: from.Unix()}, nil

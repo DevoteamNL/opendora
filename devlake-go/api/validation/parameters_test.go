@@ -186,66 +186,159 @@ func Test_validProjectQuery(t *testing.T) {
 }
 
 func Test_validTimeQueries(t *testing.T) {
-	defaultTime := time.Date(2010, 2, 3, 4, 5, 6, 7, time.UTC)
 	tests := []struct {
-		name        string
-		values      url.Values
-		expectTime  time.Time
-		expectValid bool
+		name              string
+		values            url.Values
+		key               string
+		expectTime        time.Time
+		expectUsesDefault bool
+		expectValid       bool
 	}{
 		{
-			name:        "should be valid when no to is provided",
-			values:      url.Values{},
-			expectTime:  defaultTime,
-			expectValid: true,
+			name:              "should use default when no to value is provided",
+			values:            url.Values{},
+			key:               "to",
+			expectTime:        time.Time{},
+			expectUsesDefault: true,
+			expectValid:       true,
 		},
 		{
-			name:        "should be valid when no project is provided",
-			values:      url.Values{"to": {}},
-			expectTime:  defaultTime,
-			expectValid: true,
+			name:              "should use default when no to value is provided",
+			values:            url.Values{"to": {}},
+			key:               "to",
+			expectTime:        time.Time{},
+			expectUsesDefault: true,
+			expectValid:       true,
 		},
 		{
-			name:        "should not be valid when multiple projects are provided",
-			values:      url.Values{"to": {"2023-01-01T00:00:00Z", "2024-01-01T00:00:00Z"}},
-			expectTime:  defaultTime,
-			expectValid: false,
+			name:              "should return an error when multiple to values are provided",
+			values:            url.Values{"to": {"val1", "val2"}},
+			key:               "to",
+			expectTime:        time.Time{},
+			expectUsesDefault: false,
+			expectValid:       false,
 		},
 		{
-			name:        "should not be valid when an empty to is provided",
-			values:      url.Values{"to": {""}},
-			expectTime:  defaultTime,
-			expectValid: false,
+			name:              "should return an error when an empty to is provided",
+			values:            url.Values{"to": {""}},
+			key:               "to",
+			expectTime:        time.Time{},
+			expectUsesDefault: false,
+			expectValid:       false,
 		},
 		{
-			name:        "should not be valid when an to is in the wrong format",
-			values:      url.Values{"to": {"not-a-date"}},
-			expectTime:  defaultTime,
-			expectValid: false,
+			name:              "should return an error when to is in the wrong format",
+			values:            url.Values{"to": {"not-a-date"}},
+			key:               "to",
+			expectTime:        time.Time{},
+			expectUsesDefault: false,
+			expectValid:       false,
 		},
 		{
-			name:        "should not be valid when an to is in the wrong format",
-			values:      url.Values{"to": {"Mon, 02 Jan 2006 15:04:05 MST"}},
-			expectTime:  defaultTime,
-			expectValid: false,
+			name:              "should return an error when to is in the wrong format",
+			values:            url.Values{"to": {"Mon, 02 Jan 2006 15:04:05 MST"}},
+			key:               "to",
+			expectTime:        time.Time{},
+			expectUsesDefault: false,
+			expectValid:       false,
 		},
 		{
-			name:        "should be valid for a single formatted time value",
-			values:      url.Values{"to": {"2023-01-01T00:00:00Z"}},
-			expectTime:  time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
-			expectValid: true,
+			name:              "should return the parsed time when to is a single formatted time value",
+			values:            url.Values{"to": {"2023-01-01T00:00:00Z"}},
+			key:               "to",
+			expectTime:        time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectUsesDefault: false,
+			expectValid:       true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			timeValue, valid := validTimeQuery(tt.values, "to", defaultTime)
+			timeValue, usesDefault, valid := validTimeQueries(tt.values, tt.key)
 
-			if valid != tt.expectValid {
-				t.Errorf("expected '%t' got '%t'", tt.expectValid, valid)
+			if usesDefault != tt.expectUsesDefault {
+				t.Errorf("expected usesDefault '%t' got '%t'", tt.expectUsesDefault, usesDefault)
 			}
-			if tt.expectValid && timeValue != tt.expectTime {
+			if valid != tt.expectValid {
+				t.Errorf("expected valid '%t' got '%t'", tt.expectValid, valid)
+			}
+			if timeValue != tt.expectTime {
 				t.Errorf("expected '%v' got '%v'", tt.expectTime, timeValue)
+			}
+		})
+	}
+}
+
+func Test_validToAndFromQueries(t *testing.T) {
+	now := time.Now().Round(time.Second)
+	sixMonthsAgo := now.AddDate(0, -6, 0).Round(time.Second)
+	tests := []struct {
+		name        string
+		values      url.Values
+		expectTo    time.Time
+		expectFrom  time.Time
+		expectError string
+	}{
+		{
+			name:        "should return error when to is provided but not from",
+			values:      url.Values{"to": {"2023-01-01T00:00:00Z"}},
+			expectTo:    time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectFrom:  time.Time{},
+			expectError: "both to and from should be provided or both should be omitted",
+		},
+		{
+			name:        "should return error when from is provided but not to",
+			values:      url.Values{"from": {"2023-01-01T00:00:00Z"}},
+			expectTo:    time.Time{},
+			expectFrom:  time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectError: "both to and from should be provided or both should be omitted",
+		},
+		{
+			name:        "should return default values when both to and from are not provided",
+			values:      url.Values{},
+			expectTo:    now,
+			expectFrom:  sixMonthsAgo,
+			expectError: "",
+		},
+		{
+			name:        "should return error if to is invalid",
+			values:      url.Values{"to": {"not-a-date"}, "from": {"2023-01-01T00:00:00Z"}},
+			expectTo:    time.Time{},
+			expectFrom:  time.Time{},
+			expectError: "to should be provided as a RFC3339 formatted date string or omitted",
+		},
+		{
+			name:        "should return error if from is invalid",
+			values:      url.Values{"to": {"2023-01-01T00:00:00Z"}, "from": {"not-a-date"}},
+			expectTo:    time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectFrom:  time.Time{},
+			expectError: "from should be provided as a RFC3339 formatted date string or omitted",
+		},
+		{
+			name:        "should return parsed to and from if they are both provided and valid",
+			values:      url.Values{"to": {"2023-08-01T00:00:00Z"}, "from": {"2023-05-01T00:00:00Z"}},
+			expectTo:    time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC),
+			expectFrom:  time.Date(2023, 5, 1, 0, 0, 0, 0, time.UTC),
+			expectError: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			toValue, fromValue, err := validToFromQueries(tt.values)
+			roundedTo := toValue.Round(time.Second)
+			roundedFrom := fromValue.Round(time.Second)
+			if err == nil && tt.expectError != "" {
+				t.Errorf("expected '%v' got no error", tt.expectError)
+			}
+			if err != nil && err.Error() != tt.expectError {
+				t.Errorf("expected '%v' got '%v'", tt.expectError, err)
+			}
+			if roundedTo != tt.expectTo {
+				t.Errorf("expected '%v' got '%v'", tt.expectTo, roundedTo)
+			}
+			if roundedFrom != tt.expectFrom {
+				t.Errorf("expected '%v' got '%v'", tt.expectFrom, roundedFrom)
 			}
 		})
 	}
