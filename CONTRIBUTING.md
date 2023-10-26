@@ -18,6 +18,10 @@
 
 - If you're unable to find an open issue with a similar suggestion, [open a new one](https://github.com/DevoteamNL/opendora/issues/new).
 
+- Open a new GitHub pull request with the implementation.
+
+- Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
 - You can also [check our roadmap](https://github.com/orgs/DevoteamNL/projects/39) for planned work and upcoming features.
 
 # Contribution guidelines
