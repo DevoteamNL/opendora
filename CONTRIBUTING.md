@@ -51,6 +51,17 @@
   - `#12` is the issue number that these changes are related to/based off of.
   - `deployment-frequency-average-ui` is a general description of the changes.
 
-<!-- TODO Add commit template -->
+- We use [Conventional Commits formatting](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
+- A template from the [Angular repo](https://github.com/angular/angular/blob/main/.gitmessage) is provided for automatic templating. You can add this to your git config with the command:
 
-- Write useful commit messages. It is **optional** to include the issue number in the commit message. Write a brief description of what was changed, and if it could be ambiguous, why. Use [Conventional Commits formatting](https://www.conventionalcommits.org/en/v1.0.0/)
+```
+git config commit.template ./.gitmessage
+```
+
+- The following scopes are supported:
+  - backstage-plugin
+  - api-mock
+  - api
+  - sync-script
+  - helm-chart
+  - dev-environment

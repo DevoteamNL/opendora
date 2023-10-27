@@ -1,0 +1,113 @@
+<type>(<scope>): <summary>
+
+<Describe the motivation behind this change - explain WHY you are making this change. Wrap all lines
+at 100 characters.>
+
+Fixes #<issue number>
+
+# ────────────────────────────────────────── 100 chars ────────────────────────────────────────────┤
+
+
+# Example Commit Messages
+# =======================
+
+
+# ─── Example: Simple refactor ────────────────────────────────────────────────────────────────────┤
+# refactor(core): rename refreshDynamicEmbeddedViews to refreshEmbeddedViews
+#
+# Improve code readability. The original name no longer matches how the function is used.
+# ─────────────────────────────────────────────────────────────────────────────────────────────────┤
+
+
+# ─── Example: Simple docs change ─────────────────────────────────────────────────────────────────┤
+# docs: clarify the service limitation in providers.md guide
+#
+# Fixes #36332
+# ─────────────────────────────────────────────────────────────────────────────────────────────────┤
+
+
+# ─── Example: A bug fix ──────────────────────────────────────────────────────────────────────────┤
+# fix(ngcc): ensure lockfile is removed when `analyzeFn` fails
+#
+# Previously an error thrown in the `analyzeFn` would cause the ngcc process to exit immediately
+# without removing the lockfile, and potentially before the unlocker process had been successfully
+# spawned resulting in the lockfile being orphaned and left behind.
+#
+# Now we catch these errors and remove the lockfile as needed.
+# ─────────────────────────────────────────────────────────────────────────────────────────────────┤
+
+
+
+# Template/gitmessage taken from: https://github.com/angular/angular/blob/main/.gitmessage
+
+
+
+# Angular Commit Message Format
+# =============================
+#
+# The full specification of the Angular Commit Message Format can be found at
+# https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit
+#
+# The following is an excerpt of the specification with the most commonly needed info.
+#
+# Each commit message consists of a *header*, a *body*, and a *footer*.
+#
+# <header>
+# <BLANK LINE>
+# <body>
+# <BLANK LINE>
+# <footer>
+#
+# The header is mandatory.
+#
+# The body is mandatory for all commits except for those of scope "docs". When the body is required
+# it must be at least 20 characters long.
+#
+# The footer is optional.
+#
+# Any line of the commit message cannot be longer than 100 characters.
+#
+#
+# Commit Message Header
+# ---------------------
+#
+# <type>(<scope>): <short summary>
+#   │       │             │
+#   │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
+#   │       │
+#   │       └─⫸ Commit Scope: backstage-plugin|api-mock|api|sync-script|helm-chart|dev-environment
+#   │
+#   │
+#   └─⫸ Commit Type: build|ci|docs|feat|fix|perf|refactor|style|test
+#                     https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type
+#
+#
+# Commit Message Body
+# ---------------------
+#
+# Just as in the summary, use the imperative, present tense: "fix" not "fixed" nor "fixes".
+#
+# Explain the motivation for the change in the commit message body. This commit message should
+# explain WHY you are making the change. You can include a comparison of the previous behavior with
+# the new behavior in order to illustrate the impact of the change.
+#
+#
+# Commit Message Footer
+# ---------------------
+#
+# The footer can contain information about breaking changes and is also the place to reference
+# GitHub issues, Jira tickets, and other PRs that this commit closes or is related to.
+#
+# ```
+# BREAKING CHANGE: <breaking change summary>
+# <BLANK LINE>
+# <breaking change description + migration instructions>
+# <BLANK LINE>
+# <BLANK LINE>
+# Fixes #<issue number>
+# ```
+#
+# Breaking Change section should start with the phrase "BREAKING CHANGE: " followed by a summary of
+# the breaking change, a blank line, and a detailed description of the breaking change that also
+# includes migration instructions.
+#
