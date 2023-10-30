@@ -21,8 +21,8 @@ tags:
     description: <SchemaDefinition schemaRef="#/components/schemas/DataPoint" />
     x-displayName: DataPoint
   - name: response
-    description: <SchemaDefinition schemaRef="#/components/schemas/Response" />
-    x-displayName: Response
+    description: <SchemaDefinition schemaRef="#/components/schemas/MetricResponse" />
+    x-displayName: MetricResponse
   - name: error-response
     description: <SchemaDefinition schemaRef="#/components/schemas/ErrorResponse" />
     x-displayName: ErrorResponse
@@ -78,7 +78,8 @@ paths:
         - name: from
           in: query
           description: >-
-            `optional`. Date/time from when the results should be filtered. If not informed, it will assume 30 days from the current date/time
+            `optional`. Date/time from when the results should be filtered. If not informed, it will assume 6 months from the current date/time
+            Should be before the 'to' param, and should always be paired with the 'to' param.
           schema:
             type: string
             format: date-time
@@ -87,6 +88,7 @@ paths:
           in: query
           description: >-
             `optional`. Date/time to when the results should be filtered. If not informed, it will assume the current date/time
+            Should be before the current date/time and after the 'from' param, and should always be paired with the 'from' param.
           schema:
             type: string
             format: date-time
@@ -104,7 +106,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/MetricResponse"
           headers:
             x-correlation-id:
               description: Unique identifer associated with the request
@@ -163,6 +165,90 @@ paths:
               example: c0c62604-e3ab-4008-b882-4effcb4963ae
       security:
         - BearerAuth: []
+  /benchmark:
+    get:
+      tags:
+        - summary
+      summary: Query the benchmark key for a given DORA Metric
+      description: |+
+        Returns a key corresponding to the benchmark calculated from the data points that match the filters. 
+        The metrics currently supported are below:
+
+        | Metric Type | Description           | Benchmark keys                                 |
+        | ----------- | --------------------- | ---------------------------------------------- |
+        | `df`        | Deployment frequency. | on-demand, week-month, month-6month, lt-6month |
+
+      operationId: benchmarkByMetric
+      parameters:
+        - name: type
+          in: query
+          description: >-
+            `required`. Specify the type of metric the data points should be retrieved to
+          required: true
+          schema:
+            type: string
+            enum:
+              - df
+        - name: project
+          in: query
+          description: >-
+            `optional`. Specify the project/repo/component to which the metric benchmark should be retrieved
+          schema:
+            type: string
+        - name: team
+          in: query
+          description: >-
+            `optional`. Specify the team to which the metric benchmark should be retrieved
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: >-
+            `optional`. Date/time from when the results should be filtered. If not informed, it will assume 6 months from the current date/time
+            Should be before the 'to' param, and should always be paired with the 'to' param.
+            Time-span should be at least 6 months to get an accurate benchmark.
+          schema:
+            type: string
+            format: date-time
+            example: "2020-01-01T00:00:00Z"
+        - name: to
+          in: query
+          description: >-
+            `optional`. Date/time to when the results should be filtered. If not informed, it will assume the current date/time
+            Should be before the current date/time and after the 'from' param, and should always be paired with the 'from' param.
+          schema:
+            type: string
+            format: date-time
+            example: "2020-01-31T23:59:59Z"
+        - name: x-correlation-id
+          in: header
+          description: Unique identifer associated with the request
+          schema:
+            type: string
+            format: uuid
+          example: c0c62604-e3ab-4008-b882-4effcb4963ae
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BenchmarkResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: Failed to connect to DevLake's DB
+                reference: c0c62604-e3ab-4008-b882-4effcb4963ae
 components:
   schemas:
     DataPoint:
@@ -178,7 +264,7 @@ components:
           title: "The numeric value of the metric, can be a Long or Double"
           type: number
           example: 103.5
-    Response:
+    MetricResponse:
       type: object
       required:
         - aggregation
@@ -192,6 +278,17 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DataPoint"
+    BenchmarkResponse:
+      type: object
+      required:
+        - key
+      properties:
+        key:
+          title: The key to identify the benchmark text
+          description: month-6month would correspond to the text "Between once per month and once every 6 months" for example.
+          type: string
+          example: month-6month
+
     ErrorResponse:
       required:
         - message
@@ -216,6 +313,7 @@ x-tagGroups:
   - name: DORA
     tags:
       - data-points
+      - summary
   - name: Models
     tags:
       - data-point
