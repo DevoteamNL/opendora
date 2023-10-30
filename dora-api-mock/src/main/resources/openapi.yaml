@@ -183,7 +183,7 @@ paths:
         - name: type
           in: query
           description: >-
-            `required`. Specify the type of metric the data points should be retrieved to
+            `required`. Specify the type of metric the benchmark should be calculated for
           required: true
           schema:
             type: string
