@@ -1,0 +1,9 @@
+---
+blank_issues_enabled: false
+contact_links:
+  - about: "Please ask and answer usage questions in GitHub Discussions"
+    name: Question
+    url: "https://github.com/DevoteamNL/opendora/discussions"
+  - about: "Check out the project boards for milestones and roadmap"
+    name: Project
+    url: "https://github.com/DevoteamNL/opendora/projects"
