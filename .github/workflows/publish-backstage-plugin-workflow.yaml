@@ -11,14 +11,14 @@ on:
       - ".github/workflows/publish-backstage-plugin-workflow.yaml"
 
 jobs:
-  build:
+  publish:
+    name: install, lint, format, type-check, build, test, publish
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     defaults:
       run:
-        working-directory: backstage-plugin/plugins/dora-plugin
-
+        working-directory: backstage-plugin
     steps:
       - uses: actions/checkout@v4
 
@@ -32,14 +32,10 @@ jobs:
           always-auth: true
 
       - name: Install dependencies
-        working-directory: backstage-plugin/
         run: yarn install --frozen-lockfile
 
-      - name: validate config
-        run: yarn backstage-cli config:check --lax
-
       - name: lint
-        run: yarn backstage-cli package lint
+        run: yarn lint:all
 
       - name: format
         run: yarn prettier:check
@@ -48,13 +44,13 @@ jobs:
         run: yarn tsc
 
       - name: build
-        run: yarn backstage-cli package build
+        run: yarn build:all
 
-      # TODO: Reenable tests once written for plugin, check that they work in new version of backstage.
-      # - name: test
-      #   run: yarn backstage-cli package test
+      - name: test
+        run: yarn workspace @devoteamnl/open-dora-backstage-plugin test:coverage
 
       - name: publish
+        working-directory: backstage-plugin/plugins/open-dora
         run: yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,9 +2,10 @@ package validation
 
 import (
 	"fmt"
-	"github.com/devoteamnl/opendora/api/service"
 	"net/url"
 	"time"
+
+	"github.com/devoteamnl/opendora/api/service"
 )
 
 func validTypeQuery(queries url.Values) (string, bool) {
@@ -42,6 +43,46 @@ func validProjectQuery(queries url.Values) (string, bool) {
 	return projects[0], true
 }
 
+func validTimeQueries(queries url.Values, key string) (value time.Time, usesDefault bool, valid bool) {
+	times, exists := queries[key]
+	usesDefault = !exists || len(times) == 0
+	valid = len(times) <= 1
+	if usesDefault || !valid {
+		return
+	}
+	value, err := time.Parse(time.RFC3339, times[0])
+	valid = err == nil
+	return
+}
+
+func validToFromQueries(queries url.Values) (to time.Time, from time.Time, err error) {
+	now := time.Now()
+
+	to, toShouldUseDefault, valid := validTimeQueries(queries, "to")
+	if !valid {
+		err = fmt.Errorf("to should be provided as a RFC3339 formatted date string or omitted")
+		return
+	}
+	from, fromShouldUseDefault, valid := validTimeQueries(queries, "from")
+	if !valid {
+		err = fmt.Errorf("from should be provided as a RFC3339 formatted date string or omitted")
+		return
+	}
+
+	if toShouldUseDefault && fromShouldUseDefault {
+		return now, now.AddDate(0, -6, 0), nil
+	}
+	if toShouldUseDefault || fromShouldUseDefault {
+		err = fmt.Errorf("both to and from should be provided or both should be omitted")
+	} else if to.Compare(now) > 0 {
+		err = fmt.Errorf("to should not be a date in the future")
+	} else if from.Compare(to) > 0 {
+		err = fmt.Errorf("from should be a date before to")
+	}
+
+	return
+}
+
 func ValidServiceParameters(queries url.Values) (service.ServiceParameters, error) {
 	typeQuery, valid := validTypeQuery(queries)
 	if !valid {
@@ -56,8 +97,12 @@ func ValidServiceParameters(queries url.Values) (service.ServiceParameters, erro
 	if !valid {
 		return service.ServiceParameters{}, fmt.Errorf("project should be provided as a non-empty string or omitted")
 	}
-	to := time.Now().Unix()
-	from := to - (60 * 60 * 24 * 30 * 6)
 
-	return service.ServiceParameters{TypeQuery: typeQuery, Aggregation: aggregation, Project: project, To: to, From: from}, nil
+	to, from, err := validToFromQueries(queries)
+
+	if err != nil {
+		return service.ServiceParameters{}, err
+	}
+
+	return service.ServiceParameters{TypeQuery: typeQuery, Aggregation: aggregation, Project: project, To: to.Unix(), From: from.Unix()}, nil
 }

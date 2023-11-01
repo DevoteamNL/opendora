@@ -1,0 +1,22 @@
+.highlight {
+  text-align: center;
+  width: 100%;
+  font-size: 70px;
+}
+
+.notification {
+  text-align: right;
+  font-style: italic;
+}
+
+.warning {
+  color: #ffcc00;
+}
+
+.critical {
+  color: red;
+}
+
+.positiveHighlight {
+  color: #198754;
+}
