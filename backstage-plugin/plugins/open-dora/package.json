@@ -7,7 +7,7 @@
   "private": false,
   "repository": "https://github.com/DevoteamNL/opendora/",
   "publishConfig": {
-    "access": "restricted",
+    "access": "public",
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
