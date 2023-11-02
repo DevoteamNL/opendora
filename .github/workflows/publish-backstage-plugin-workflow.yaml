@@ -47,7 +47,7 @@ jobs:
         run: yarn build:all
 
       - name: test
-        run: yarn workspace @devoteamnl/open-dora-backstage-plugin test:coverage
+        run: yarn workspace open-dora-backstage-plugin test:coverage
 
       - name: publish
         working-directory: backstage-plugin/plugins/open-dora
