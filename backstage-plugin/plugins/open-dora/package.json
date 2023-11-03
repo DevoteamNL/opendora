@@ -1,5 +1,5 @@
 {
-  "name": "open-dora-backstage-plugin",
+  "name": "@devoteam-nl/open-dora-backstage-plugin",
   "version": "0.1.1",
   "main": "src/index.ts",
   "types": "src/index.ts",

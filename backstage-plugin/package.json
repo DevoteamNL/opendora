@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "concurrently \"yarn start\"",
-    "start": "yarn workspace open-dora-backstage-plugin start",
+    "start": "yarn workspace @devoteam-nl/open-dora-backstage-plugin start",
     "build:all": "backstage-cli repo build --all",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",

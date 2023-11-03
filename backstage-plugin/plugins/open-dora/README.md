@@ -10,7 +10,7 @@ This plugin allows you to see DORA metrics for the teams within Backstage.
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add open-dora-backstage-plugin
+yarn --cwd packages/app add @devoteam-nl/open-dora-backstage-plugin
 ```
 
 <!-- TODO Replace with a link to installation instructions for the helm chart -->
@@ -31,7 +31,7 @@ open-dora:
 
 ```jsx
 // In packages/app/src/App.tsx
-import { OpenDoraPluginPage } from 'open-dora-backstage-plugin';
+import { OpenDoraPluginPage } from '@devoteam-nl/open-dora-backstage-plugin';
 
 ...
 const routes = (
