@@ -1,0 +1,6 @@
+app:
+  baseUrl: http://localhost:3000
+backend:
+  baseUrl: http://localhost:7007
+open-dora:
+  apiBaseUrl: http://localhost:10666
