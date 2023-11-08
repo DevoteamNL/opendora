@@ -90,6 +90,12 @@ dora-api-mock:
         type: df_count
         aggregation: quarterly
         project: .+
+    - name: df_benchmark
+      path: /dora/api/benchmark
+      stubFile: stubs/benchmark/df/df_benchmark.json
+      mediaType: application/json
+      parameters:
+        type: df
 
 wiremock:
   server:
