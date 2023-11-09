@@ -52,6 +52,8 @@ jobs:
       - name: publish
         working-directory: backstage-plugin/plugins/open-dora
         run: |
+          # Replace the @devoteam-nl with @devoteamnl in package.json
+          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
           yarn version --new-version 0.0.$PR_NUMBER --no-git-tag-version
           yarn publish --non-interactive --tag pr
         env:
