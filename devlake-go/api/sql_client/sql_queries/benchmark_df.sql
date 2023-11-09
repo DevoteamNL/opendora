@@ -101,6 +101,7 @@ WITH last_few_calendar_months AS(
         ) U
     WHERE
         (SYSDATE() - INTERVAL (H + T + U) DAY) > FROM_UNIXTIME(:from)
+        AND (SYSDATE() - INTERVAL (H + T + U) DAY) < FROM_UNIXTIME(:to)
 ),
 _production_deployment_days AS(
     -- When deploying multiple commits in one pipeline, GitLab and BitBucket may generate more than one deployment. However, DevLake consider these deployments as ONE production deployment and use the last one's finished_date as the finished date.
@@ -109,7 +110,7 @@ _production_deployment_days AS(
         max(DATE(cdc.finished_date)) AS DAY
     FROM
         cicd_deployment_commits cdc
-        JOIN project_mapping pm ON cdc.cicd_scope_id = pm.row_id
+        JOIN repos ON cdc.repo_id = repos.id
     WHERE
         (
             :project = ""
