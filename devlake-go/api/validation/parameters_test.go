@@ -382,12 +382,6 @@ func Test_validServiceParameters(t *testing.T) {
 			expectServiceParameters: service.ServiceParameters{},
 			expectError:             "type should be provided as one of the following: df_average, df_count",
 		},
-		// {
-		// 	name:                    "should return an error for an invalid aggregation parameter",
-		// 	values:                  url.Values{"type": {"df_count"}, "aggregation": {"not_an_aggregation"}},
-		// 	expectServiceParameters: service.ServiceParameters{},
-		// 	expectError:             "aggregation should be provided as either weekly, monthly or quarterly",
-		// },
 		{
 			name:                    "should return an error for an invalid project parameter",
 			values:                  url.Values{"type": {"df_count"}, "project": {""}},
