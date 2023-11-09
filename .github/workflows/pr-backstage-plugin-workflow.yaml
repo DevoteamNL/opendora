@@ -52,7 +52,7 @@ jobs:
       - name: publish
         working-directory: backstage-plugin/plugins/open-dora
         run: |
-          yarn version 0.0.$PR_NUMBER
+          yarn version --new-version 0.0.$PR_NUMBER
           yarn publish --non-interactive --tag pr
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
