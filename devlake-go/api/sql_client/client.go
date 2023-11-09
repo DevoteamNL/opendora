@@ -2,9 +2,10 @@ package sql_client
 
 import (
 	"fmt"
-	"github.com/devoteamnl/opendora/api/models"
 	"log"
 	"os"
+
+	"github.com/devoteamnl/opendora/api/models"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -12,6 +13,7 @@ import (
 
 type ClientInterface interface {
 	QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error)
+	QueryBenchmark(query string, params QueryParams) (string, error)
 }
 
 type Client struct {
@@ -81,4 +83,30 @@ func (client Client) QueryDeployments(query string, params QueryParams) ([]model
 		return nil, err
 	}
 	return dataPoints, nil
+}
+
+func (client Client) QueryBenchmark(query string, params QueryParams) (string, error) {
+	if db == nil {
+		return "", fmt.Errorf("first connect to the database before querying benchmarks")
+	}
+	rows, err := db.NamedQuery(query, &params)
+	if err != nil {
+		return "", err
+	}
+
+	defer func(rows *sqlx.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(rows)
+	rows.Next()
+	response := models.BenchmarkResponse{}
+	if err := rows.StructScan(&response); err != nil {
+		return "", err
+	}
+	if err := rows.Err(); err != nil {
+		return "", err
+	}
+	return response.Key, nil
 }
