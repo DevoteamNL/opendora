@@ -55,11 +55,11 @@ type QueryParams struct {
 	Project string
 }
 
-func (client Client) QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error) {
+func queryRows[R models.DataPoint | models.BenchmarkResponse](query string, params QueryParams, makeStruct func() R) ([]R, error) {
 	if db == nil {
-		return nil, fmt.Errorf("first connect to the database before querying deployments")
+		return nil, fmt.Errorf("first connect to the database before querying")
 	}
-	var dataPoints []models.DataPoint
+	var responseRows []R
 	rows, err := db.NamedQuery(query, &params)
 	if err != nil {
 		return nil, err
@@ -73,40 +73,28 @@ func (client Client) QueryDeployments(query string, params QueryParams) ([]model
 	}(rows)
 
 	for rows.Next() {
-		dataPoint := models.DataPoint{}
+		dataPoint := makeStruct()
 		if err := rows.StructScan(&dataPoint); err != nil {
 			return nil, err
 		}
-		dataPoints = append(dataPoints, dataPoint)
+		responseRows = append(responseRows, dataPoint)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	return dataPoints, nil
+	return responseRows, nil
+}
+
+func (client Client) QueryDeployments(query string, params QueryParams) ([]models.DataPoint, error) {
+	return queryRows(query, params, func() models.DataPoint { return models.DataPoint{} })
 }
 
 func (client Client) QueryBenchmark(query string, params QueryParams) (string, error) {
-	if db == nil {
-		return "", fmt.Errorf("first connect to the database before querying benchmarks")
-	}
-	rows, err := db.NamedQuery(query, &params)
+	response, err := queryRows(query, params, func() models.BenchmarkResponse { return models.BenchmarkResponse{} })
+
 	if err != nil {
 		return "", err
 	}
 
-	defer func(rows *sqlx.Rows) {
-		err := rows.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(rows)
-	rows.Next()
-	response := models.BenchmarkResponse{}
-	if err := rows.StructScan(&response); err != nil {
-		return "", err
-	}
-	if err := rows.Err(); err != nil {
-		return "", err
-	}
-	return response.Key, nil
+	return response[0].Key, nil
 }
