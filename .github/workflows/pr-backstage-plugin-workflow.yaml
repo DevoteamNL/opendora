@@ -28,6 +28,8 @@ jobs:
           node-version: 18.x
           cache: "yarn"
           cache-dependency-path: backstage-plugin/yarn.lock
+          registry-url: https://npm.pkg.github.com/
+          always-auth: true
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -46,3 +48,12 @@ jobs:
 
       - name: test
         run: yarn workspace @devoteam-nl/open-dora-backstage-plugin test:coverage
+
+      - name: publish
+        working-directory: backstage-plugin/plugins/open-dora
+        run: |
+          yarn version 0.0.$PR_NUMBER
+          yarn publish --non-interactive --tag pr
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
