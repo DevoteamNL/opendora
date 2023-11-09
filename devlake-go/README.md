@@ -18,7 +18,7 @@ make run-sync
 
 ## api
 
-This HTTP server provides an endpoint to return metrics from DevLake. The [OpenAPI spec](api/openapi.yaml) outlines the path and query parameters to use the endpoint as well as the expected response.
+This HTTP server provides an endpoint to return metrics from DevLake. The [OpenAPI spec](../dora-api-mock/src/main/resources/openapi.yaml) outlines the path and query parameters to use the endpoint as well as the expected response.
 
 ### To start the server
 
