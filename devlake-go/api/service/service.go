@@ -12,10 +12,6 @@ type ServiceParameters struct {
 	From        int64
 }
 
-type MetricService interface {
-	ServeRequest(params ServiceParameters) (models.MetricResponse, error)
-}
-
-type BenchmarkService interface {
-	ServeRequest(params ServiceParameters) (models.BenchmarkResponse, error)
+type Service[R models.Response] interface {
+	ServeRequest(params ServiceParameters) (R, error)
 }

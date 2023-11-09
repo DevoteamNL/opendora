@@ -7,12 +7,16 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/devoteamnl/opendora/api/models"
 	"github.com/devoteamnl/opendora/api/service"
 	"github.com/devoteamnl/opendora/api/sql_client"
 	"github.com/devoteamnl/opendora/api/validation"
 )
 
-func handler(validateParameters func(queries url.Values) (service.ServiceParameters, error), serveRequest func(service.ServiceParameters) (any, error)) func(w http.ResponseWriter, r *http.Request) {
+func handler[R models.Response](
+	validateParameters func(queries url.Values) (service.ServiceParameters, error),
+	serviceMap map[string]service.Service[R],
+) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queries := r.URL.Query()
 		parameters, err := validateParameters(queries)
@@ -21,7 +25,7 @@ func handler(validateParameters func(queries url.Values) (service.ServiceParamet
 			return
 		}
 
-		response, err := serveRequest(parameters)
+		response, err := serviceMap[parameters.TypeQuery].ServeRequest(parameters)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -40,25 +44,21 @@ func handler(validateParameters func(queries url.Values) (service.ServiceParamet
 
 func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
 	dfService := service.MetricDfService{Client: client}
-	serviceMap := map[string]service.MetricService{
+	serviceMap := map[string]service.Service[models.MetricResponse]{
 		"df_count":   dfService,
 		"df_average": dfService,
 	}
 
-	return handler(validation.ValidMetricServiceParameters, func(parameters service.ServiceParameters) (any, error) {
-		return serviceMap[parameters.TypeQuery].ServeRequest(parameters)
-	})
+	return handler(validation.ValidMetricServiceParameters, serviceMap)
 }
 
 func benchmarkHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
 	dfService := service.BenchmarkDfService{Client: client}
-	serviceMap := map[string]service.BenchmarkService{
+	serviceMap := map[string]service.Service[models.BenchmarkResponse]{
 		"df": dfService,
 	}
 
-	return handler(validation.ValidBenchmarkServiceParameters, func(parameters service.ServiceParameters) (any, error) {
-		return serviceMap[parameters.TypeQuery].ServeRequest(parameters)
-	})
+	return handler(validation.ValidBenchmarkServiceParameters, serviceMap)
 }
 
 func main() {
