@@ -20,7 +20,7 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		queries := r.URL.Query()
-		parameters, err := validation.ValidServiceParameters(queries)
+		parameters, err := validation.ValidMetricServiceParameters(queries)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
