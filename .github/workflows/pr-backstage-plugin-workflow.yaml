@@ -42,6 +42,7 @@ jobs:
 
   publish:
     name: type-check, build, and publish
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
       run:
@@ -77,12 +78,11 @@ jobs:
           preferLatestVersion: true
 
       - name: Determine Version
-        id: gitversion # id to later be referenced
+        id: gitversion
         uses: gittools/actions/gitversion/execute@v0
 
       - name: publish
         working-directory: backstage-plugin/plugins/open-dora
-        runs-on: ubuntu-latest
         run: |
           # Replace the @devoteam-nl with @devoteamnl in package.json
           sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
