@@ -11,10 +11,9 @@ on:
 
 jobs:
   verify:
-    name: install, lint, format, type-check, build, test
+    name: install, lint, format, test
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     defaults:
       run:
         working-directory: backstage-plugin
@@ -38,11 +37,57 @@ jobs:
       - name: format
         run: yarn prettier:check
 
+      - name: test
+        run: yarn workspace @devoteam-nl/open-dora-backstage-plugin test:coverage
+
+  publish:
+    name: type-check, build, and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backstage-plugin
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "yarn"
+          cache-dependency-path: backstage-plugin/yarn.lock
+          registry-url: https://npm.pkg.github.com/
+          always-auth: true
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: type checking and declarations
         run: yarn tsc
 
       - name: build
         run: yarn build:all
 
-      - name: test
-        run: yarn workspace @devoteam-nl/open-dora-backstage-plugin test:coverage
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0
+        with:
+          versionSpec: "5.x"
+          preferLatestVersion: true
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0
+
+      - name: publish
+        working-directory: backstage-plugin/plugins/open-dora
+        run: |
+          # Replace the @devoteam-nl with @devoteamnl in package.json
+          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
+          yarn version --new-version ${{ steps.gitversion.outputs.fullSemVer }} --no-git-tag-version
+          yarn publish --non-interactive --tag pr
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
