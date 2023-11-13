@@ -6,7 +6,7 @@ import {
 import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
 import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { ApiProvider } from '@backstage/core-app-api';
-import { fireEvent, screen, act, getAllByRole } from '@testing-library/react';
+import { fireEvent, screen, act } from '@testing-library/react';
 import { MetricData } from '../../models/MetricData';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import type { EntityRelation } from '@backstage/catalog-model';
