@@ -15,6 +15,7 @@ import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
+import { ChartErrors } from '../../models/CustomErrors';
 
 export interface DashboardComponentProps {
   entityName?: string;
@@ -25,10 +26,13 @@ export const DashboardComponent = ({
   entityGroup,
 }: DashboardComponentProps) => {
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
+  const [chartDataAverage, setChartDataAverage] =
+    React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-  const [dataError, setDataError] = React.useState<Error | undefined>(
-    undefined,
-  );
+  const [dataError, setDataError] = React.useState<ChartErrors>({
+    countError: null,
+    averageError: null,
+  });
 
   const groupDataService = useApi(groupDataServiceApiRef);
 
@@ -45,13 +49,41 @@ export const DashboardComponent = ({
           setChartData(response);
         },
         (error: Error) => {
-          setDataError(error);
+          setDataError({
+            ...dataError,
+            countError: error,
+          });
+        },
+      );
+
+    groupDataService
+      .retrieveMetricDataPoints({
+        type: 'df_average',
+        team: entityGroup,
+        aggregation: selectedTimeUnit,
+        project: entityName,
+      })
+      .then(
+        response => {
+          setChartDataAverage(response);
+        },
+        (error: Error) => {
+          setDataError({
+            ...dataError,
+            averageError: error,
+          });
         },
       );
   }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />
+  ) : (
+    <Progress variant="indeterminate" />
+  );
+
+  const chartOrProgressComponentAverage = chartDataAverage ? (
+    <BarChartComponent metricData={chartDataAverage} />
   ) : (
     <Progress variant="indeterminate" />
   );
@@ -83,10 +115,20 @@ export const DashboardComponent = ({
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
                 <h1>Deployment Frequency</h1>
-                {dataError ? (
-                  <ResponseErrorPanel error={dataError} />
+                {dataError.countError ? (
+                  <ResponseErrorPanel error={dataError.countError} />
                 ) : (
                   chartOrProgressComponent
+                )}
+              </div>
+            </Grid>
+            <Grid item xs={12} className="gridBorder">
+              <div className="gridBoxText">
+                <h1>Deployment Frequency Average</h1>
+                {dataError.averageError ? (
+                  <ResponseErrorPanel error={dataError.averageError} />
+                ) : (
+                  chartOrProgressComponentAverage
                 )}
               </div>
             </Grid>
