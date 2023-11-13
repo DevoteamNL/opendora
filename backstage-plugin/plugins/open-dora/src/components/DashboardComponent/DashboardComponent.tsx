@@ -9,7 +9,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { MetricData } from '../../models/MetricData';
 import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
@@ -21,6 +21,17 @@ export interface DashboardComponentProps {
   entityName?: string;
   entityGroup?: string;
 }
+
+function dataErrorReducer(
+  currentErrors: ChartErrors,
+  action: { type: keyof ChartErrors; error: Error },
+) {
+  return {
+    ...currentErrors,
+    [action.type]: action.error,
+  };
+}
+
 export const DashboardComponent = ({
   entityName,
   entityGroup,
@@ -29,10 +40,12 @@ export const DashboardComponent = ({
   const [chartDataAverage, setChartDataAverage] =
     React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-  const [dataError, setDataError] = React.useState<ChartErrors>({
-    countError: null,
-    averageError: null,
-  });
+
+  const initialErrors: ChartErrors = { countError: null, averageError: null };
+
+  // const [dataError, setDataError] = React.useState<ChartErrors>(initialErrors);
+
+  const [dataError, dispatch] = useReducer(dataErrorReducer, initialErrors);
 
   const groupDataService = useApi(groupDataServiceApiRef);
 
@@ -49,9 +62,9 @@ export const DashboardComponent = ({
           setChartData(response);
         },
         (error: Error) => {
-          setDataError({
-            ...dataError,
-            countError: error,
+          dispatch({
+            type: 'countError',
+            error: error,
           });
         },
       );
@@ -68,9 +81,9 @@ export const DashboardComponent = ({
           setChartDataAverage(response);
         },
         (error: Error) => {
-          setDataError({
-            ...dataError,
-            averageError: error,
+          dispatch({
+            type: 'averageError',
+            error: error,
           });
         },
       );
