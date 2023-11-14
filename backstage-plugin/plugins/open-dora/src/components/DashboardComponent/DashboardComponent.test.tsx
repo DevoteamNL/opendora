@@ -6,7 +6,7 @@ import {
 import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
 import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { ApiProvider } from '@backstage/core-app-api';
-import { fireEvent, screen, act, getAllByRole } from '@testing-library/react';
+import { fireEvent, screen, act, queryAllByText } from '@testing-library/react';
 import { MetricData } from '../../models/MetricData';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import type { EntityRelation } from '@backstage/catalog-model';
@@ -215,10 +215,11 @@ describe('DashboardComponent', () => {
   });
 
   it('should show the error returned from the service', async () => {
-    const { queryByText } = await renderDashboardComponent(
+    const { queryAllByText } = await renderDashboardComponent(
       jest.fn().mockRejectedValue({ status: 500, message: 'server error' }),
     );
-    expect(queryByText('server error')).not.toBeNull();
+    expect(queryAllByText('server error')).not.toBeNull();
+    expect(queryAllByText('server error')).toHaveLength(2);
   });
 });
 
