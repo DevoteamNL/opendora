@@ -43,8 +43,6 @@ export const DashboardComponent = ({
 
   const initialErrors: ChartErrors = { countError: null, averageError: null };
 
-  // const [dataError, setDataError] = React.useState<ChartErrors>(initialErrors);
-
   const [dataError, dispatch] = useReducer(dataErrorReducer, initialErrors);
 
   const groupDataService = useApi(groupDataServiceApiRef);
