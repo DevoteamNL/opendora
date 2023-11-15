@@ -16,7 +16,10 @@ This REST API provides an endpoint to return DORA metrics from DevLake. The [Ope
 ```sh
 docker pull ghcr.io/devoteamnl/opendora/opendora-api:tag
 ```
-- Run the container with env arguments to connect to DevLake (Replace env details with ones used to setup your DevLake instance. If running DevLake on Docker you may need to create a bridge network to connect the two):
+- Run the container with env arguments to connect to DevLake:
+    - Replace env details with ones used to setup your DevLake instance
+    - If running DevLake on Docker you may need to create a bridge network to connect the two
+    - The server exposes port 10666 for the REST endpoints, make sure to bind/expose this: `-p 127.0.0.1:10666:10666/tcp`
 ```sh
-docker run --name go-api -e DEVLAKE_DBUSER=merico -e DEVLAKE_DBPASS=merico -e DEVLAKE_DBADDRESS=localhost:3306 -e DEVLAKE_DBNAME=lake -d ghcr.io/devoteamnl/opendora/opendora-api:tag
+docker run --name go-api -p 127.0.0.1:10666:10666/tcp -e DEVLAKE_DBUSER=merico -e DEVLAKE_DBPASS=merico -e DEVLAKE_DBADDRESS=localhost:3306 -e DEVLAKE_DBNAME=lake -d ghcr.io/devoteamnl/opendora/opendora-api:tag
 ```
