@@ -56,7 +56,7 @@ func Test_validTypeQuery(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			typeQuery, valid := validTypeQuery(tt.values)
+			typeQuery, valid := validTypeQuery(tt.values, []string{"df_average", "df_count"})
 
 			if valid != tt.expectValid {
 				t.Errorf("expected '%t' got '%t'", tt.expectValid, valid)
@@ -368,7 +368,7 @@ func partialParameterMatch(parametersA service.ServiceParameters, parametersB se
 		unixTimesAreAlmostEqual(parametersA.To, parametersB.To) && unixTimesAreAlmostEqual(parametersA.From, parametersB.From)
 }
 
-func Test_ValidServiceParameters(t *testing.T) {
+func Test_validServiceParameters(t *testing.T) {
 	now := time.Now()
 	tests := []struct {
 		name                    string
@@ -380,13 +380,7 @@ func Test_ValidServiceParameters(t *testing.T) {
 			name:                    "should return an error for an invalid type parameter",
 			values:                  url.Values{"type": {"not_a_type"}},
 			expectServiceParameters: service.ServiceParameters{},
-			expectError:             "type should be provided as either df_average or df_count",
-		},
-		{
-			name:                    "should return an error for an invalid aggregation parameter",
-			values:                  url.Values{"type": {"df_count"}, "aggregation": {"not_an_aggregation"}},
-			expectServiceParameters: service.ServiceParameters{},
-			expectError:             "aggregation should be provided as either weekly, monthly or quarterly",
+			expectError:             "type should be provided as one of the following: df_average, df_count",
 		},
 		{
 			name:                    "should return an error for an invalid project parameter",
@@ -407,6 +401,51 @@ func Test_ValidServiceParameters(t *testing.T) {
 			expectError:             "from should be provided as a RFC3339 formatted date string or omitted",
 		},
 		{
+			name:                    "should return service parameters with defaults for project, to and from",
+			values:                  url.Values{"type": {"df_count"}},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Project: "", To: now.Unix(), From: now.AddDate(0, -6, 0).Unix()},
+			expectError:             "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			parameters, err := validServiceParameters(tt.values, []string{"df_average", "df_count"})
+
+			if err == nil && tt.expectError != "" {
+				t.Errorf("expected '%v' got no error", tt.expectError)
+			}
+			if err != nil && err.Error() != tt.expectError {
+				t.Errorf("expected '%v' got '%v'", tt.expectError, err)
+			}
+			if !partialParameterMatch(parameters, tt.expectServiceParameters) {
+				t.Errorf("expected '%v' got '%v'", tt.expectServiceParameters, parameters)
+			}
+		})
+	}
+}
+
+func Test_ValidMetricServiceParameters(t *testing.T) {
+	now := time.Now()
+	tests := []struct {
+		name                    string
+		values                  url.Values
+		expectServiceParameters service.ServiceParameters
+		expectError             string
+	}{
+		{
+			name:                    "should return an error for an invalid type parameter",
+			values:                  url.Values{"type": {"df"}},
+			expectServiceParameters: service.ServiceParameters{},
+			expectError:             "type should be provided as one of the following: df_count, df_average",
+		},
+		{
+			name:                    "should return an error for an invalid aggregation parameter",
+			values:                  url.Values{"type": {"df_count"}, "aggregation": {"not_an_aggregation"}},
+			expectServiceParameters: service.ServiceParameters{},
+			expectError:             "aggregation should be provided as either weekly, monthly or quarterly",
+		},
+		{
 			name:                    "should return service parameters with defaults for aggregation, project, to and from",
 			values:                  url.Values{"type": {"df_count"}},
 			expectServiceParameters: service.ServiceParameters{TypeQuery: "df_count", Aggregation: "weekly", Project: "", To: now.Unix(), From: now.AddDate(0, -6, 0).Unix()},
@@ -416,7 +455,46 @@ func Test_ValidServiceParameters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parameters, err := ValidServiceParameters(tt.values)
+			parameters, err := ValidMetricServiceParameters(tt.values)
+
+			if err == nil && tt.expectError != "" {
+				t.Errorf("expected '%v' got no error", tt.expectError)
+			}
+			if err != nil && err.Error() != tt.expectError {
+				t.Errorf("expected '%v' got '%v'", tt.expectError, err)
+			}
+			if !partialParameterMatch(parameters, tt.expectServiceParameters) {
+				t.Errorf("expected '%v' got '%v'", tt.expectServiceParameters, parameters)
+			}
+		})
+	}
+}
+
+func Test_ValidBenchmarkServiceParameters(t *testing.T) {
+	now := time.Now()
+	tests := []struct {
+		name                    string
+		values                  url.Values
+		expectServiceParameters service.ServiceParameters
+		expectError             string
+	}{
+		{
+			name:                    "should return an error for an invalid type parameter",
+			values:                  url.Values{"type": {"df_average"}},
+			expectServiceParameters: service.ServiceParameters{},
+			expectError:             "type should be provided as one of the following: df",
+		},
+		{
+			name:                    "should return service parameters with defaults for project, to and from",
+			values:                  url.Values{"type": {"df"}},
+			expectServiceParameters: service.ServiceParameters{TypeQuery: "df", Project: "", To: now.Unix(), From: now.AddDate(0, -6, 0).Unix()},
+			expectError:             "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			parameters, err := ValidBenchmarkServiceParameters(tt.values)
 
 			if err == nil && tt.expectError != "" {
 				t.Errorf("expected '%v' got no error", tt.expectError)

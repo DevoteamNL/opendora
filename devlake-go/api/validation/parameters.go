@@ -3,18 +3,20 @@ package validation
 import (
 	"fmt"
 	"net/url"
+	"slices"
+	"strings"
 	"time"
 
 	"github.com/devoteamnl/opendora/api/service"
 )
 
-func validTypeQuery(queries url.Values) (string, bool) {
+func validTypeQuery(queries url.Values, validTypes []string) (string, bool) {
 	metricTypes, exists := queries["type"]
 	if !exists || len(metricTypes) != 1 {
 		return "", false
 	}
 	query := metricTypes[0]
-	return query, query == "df_count" || query == "df_average"
+	return query, slices.Contains(validTypes, query)
 }
 
 func validAggregationQuery(queries url.Values) (string, bool) {
@@ -83,15 +85,11 @@ func validToFromQueries(queries url.Values) (to time.Time, from time.Time, err e
 	return
 }
 
-func ValidServiceParameters(queries url.Values) (service.ServiceParameters, error) {
-	typeQuery, valid := validTypeQuery(queries)
+func validServiceParameters(queries url.Values, validTypes []string) (service.ServiceParameters, error) {
+	typeQuery, valid := validTypeQuery(queries, validTypes)
 	if !valid {
-		return service.ServiceParameters{}, fmt.Errorf("type should be provided as either df_average or df_count")
-	}
-	aggregation, valid := validAggregationQuery(queries)
-	if !valid {
-		return service.ServiceParameters{}, fmt.Errorf("aggregation should be provided as either weekly, monthly or quarterly")
-
+		return service.ServiceParameters{}, fmt.Errorf("type should be provided as one of the following: %s",
+			strings.Join(validTypes, ", "))
 	}
 	project, valid := validProjectQuery(queries)
 	if !valid {
@@ -104,5 +102,24 @@ func ValidServiceParameters(queries url.Values) (service.ServiceParameters, erro
 		return service.ServiceParameters{}, err
 	}
 
-	return service.ServiceParameters{TypeQuery: typeQuery, Aggregation: aggregation, Project: project, To: to.Unix(), From: from.Unix()}, nil
+	return service.ServiceParameters{TypeQuery: typeQuery, Project: project, To: to.Unix(), From: from.Unix()}, nil
+}
+
+func ValidBenchmarkServiceParameters(queries url.Values) (service.ServiceParameters, error) {
+	return validServiceParameters(queries, []string{"df"})
+}
+
+func ValidMetricServiceParameters(queries url.Values) (service.ServiceParameters, error) {
+	aggregation, valid := validAggregationQuery(queries)
+	if !valid {
+		return service.ServiceParameters{}, fmt.Errorf("aggregation should be provided as either weekly, monthly or quarterly")
+	}
+
+	serviceParameters, err := validServiceParameters(queries, []string{"df_count", "df_average"})
+	if err != nil {
+		return serviceParameters, err
+	}
+	serviceParameters.Aggregation = aggregation
+
+	return serviceParameters, err
 }

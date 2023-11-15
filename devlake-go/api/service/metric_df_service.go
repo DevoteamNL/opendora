@@ -6,11 +6,11 @@ import (
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
-type DfService struct {
+type MetricDfService struct {
 	Client sql_client.ClientInterface
 }
 
-func (service DfService) ServeRequest(params ServiceParameters) (models.Response, error) {
+func (service MetricDfService) ServeRequest(params ServiceParameters) (models.MetricResponse, error) {
 	aggregationQueryMap := map[string]string{
 		"weekly":    sql_queries.WeeklyDeploymentSql,
 		"monthly":   sql_queries.MonthlyDeploymentSql,
@@ -26,5 +26,5 @@ func (service DfService) ServeRequest(params ServiceParameters) (models.Response
 
 	dataPoints, err := service.Client.QueryDeployments(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 
-	return models.Response{Aggregation: params.Aggregation, DataPoints: dataPoints}, err
+	return models.MetricResponse{Aggregation: params.Aggregation, DataPoints: dataPoints}, err
 }

@@ -5,22 +5,21 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 
+	"github.com/devoteamnl/opendora/api/models"
 	"github.com/devoteamnl/opendora/api/service"
 	"github.com/devoteamnl/opendora/api/sql_client"
 	"github.com/devoteamnl/opendora/api/validation"
 )
 
-func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
-	dfService := service.DfService{Client: client}
-	serviceMap := map[string]service.Service{
-		"df_count":   dfService,
-		"df_average": dfService,
-	}
-
+func handler[R models.Response](
+	validateParameters func(queries url.Values) (service.ServiceParameters, error),
+	serviceMap map[string]service.Service[R],
+) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queries := r.URL.Query()
-		parameters, err := validation.ValidServiceParameters(queries)
+		parameters, err := validateParameters(queries)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -43,8 +42,29 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 	}
 }
 
+func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
+	dfService := service.MetricDfService{Client: client}
+	serviceMap := map[string]service.Service[models.MetricResponse]{
+		"df_count":   dfService,
+		"df_average": dfService,
+	}
+
+	return handler(validation.ValidMetricServiceParameters, serviceMap)
+}
+
+func benchmarkHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
+	dfService := service.BenchmarkDfService{Client: client}
+	serviceMap := map[string]service.Service[models.BenchmarkResponse]{
+		"df": dfService,
+	}
+
+	return handler(validation.ValidBenchmarkServiceParameters, serviceMap)
+}
+
 func main() {
-	http.HandleFunc("/dora/api/metric", metricHandler(sql_client.New()))
+	sqlClient := sql_client.New()
+	http.HandleFunc("/dora/api/metric", metricHandler(sqlClient))
+	http.HandleFunc("/dora/api/benchmark", benchmarkHandler(sqlClient))
 	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")

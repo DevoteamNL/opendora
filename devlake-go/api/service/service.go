@@ -12,6 +12,6 @@ type ServiceParameters struct {
 	From        int64
 }
 
-type Service interface {
-	ServeRequest(params ServiceParameters) (models.Response, error)
+type Service[R models.Response] interface {
+	ServeRequest(params ServiceParameters) (R, error)
 }
