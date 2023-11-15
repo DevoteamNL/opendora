@@ -2,8 +2,8 @@
 
 This repo contains all the projects needed to start development on the OpenDORA backstage plugin for DORA metrics.
 
-![Backstage Plugin](.github\workflows\pr-backstage-plugin-workflow.yaml/badge.svg)
-![API](.github\workflows\pr-go-workflow.yaml/badge.svg)
+![Backstage Plugin](.github/workflows/pr-backstage-plugin-workflow.yaml/badge.svg)
+![API](.github/workflows/pr-go-workflow.yaml/badge.svg)
 [![Plugin version](https://img.shields.io/github/package-json/v/devoteamnl/opendora?label=plugin&filename=backstage-plugin%2Fplugins%2Fopen-dora%2Fpackage.json)](https://www.npmjs.com/package/@devoteam-nl/open-dora-backstage-plugin)
 
 ![Screenshot of the main OpenDORA dashboard](screenshot.png)
