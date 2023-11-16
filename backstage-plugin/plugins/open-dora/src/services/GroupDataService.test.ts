@@ -1,26 +1,28 @@
 import { MockConfigApi } from '@backstage/test-utils';
-import { http, HttpResponse } from 'msw';
+import { rest } from 'msw';
 import { server } from '../setupTests';
 import { GroupDataService } from './GroupDataService';
 
 function createService() {
   server.use(
-    http.get('http://localhost:10666/dora/api/metric', ({ request }) => {
-      const params = new URL(request.url).searchParams;
+    rest.get('http://localhost:10666/dora/api/metric', (req, res, ctx) => {
+      const params = req.url.searchParams;
       const type = params.get('type');
       const aggregation = params.get('aggregation');
       const project = params.get('project');
       const team = params.get('team');
 
-      return HttpResponse.json({
-        aggregation: aggregation || 'weekly',
-        dataPoints: [
-          {
-            key: `${project}_${team}_${aggregation}_${type}_first_key`,
-            value: 1.0,
-          },
-        ],
-      });
+      return res(
+        ctx.json({
+          aggregation: aggregation || 'weekly',
+          dataPoints: [
+            {
+              key: `${project}_${team}_${aggregation}_${type}_first_key`,
+              value: 1.0,
+            },
+          ],
+        }),
+      );
     }),
   );
   const mockConfig = new MockConfigApi({
@@ -64,8 +66,8 @@ describe('GroupDataService', () => {
     const service = createService();
 
     server.use(
-      http.get('http://localhost:10666/dora/api/metric', () => {
-        return HttpResponse.json({ other: 'data' });
+      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+        return res(ctx.json({ other: 'data' }));
       }),
     );
     await expect(
@@ -79,8 +81,8 @@ describe('GroupDataService', () => {
     const service = createService();
 
     server.use(
-      http.get('http://localhost:10666/dora/api/metric', () => {
-        return HttpResponse.error();
+      rest.get('http://localhost:10666/dora/api/metric', (_, res) => {
+        return res.networkError('Host unreachable');
       }),
     );
     await expect(
@@ -94,8 +96,8 @@ describe('GroupDataService', () => {
     const service = createService();
 
     server.use(
-      http.get('http://localhost:10666/dora/api/metric', () => {
-        return new HttpResponse(null, { status: 401 });
+      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+        return res(ctx.status(401));
       }),
     );
     await expect(
@@ -105,8 +107,8 @@ describe('GroupDataService', () => {
     ).rejects.toEqual(new Error('Unauthorized'));
 
     server.use(
-      http.get('http://localhost:10666/dora/api/metric', () => {
-        return new HttpResponse(null, { status: 500 });
+      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+        return res(ctx.status(500));
       }),
     );
     await expect(
