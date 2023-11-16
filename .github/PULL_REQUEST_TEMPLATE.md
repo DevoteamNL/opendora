@@ -6,7 +6,7 @@
 
 <!-- Add the issue number/link that this change addresses. -->
 
-This PR address issue #[issue-number].
+This PR addresses issue #[issue-number].
 
 ### Contribution Checklist:
 
