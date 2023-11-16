@@ -72,7 +72,7 @@
       ]
     },
     "setupFiles": [
-      "./jest.polyfills.js"
+      "../testing/jest.polyfills.js"
     ]
   }
 }

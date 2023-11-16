@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import 'cross-fetch/polyfill';
 import { setupServer } from 'msw/node';
-import { handlers } from './mswHandlers';
+import { handlers } from '../testing/mswHandlers';
 
 export const server = setupServer(...handlers);
 
