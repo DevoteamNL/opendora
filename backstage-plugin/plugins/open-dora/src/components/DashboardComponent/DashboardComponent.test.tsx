@@ -9,6 +9,7 @@ import {
 import { act, fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import React from 'react';
+import { baseUrl, metricUrl } from '../../../testing/mswHandlers';
 import {
   GroupDataService,
   groupDataServiceApiRef,
@@ -21,7 +22,7 @@ import {
 
 async function renderComponentWithApis(component: JSX.Element) {
   const mockConfig = new MockConfigApi({
-    'open-dora': { apiBaseUrl: 'http://localhost:10666' },
+    'open-dora': { apiBaseUrl: baseUrl },
   });
 
   const apiRegistry = TestApiRegistry.from([
@@ -58,7 +59,7 @@ describe('DashboardComponent', () => {
 
   it('should show graphs for deployment frequency data', async () => {
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (req, res, ctx) => {
+      rest.get(metricUrl, (req, res, ctx) => {
         const type = req.url.searchParams.get('type');
         return res(
           ctx.json({
@@ -87,7 +88,7 @@ describe('DashboardComponent', () => {
 
   it('should retrieve new data when the aggregation is changed', async () => {
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (req, res, ctx) => {
+      rest.get(metricUrl, (req, res, ctx) => {
         const params = req.url.searchParams;
         const type = params.get('type');
         const aggregation = params.get('aggregation');
@@ -128,18 +129,15 @@ describe('DashboardComponent', () => {
     });
 
     server.use(
-      rest.get(
-        'http://localhost:10666/dora/api/metric',
-        async (_, res, ctx) => {
-          await new Promise(resolve => setTimeout(resolve, 10000));
-          return res(
-            ctx.json({
-              aggregation: 'weekly',
-              dataPoints: [{ key: `first_key`, value: 1.0 }],
-            }),
-          );
-        },
-      ),
+      rest.get(metricUrl, async (_, res, ctx) => {
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        return res(
+          ctx.json({
+            aggregation: 'weekly',
+            dataPoints: [{ key: `first_key`, value: 1.0 }],
+          }),
+        );
+      }),
     );
 
     const { queryByText, queryByRole, findAllByRole, queryAllByText } =
@@ -158,7 +156,7 @@ describe('DashboardComponent', () => {
 
   it('should show the error returned from the service', async () => {
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+      rest.get(metricUrl, (_, res, ctx) => {
         return res(ctx.status(401));
       }),
     );
@@ -166,7 +164,7 @@ describe('DashboardComponent', () => {
     expect(queryAllByText('Error: Unauthorized')).toHaveLength(2);
 
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (_, res) => {
+      rest.get(metricUrl, (_, res) => {
         return res.networkError('Host unreachable');
       }),
     );
@@ -184,7 +182,7 @@ describe('DashboardComponent', () => {
 describe('EntityDashboardComponent', () => {
   function renderEntityDashboardComponent(relations?: EntityRelation[]) {
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (req, res, ctx) => {
+      rest.get(metricUrl, (req, res, ctx) => {
         const params = req.url.searchParams;
         const type = params.get('type');
         const aggregation = params.get('aggregation');

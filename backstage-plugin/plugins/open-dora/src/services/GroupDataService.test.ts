@@ -1,11 +1,12 @@
 import { MockConfigApi } from '@backstage/test-utils';
 import { rest } from 'msw';
+import { baseUrl, metricUrl } from '../../testing/mswHandlers';
 import { server } from '../setupTests';
 import { GroupDataService } from './GroupDataService';
 
 function createService() {
   server.use(
-    rest.get('http://localhost:10666/dora/api/metric', (req, res, ctx) => {
+    rest.get(metricUrl, (req, res, ctx) => {
       const params = req.url.searchParams;
       const type = params.get('type');
       const aggregation = params.get('aggregation');
@@ -26,7 +27,7 @@ function createService() {
     }),
   );
   const mockConfig = new MockConfigApi({
-    'open-dora': { apiBaseUrl: 'http://localhost:10666' },
+    'open-dora': { apiBaseUrl: baseUrl },
   });
 
   return new GroupDataService({ configApi: mockConfig });
@@ -66,7 +67,7 @@ describe('GroupDataService', () => {
     const service = createService();
 
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+      rest.get(metricUrl, (_, res, ctx) => {
         return res(ctx.json({ other: 'data' }));
       }),
     );
@@ -81,7 +82,7 @@ describe('GroupDataService', () => {
     const service = createService();
 
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (_, res) => {
+      rest.get(metricUrl, (_, res) => {
         return res.networkError('Host unreachable');
       }),
     );
@@ -96,7 +97,7 @@ describe('GroupDataService', () => {
     const service = createService();
 
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+      rest.get(metricUrl, (_, res, ctx) => {
         return res(ctx.status(401));
       }),
     );
@@ -107,7 +108,7 @@ describe('GroupDataService', () => {
     ).rejects.toEqual(new Error('Unauthorized'));
 
     server.use(
-      rest.get('http://localhost:10666/dora/api/metric', (_, res, ctx) => {
+      rest.get(metricUrl, (_, res, ctx) => {
         return res(ctx.status(500));
       }),
     );
