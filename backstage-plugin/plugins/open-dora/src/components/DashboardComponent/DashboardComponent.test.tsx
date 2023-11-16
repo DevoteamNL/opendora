@@ -1,15 +1,15 @@
+import type { EntityRelation } from '@backstage/catalog-model';
+import { ApiProvider } from '@backstage/core-app-api';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
+import { act, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { MetricData } from '../../models/MetricData';
+import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import {
   DashboardComponent,
   EntityDashboardComponent,
 } from './DashboardComponent';
-import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
-import { groupDataServiceApiRef } from '../../services/GroupDataService';
-import { ApiProvider } from '@backstage/core-app-api';
-import { fireEvent, screen, act } from '@testing-library/react';
-import { MetricData } from '../../models/MetricData';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
-import type { EntityRelation } from '@backstage/catalog-model';
 
 async function renderComponentWithApis(
   component: JSX.Element,
@@ -220,6 +220,18 @@ describe('DashboardComponent', () => {
     );
     expect(queryAllByText('server error')).not.toBeNull();
     expect(queryAllByText('server error')).toHaveLength(2);
+  });
+
+  // TODO #71: Replace this with a test for MetricDataHook/MetricContext specifically
+  it('should show error if there are no datapoints', async () => {
+    const { queryAllByText } = await renderDashboardComponent(
+      jest.fn().mockResolvedValue({
+        aggregation: 'weekly',
+        dataPoints: [],
+      }),
+    );
+    expect(queryAllByText('No data found')).not.toBeNull();
+    expect(queryAllByText('No data found')).toHaveLength(2);
   });
 });
 

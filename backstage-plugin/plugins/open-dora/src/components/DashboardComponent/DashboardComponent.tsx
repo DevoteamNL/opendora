@@ -6,86 +6,22 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
-import React, { useEffect, useReducer } from 'react';
-import { MetricData } from '../../models/MetricData';
-import { groupDataServiceApiRef } from '../../services/GroupDataService';
+import React from 'react';
+import { MetricContext } from '../../services/MetricContext';
+import { useMetricData } from '../../services/MetricDataHook';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
-import { ChartErrors } from '../../models/CustomErrors';
 
 export interface DashboardComponentProps {
   entityName?: string;
   entityGroup?: string;
 }
 
-function dataErrorReducer(
-  currentErrors: ChartErrors,
-  action: { type: keyof ChartErrors; error: Error },
-) {
-  return {
-    ...currentErrors,
-    [action.type]: action.error,
-  };
-}
-
-export const DashboardComponent = ({
-  entityName,
-  entityGroup,
-}: DashboardComponentProps) => {
-  const [chartData, setChartData] = React.useState<MetricData | null>(null);
-  const [chartDataAverage, setChartDataAverage] =
-    React.useState<MetricData | null>(null);
-  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-
-  const initialErrors: ChartErrors = { countError: null, averageError: null };
-
-  const [dataError, dispatch] = useReducer(dataErrorReducer, initialErrors);
-
-  const groupDataService = useApi(groupDataServiceApiRef);
-
-  useEffect(() => {
-    groupDataService
-      .retrieveMetricDataPoints({
-        type: 'df_count',
-        team: entityGroup,
-        aggregation: selectedTimeUnit,
-        project: entityName,
-      })
-      .then(
-        response => {
-          setChartData(response);
-        },
-        (error: Error) => {
-          dispatch({
-            type: 'countError',
-            error: error,
-          });
-        },
-      );
-
-    groupDataService
-      .retrieveMetricDataPoints({
-        type: 'df_average',
-        team: entityGroup,
-        aggregation: selectedTimeUnit,
-        project: entityName,
-      })
-      .then(
-        response => {
-          setChartDataAverage(response);
-        },
-        (error: Error) => {
-          dispatch({
-            type: 'averageError',
-            error: error,
-          });
-        },
-      );
-  }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
+const ChartGridItem = ({ type, label }: { type: string; label: string }) => {
+  const { chartData, error } = useMetricData(type);
 
   const chartOrProgressComponent = chartData ? (
     <BarChartComponent metricData={chartData} />
@@ -93,62 +29,70 @@ export const DashboardComponent = ({
     <Progress variant="indeterminate" />
   );
 
-  const chartOrProgressComponentAverage = chartDataAverage ? (
-    <BarChartComponent metricData={chartDataAverage} />
+  const errorOrResponse = error ? (
+    <ResponseErrorPanel error={error} />
   ) : (
-    <Progress variant="indeterminate" />
+    chartOrProgressComponent
   );
 
   return (
-    <Page themeId="tool">
-      <Header
-        title="OpenDORA (by Devoteam)"
-        subtitle="Through insight to perfection"
-      >
-        <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
-      </Header>
-      <Content>
-        <Grid container spacing={3} direction="column">
-          <Grid container>
-            <Grid item xs={12} className="gridBorder">
-              <div className="gridBoxText">
-                <Grid container>
-                  <Grid item xs={4}>
-                    <DropdownComponent
-                      onSelect={setSelectedTimeUnit}
-                      selection={selectedTimeUnit}
-                    />
+    <Grid item xs={12} className="gridBorder">
+      <div className="gridBoxText">
+        <h1>{label}</h1>
+        {errorOrResponse}
+      </div>
+    </Grid>
+  );
+};
+
+export const DashboardComponent = ({
+  entityName,
+  entityGroup,
+}: DashboardComponentProps) => {
+  const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
+
+  return (
+    <MetricContext.Provider
+      value={{
+        aggregation: selectedTimeUnit,
+        team: entityGroup,
+        project: entityName,
+      }}
+    >
+      <Page themeId="tool">
+        <Header
+          title="OpenDORA (by Devoteam)"
+          subtitle="Through insight to perfection"
+        >
+          <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
+        </Header>
+        <Content>
+          <Grid container spacing={3} direction="column">
+            <Grid container>
+              <Grid item xs={12} className="gridBorder">
+                <div className="gridBoxText">
+                  <Grid container>
+                    <Grid item xs={4}>
+                      <DropdownComponent
+                        onSelect={setSelectedTimeUnit}
+                        selection={selectedTimeUnit}
+                      />
+                    </Grid>
                   </Grid>
-                </Grid>
-              </div>
-            </Grid>
+                </div>
+              </Grid>
 
-            <Grid item xs={12} className="gridBorder">
-              <div className="gridBoxText">
-                <h1>Deployment Frequency</h1>
-                {dataError.countError ? (
-                  <ResponseErrorPanel error={dataError.countError} />
-                ) : (
-                  chartOrProgressComponent
-                )}
-              </div>
+              <ChartGridItem type="df_count" label="Deployment Frequency" />
+              <ChartGridItem
+                type="df_average"
+                label="Deployment Frequency Average"
+              />
             </Grid>
-            <Grid item xs={12} className="gridBorder">
-              <div className="gridBoxText">
-                <h1>Deployment Frequency Average</h1>
-                {dataError.averageError ? (
-                  <ResponseErrorPanel error={dataError.averageError} />
-                ) : (
-                  chartOrProgressComponentAverage
-                )}
-              </div>
-            </Grid>
+            <Grid item />
           </Grid>
-
-          <Grid item />
-        </Grid>
-      </Content>
-    </Page>
+        </Content>
+      </Page>
+    </MetricContext.Provider>
   );
 };
 
