@@ -1,5 +1,7 @@
 # OpenDORA (by Devoteam)
 
+Bring [DORA](https://dora.dev/) metrics to your Backstage dashboard using [DevLake](https://devlake.apache.org/docs/DORA/) to gather data.
+
 This repo contains all the projects needed to start development on the OpenDORA backstage plugin for DORA metrics.
 
 ![Backstage Plugin](.github/workflows/pr-backstage-plugin-workflow.yaml/badge.svg)
@@ -8,13 +10,11 @@ This repo contains all the projects needed to start development on the OpenDORA 
 
 ![Screenshot of the main OpenDORA dashboard](screenshot.png)
 
-## Contents
+## Setup
 
-### dora-api-mock
+Take a look at the [NPM library](backstage-plugin/plugins/open-dora/README.md) for steps on how to install and setup the plugin in your Backstage application.
 
-This is a basic Spring application used to provide a mock for the DORA API metric datapoints. This can be used to develop the frontend plugin without needing to setup the local backend API.
-
-[More details](dora-api-mock/README.md)
+## Development contents
 
 ### backstage-plugin
 
@@ -24,9 +24,15 @@ This is a [Backstage](https://backstage.io) plugin setup used to develop the fro
 
 ### devlake-go
 
-This contains the docker image (todo) and configuration scripts to setup DevLake to properly ingest the DORA metrics from a GitLab repo and group them according to Backstage groups.
+This contains the docker image and configuration scripts to setup DevLake to properly ingest the DORA metrics from a GitLab repo and group them according to Backstage groups.
 
 [More details](devlake-go/README.md)
+
+### dora-api-mock
+
+This is a basic Spring application used to provide a mock for the DORA API metric datapoints. This can be used to develop the frontend plugin without needing to setup the local backend API.
+
+[More details](dora-api-mock/README.md)
 
 ### dev-environment
 
