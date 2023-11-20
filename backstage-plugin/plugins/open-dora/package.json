@@ -33,6 +33,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.57",
     "@mui/x-charts": "^6.0.0-alpha.11",
+    "i18next": "^23.7.6",
+    "react-i18next": "^13.5.0",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {

@@ -16,8 +16,10 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 import { ChartErrors } from '../../models/CustomErrors';
-import { dfBenchmarkData, dfEnum } from '../../models/DfBenchmarkData';
+import { dfEnum } from '../../models/DfBenchmarkData';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
+import '../../i18n';
+import { useTranslation } from 'react-i18next';
 
 export interface DashboardComponentProps {
   entityName?: string;
@@ -40,6 +42,8 @@ export const DashboardComponent = ({
 }: DashboardComponentProps) => {
   // Overview
   const [dfOverview, setDfOverview] = React.useState<dfEnum | null>(null);
+
+  const [t, i18n] = useTranslation();
 
   // Charts
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
@@ -138,9 +142,12 @@ export const DashboardComponent = ({
                 <Grid container>
                   <Grid item xs={3}>
                     <HighlightTextBoxComponent
-                      title="ts"
-                      text="tss"
-                      highlight={dfOverview ?? 'test'}
+                      title=""
+                      text=""
+                      highlight={
+                        dfOverview ? t(dfOverview) : t('data_unavailable')
+                      }
+                      // to do: think of text colouring for different scenarios
                       textColour="positiveHighlight"
                     />
                   </Grid>
