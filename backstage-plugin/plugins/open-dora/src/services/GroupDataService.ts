@@ -1,5 +1,3 @@
-// TODO: Add tests and remove ignore.
-/* istanbul ignore file */
 import { ConfigApi, createApiRef } from '@backstage/core-plugin-api';
 import { MetricData } from '../models/MetricData';
 
@@ -17,6 +15,7 @@ export class GroupDataService {
     aggregation?: string;
   }) {
     const baseUrl = this.options.configApi.getString('open-dora.apiBaseUrl');
+
     const url = new URL(baseUrl);
     url.pathname = 'dora/api/metric';
     for (const [key, value] of Object.entries(params)) {
@@ -27,6 +26,19 @@ export class GroupDataService {
     const data = await fetch(url.toString(), {
       method: 'GET',
     });
-    return (await data.json()) as MetricData;
+
+    if (!data.ok) {
+      throw new Error(data.statusText);
+    }
+
+    const response = await data.json();
+    if (
+      response.aggregation === undefined ||
+      response.dataPoints === undefined
+    ) {
+      throw new Error('Unexpected response');
+    }
+
+    return response as MetricData;
   }
 }
