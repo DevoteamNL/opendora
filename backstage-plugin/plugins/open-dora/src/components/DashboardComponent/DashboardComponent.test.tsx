@@ -178,7 +178,6 @@ describe('DashboardComponent', () => {
     expect(queryAllByText('Error: Failed to fetch')).toHaveLength(2);
   });
 
-  // TODO #71: Replace this with a test for MetricDataHook/MetricContext specifically
   it('should show error if there are no datapoints', async () => {
     server.use(
       rest.get(metricUrl, async (_, res, ctx) => {
