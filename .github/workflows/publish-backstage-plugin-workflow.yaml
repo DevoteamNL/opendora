@@ -54,3 +54,41 @@ jobs:
         run: yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publishGHCR:
+    name: publish to GitHub registry
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: backstage-plugin
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "yarn"
+          cache-dependency-path: backstage-plugin/yarn.lock
+          registry-url: https://npm.pkg.github.com/
+          always-auth: true
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: type checking and declarations
+        run: yarn tsc
+
+      - name: build
+        run: yarn build:all
+
+      - name: publish
+        working-directory: backstage-plugin/plugins/open-dora
+        run: |
+          # Replace the @devoteam-nl with @devoteamnl in package.json
+          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
+          yarn publish --non-interactive
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
