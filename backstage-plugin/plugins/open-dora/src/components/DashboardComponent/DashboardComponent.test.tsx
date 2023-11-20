@@ -1,38 +1,33 @@
 import type { EntityRelation } from '@backstage/catalog-model';
 import { ApiProvider } from '@backstage/core-app-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
+import {
+  MockConfigApi,
+  renderInTestApp,
+  TestApiRegistry,
+} from '@backstage/test-utils';
 import { act, fireEvent, screen } from '@testing-library/react';
+import { rest } from 'msw';
 import React from 'react';
-import { MetricData } from '../../models/MetricData';
-import { groupDataServiceApiRef } from '../../services/GroupDataService';
+import { baseUrl, metricUrl } from '../../../testing/mswHandlers';
+import {
+  GroupDataService,
+  groupDataServiceApiRef,
+} from '../../services/GroupDataService';
+import { server } from '../../setupTests';
 import {
   DashboardComponent,
   EntityDashboardComponent,
 } from './DashboardComponent';
 
-async function renderComponentWithApis(
-  component: JSX.Element,
-  mockData?: jest.Mock<MetricData>,
-) {
-  const groupDataApiMock = {
-    retrieveMetricDataPoints:
-      mockData ??
-      jest
-        .fn()
-        .mockResolvedValueOnce({
-          aggregation: 'weekly',
-          dataPoints: [{ key: '10/23', value: 1.0 }],
-        })
-        .mockResolvedValueOnce({
-          aggregation: 'weekly',
-          dataPoints: [{ key: '11/23', value: 2.0 }],
-        }),
-  };
+async function renderComponentWithApis(component: JSX.Element) {
+  const mockConfig = new MockConfigApi({
+    'open-dora': { apiBaseUrl: baseUrl },
+  });
 
   const apiRegistry = TestApiRegistry.from([
     groupDataServiceApiRef,
-    groupDataApiMock,
+    new GroupDataService({ configApi: mockConfig }),
   ]);
 
   return await renderInTestApp(
@@ -41,8 +36,8 @@ async function renderComponentWithApis(
 }
 
 describe('DashboardComponent', () => {
-  function renderDashboardComponent(mockData?: jest.Mock<MetricData>) {
-    return renderComponentWithApis(<DashboardComponent />, mockData);
+  function renderDashboardComponent() {
+    return renderComponentWithApis(<DashboardComponent />);
   }
 
   it('should show a dropdown with the aggregation choices', async () => {
@@ -62,184 +57,169 @@ describe('DashboardComponent', () => {
     expect(queryByText('OpenDORA (by Devoteam)')).not.toBeNull();
   });
 
-  it('should show a graph for deployment frequency data', async () => {
-    const { queryByText } = await renderDashboardComponent(
-      jest
-        .fn()
-        .mockResolvedValueOnce({
-          aggregation: 'weekly',
-          dataPoints: [
-            { key: 'count_first_key', value: 1.0 },
-            { key: 'count_second_key', value: 1.0 },
-            { key: 'count_third_key', value: 1.0 },
-          ],
-        })
-        .mockResolvedValueOnce({
-          aggregation: 'weekly',
-          dataPoints: [
-            { key: 'average_first_key', value: 2.0 },
-            { key: 'average_second_key', value: 2.0 },
-            { key: 'average_third_key', value: 2.0 },
-          ],
-        }),
+  it('should show graphs for deployment frequency data', async () => {
+    server.use(
+      rest.get(metricUrl, (req, res, ctx) => {
+        const type = req.url.searchParams.get('type');
+        return res(
+          ctx.json({
+            aggregation: 'weekly',
+            dataPoints: [
+              { key: `${type}_first_key`, value: 1.0 },
+              { key: `${type}_second_key`, value: 1.0 },
+              { key: `${type}_third_key`, value: 1.0 },
+            ],
+          }),
+        );
+      }),
     );
+    const { queryByText } = await renderDashboardComponent();
 
     expect(queryByText('Deployment Frequency')).not.toBeNull();
-    expect(queryByText('count_first_key')).not.toBeNull();
-    expect(queryByText('count_second_key')).not.toBeNull();
-    expect(queryByText('count_third_key')).not.toBeNull();
+    expect(queryByText('df_count_first_key')).not.toBeNull();
+    expect(queryByText('df_count_second_key')).not.toBeNull();
+    expect(queryByText('df_count_third_key')).not.toBeNull();
 
     expect(queryByText('Deployment Frequency Average')).not.toBeNull();
-    expect(queryByText('average_first_key')).not.toBeNull();
-    expect(queryByText('average_second_key')).not.toBeNull();
-    expect(queryByText('average_third_key')).not.toBeNull();
+    expect(queryByText('df_average_first_key')).not.toBeNull();
+    expect(queryByText('df_average_second_key')).not.toBeNull();
+    expect(queryByText('df_average_third_key')).not.toBeNull();
   });
 
   it('should retrieve new data when the aggregation is changed', async () => {
-    const apiMock = jest
-      .fn()
-      .mockResolvedValueOnce({
-        aggregation: 'weekly',
-        dataPoints: [
-          { key: 'count_first_key', value: 1.0 },
-          { key: 'count_second_key', value: 1.0 },
-          { key: 'count_third_key', value: 1.0 },
-        ],
-      })
-      .mockResolvedValueOnce({
-        aggregation: 'weekly',
-        dataPoints: [
-          { key: 'average_first_key', value: 2.0 },
-          { key: 'average_second_key', value: 2.0 },
-          { key: 'average_third_key', value: 2.0 },
-        ],
-      })
-      .mockResolvedValueOnce({
-        aggregation: 'monthly',
-        dataPoints: [
-          { key: 'count_new_first_key', value: 1.0 },
-          { key: 'count_new_second_key', value: 1.0 },
-          { key: 'count_new_third_key', value: 1.0 },
-        ],
-      })
-      .mockResolvedValueOnce({
-        aggregation: 'monthly',
-        dataPoints: [
-          { key: 'average_new_first_key', value: 2.0 },
-          { key: 'average_new_second_key', value: 2.0 },
-          { key: 'average_new_third_key', value: 2.0 },
-        ],
-      });
-    const { queryByText, getByText } = await renderDashboardComponent(apiMock);
+    server.use(
+      rest.get(metricUrl, (req, res, ctx) => {
+        const params = req.url.searchParams;
+        const type = params.get('type');
+        const aggregation = params.get('aggregation');
 
-    expect(apiMock).toHaveBeenCalledTimes(2);
-    expect(apiMock).toHaveBeenCalledWith({
-      type: 'df_count',
-      aggregation: 'weekly',
-    });
-    expect(apiMock).toHaveBeenLastCalledWith({
-      type: 'df_average',
-      aggregation: 'weekly',
-    });
+        return res(
+          ctx.json({
+            aggregation: aggregation,
+            dataPoints: [
+              { key: `${aggregation}_${type}_first_key`, value: 1.0 },
+            ],
+          }),
+        );
+      }),
+    );
+    const { queryByText, getByText } = await renderDashboardComponent();
 
-    expect(queryByText('count_first_key')).not.toBeNull();
-    expect(queryByText('count_second_key')).not.toBeNull();
-    expect(queryByText('count_third_key')).not.toBeNull();
+    expect(queryByText('weekly_df_count_first_key')).not.toBeNull();
+    expect(queryByText('weekly_df_average_first_key')).not.toBeNull();
+
+    expect(queryByText('monthly_df_count_first_key')).toBeNull();
+    expect(queryByText('monthly_df_average_first_key')).toBeNull();
 
     fireEvent.mouseDown(getByText('Weekly'));
     await act(async () => {
       fireEvent.click(screen.getByText('Monthly'));
     });
-    expect(apiMock).toHaveBeenCalledTimes(4);
-    expect(apiMock).toHaveBeenCalledWith({
-      type: 'df_count',
-      aggregation: 'monthly',
-    });
-    expect(apiMock).toHaveBeenLastCalledWith({
-      type: 'df_average',
-      aggregation: 'monthly',
-    });
 
-    expect(queryByText('count_first_key')).toBeNull();
-    expect(queryByText('count_second_key')).toBeNull();
-    expect(queryByText('count_third_key')).toBeNull();
+    expect(queryByText('weekly_df_count_first_key')).toBeNull();
+    expect(queryByText('weekly_df_average_first_key')).toBeNull();
 
-    expect(queryByText('count_new_first_key')).not.toBeNull();
-    expect(queryByText('count_new_second_key')).not.toBeNull();
-    expect(queryByText('count_new_third_key')).not.toBeNull();
-
-    expect(queryByText('average_first_key')).toBeNull();
-    expect(queryByText('average_second_key')).toBeNull();
-    expect(queryByText('average_third_key')).toBeNull();
-
-    expect(queryByText('average_new_first_key')).not.toBeNull();
-    expect(queryByText('average_new_second_key')).not.toBeNull();
-    expect(queryByText('average_new_third_key')).not.toBeNull();
+    expect(queryByText('monthly_df_count_first_key')).not.toBeNull();
+    expect(queryByText('monthly_df_average_first_key')).not.toBeNull();
   });
 
   it('should show loading indicator when waiting on data to return', async () => {
-    jest.useFakeTimers();
+    jest.useFakeTimers({
+      legacyFakeTimers: true,
+    });
 
-    const apiMock = jest
-      .fn()
-      .mockImplementationOnce(() => {
-        return new Promise(resolve => {
-          resolve({
-            aggregation: 'monthly',
-            dataPoints: [{ key: 'count_data_key', value: 1.0 }],
-          });
-        });
-      })
-      .mockImplementationOnce(() => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve({
-              aggregation: 'monthly',
-              dataPoints: [{ key: 'average_data_key', value: 1.0 }],
-            });
-          }, 1000);
-        });
-      });
-    const { queryByText, queryByRole, findByRole } =
-      await renderDashboardComponent(apiMock);
+    server.use(
+      rest.get(metricUrl, async (_, res, ctx) => {
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        return res(
+          ctx.json({
+            aggregation: 'weekly',
+            dataPoints: [{ key: `first_key`, value: 1.0 }],
+          }),
+        );
+      }),
+    );
 
-    expect(await findByRole('progressbar')).not.toBeNull();
-    expect(queryByText('average_data_key')).toBeNull();
+    const { queryByText, queryByRole, findAllByRole, queryAllByText } =
+      await renderDashboardComponent();
+
+    expect(await findAllByRole('progressbar')).toHaveLength(2);
+    expect(queryByText('first_key')).toBeNull();
 
     await act(async () => {
       jest.runAllTimers();
     });
 
     expect(queryByRole('progressbar')).toBeNull();
-    expect(queryByText('average_data_key')).not.toBeNull();
+    expect(queryAllByText('first_key')).toHaveLength(2);
   });
 
   it('should show the error returned from the service', async () => {
-    const { queryAllByText } = await renderDashboardComponent(
-      jest.fn().mockRejectedValue({ status: 500, message: 'server error' }),
+    server.use(
+      rest.get(metricUrl, (_, res, ctx) => {
+        return res(ctx.status(401));
+      }),
     );
-    expect(queryAllByText('server error')).not.toBeNull();
-    expect(queryAllByText('server error')).toHaveLength(2);
+    const { queryAllByText, getByText } = await renderDashboardComponent();
+    expect(queryAllByText('Error: Unauthorized')).toHaveLength(2);
+
+    server.use(
+      rest.get(metricUrl, (_, res) => {
+        return res.networkError('Host unreachable');
+      }),
+    );
+
+    // Trigger another request
+    fireEvent.mouseDown(getByText('Weekly'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('Monthly'));
+    });
+
+    expect(queryAllByText('Error: Failed to fetch')).toHaveLength(2);
   });
 
   // TODO #71: Replace this with a test for MetricDataHook/MetricContext specifically
   it('should show error if there are no datapoints', async () => {
-    const { queryAllByText } = await renderDashboardComponent(
-      jest.fn().mockResolvedValue({
-        aggregation: 'weekly',
-        dataPoints: [],
+    server.use(
+      rest.get(metricUrl, async (_, res, ctx) => {
+        return res(
+          ctx.json({
+            aggregation: 'weekly',
+            dataPoints: [],
+          }),
+        );
       }),
     );
+    const { queryAllByText } = await renderDashboardComponent();
     expect(queryAllByText('No data found')).not.toBeNull();
     expect(queryAllByText('No data found')).toHaveLength(2);
   });
 });
 
 describe('EntityDashboardComponent', () => {
-  function renderEntityDashboardComponent(
-    mockData?: jest.Mock<MetricData>,
-    relations?: EntityRelation[],
-  ) {
+  function renderEntityDashboardComponent(relations?: EntityRelation[]) {
+    server.use(
+      rest.get(metricUrl, (req, res, ctx) => {
+        const params = req.url.searchParams;
+        const type = params.get('type');
+        const aggregation = params.get('aggregation');
+        const project = params.get('project');
+        const team = params.get('team');
+
+        return res(
+          ctx.json({
+            aggregation: aggregation,
+            dataPoints: [
+              {
+                key: `${project}_${team}_${aggregation}_${type}_first_key`,
+                value: 1.0,
+              },
+            ],
+          }),
+        );
+      }),
+    );
+
     return renderComponentWithApis(
       <EntityProvider
         entity={{
@@ -253,49 +233,24 @@ describe('EntityDashboardComponent', () => {
       >
         <EntityDashboardComponent />
       </EntityProvider>,
-      mockData,
     );
   }
 
   it('should send component info to the service from the context', async () => {
-    const apiMock = jest.fn().mockResolvedValue({
-      aggregation: 'weekly',
-      dataPoints: [{ key: 'first_key', value: 1.0 }],
-    });
-
-    await renderEntityDashboardComponent(apiMock, [
+    const { queryByText } = await renderEntityDashboardComponent([
       { targetRef: 'kind:namespace/owner-name', type: 'ownedBy' },
     ]);
 
-    expect(apiMock).toHaveBeenCalledTimes(2);
-
-    expect(apiMock).toHaveBeenLastCalledWith({
-      type: 'df_average',
-      aggregation: 'weekly',
-      project: 'entity-name',
-      team: 'owner-name',
-    });
+    expect(
+      queryByText('entity-name_owner-name_weekly_df_average_first_key'),
+    ).not.toBeNull();
   });
 
   it('should send component info without owner info', async () => {
-    const apiMock = jest.fn().mockResolvedValue({
-      aggregation: 'weekly',
-      dataPoints: [{ key: 'first_key', value: 1.0 }],
-    });
+    const { queryByText } = await renderEntityDashboardComponent();
 
-    await renderEntityDashboardComponent(apiMock);
-
-    expect(apiMock).toHaveBeenCalledTimes(2);
-    expect(apiMock).toHaveBeenCalledWith({
-      type: 'df_count',
-      aggregation: 'weekly',
-      project: 'entity-name',
-    });
-
-    expect(apiMock).toHaveBeenLastCalledWith({
-      type: 'df_average',
-      aggregation: 'weekly',
-      project: 'entity-name',
-    });
+    expect(
+      queryByText('entity-name_null_weekly_df_average_first_key'),
+    ).not.toBeNull();
   });
 });

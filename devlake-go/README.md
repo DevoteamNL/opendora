@@ -1,5 +1,26 @@
 # devlake-go
 
+### Prerequisites
+
+- Go 1.21.0
+- GNU Make
+
+## api
+
+This HTTP server provides an endpoint to return metrics from DevLake. The [OpenAPI spec](../dora-api-mock/src/main/resources/openapi.yaml) outlines the path and query parameters to use the endpoint as well as the expected response.
+
+### To start the server
+
+- Run the server, informing the variables for connecting to the database (your DevLake setup may be different)
+
+```shell
+DEVLAKE_DBUSER=merico \
+    DEVLAKE_DBPASS=merico \
+    DEVLAKE_DBADDRESS=localhost:3306 \
+    DEVLAKE_DBNAME=lake \
+    make run-api
+```
+
 ## group-sync
 
 This will retrieve all Backstage entities of type `Group` and insert/remove them in the `teams` table of DevLake. This also updates the `parentId` for teams where the `childOf` and `parentOf` relationship points to an existing group/team in Backstage or DevLake.
@@ -14,20 +35,4 @@ By default, the script will look for use DevLake admin credentials user:`devlake
 
 ```shell
 make run-sync
-```
-
-## api
-
-This HTTP server provides an endpoint to return metrics from DevLake. The [OpenAPI spec](api/openapi.yaml) outlines the path and query parameters to use the endpoint as well as the expected response.
-
-### To start the server
-
-- Run the server, informing the variables for connecting to the database (your DevLake setup may be different)
-
-```shell
-DEVLAKE_DBUSER=merico \
-    DEVLAKE_DBPASS=merico \
-    DEVLAKE_DBADDRESS=localhost:3306 \
-    DEVLAKE_DBNAME=lake \
-    make run-api
 ```

@@ -13,9 +13,7 @@ This plugin allows you to see DORA metrics for the teams within Backstage.
 yarn --cwd packages/app add @devoteam-nl/open-dora-backstage-plugin
 ```
 
-<!-- TODO Replace with a link to installation instructions for the helm chart -->
-
-2. Make sure the [OpenDORA backend](https://github.com/DevoteamNL/opendora) is deployed.
+2. Make sure the [OpenDORA backend](https://github.com/DevoteamNL/opendora/blob/main/devlake-go/DEPLOYMENT.md) is deployed.
 
 3. Configure the url from which the OpenDORA API is accessible.
 

@@ -16,3 +16,6 @@ var MonthlyDeploymentSql string
 
 //go:embed quarterly_deployment.sql
 var QuarterlyDeploymentSql string
+
+//go:embed benchmark_df.sql
+var BenchmarkDfSql string
