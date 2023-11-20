@@ -16,6 +16,8 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 import { ChartErrors } from '../../models/CustomErrors';
+import { dfBenchmarkData, dfEnum } from '../../models/DfBenchmarkData';
+import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 
 export interface DashboardComponentProps {
   entityName?: string;
@@ -36,6 +38,10 @@ export const DashboardComponent = ({
   entityName,
   entityGroup,
 }: DashboardComponentProps) => {
+  // Overview
+  const [dfOverview, setDfOverview] = React.useState<dfEnum | null>(null);
+
+  // Charts
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
   const [chartDataAverage, setChartDataAverage] =
     React.useState<MetricData | null>(null);
@@ -85,6 +91,10 @@ export const DashboardComponent = ({
           });
         },
       );
+
+    groupDataService.retrieveBenchmarkData({ type: 'df' }).then(response => {
+      setDfOverview(response.key);
+    });
   }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
@@ -117,6 +127,21 @@ export const DashboardComponent = ({
                     <DropdownComponent
                       onSelect={setSelectedTimeUnit}
                       selection={selectedTimeUnit}
+                    />
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} className="gridBorder">
+              <div className="gridBoxText">
+                <Grid container>
+                  <Grid item xs={3}>
+                    <HighlightTextBoxComponent
+                      title="ts"
+                      text="tss"
+                      highlight={dfOverview ?? 'test'}
+                      textColour="positiveHighlight"
                     />
                   </Grid>
                 </Grid>
