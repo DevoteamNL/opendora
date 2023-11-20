@@ -19,7 +19,7 @@ function createService() {
           dataPoints: [
             {
               key: `${project}_${team}_${aggregation}_${type}_first_key`,
-              value: 1.0,
+              value: 2.3,
             },
           ],
         }),
@@ -41,7 +41,7 @@ describe('GroupDataService', () => {
       await service.retrieveMetricDataPoints({ type: 'df_count' }),
     ).toEqual({
       aggregation: 'weekly',
-      dataPoints: [{ key: 'null_null_null_df_count_first_key', value: 1 }],
+      dataPoints: [{ key: 'null_null_null_df_count_first_key', value: 2.3 }],
     });
   });
 
@@ -58,7 +58,7 @@ describe('GroupDataService', () => {
     ).toEqual({
       aggregation: 'monthly',
       dataPoints: [
-        { key: 'project1_team1_monthly_df_count_first_key', value: 1 },
+        { key: 'project1_team1_monthly_df_count_first_key', value: 2.3 },
       ],
     });
   });
