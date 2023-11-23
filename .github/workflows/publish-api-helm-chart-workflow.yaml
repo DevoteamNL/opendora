@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package helm chart
-        run: helm chart package open-dora-helm-chart
+        run: helm package open-dora-helm-chart
 
       - name: Publish chart to GHCR
         run: |
