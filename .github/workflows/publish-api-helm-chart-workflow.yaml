@@ -30,7 +30,7 @@ jobs:
       #     password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        run: echo "${{ secrets.GHCR_TOKEN }}" | helm registry login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
       - name: Package helm chart
         run: helm package open-dora-helm-chart
