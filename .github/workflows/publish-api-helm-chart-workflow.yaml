@@ -29,13 +29,11 @@ jobs:
       #     username: ${{ github.actor }}
       #     password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Package helm chart
         run: helm package open-dora-helm-chart
 
       - name: Publish chart to GHCR
         run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
           export CHART_VERSION=$(grep 'version:' open-dora-helm-chart/Chart.yaml | tail -n1 | awk '{ print $2 }')
           helm push open-dora-helm-chart-${CHART_VERSION}.tgz oci://ghcr.io/devoteamnl/opendora/
