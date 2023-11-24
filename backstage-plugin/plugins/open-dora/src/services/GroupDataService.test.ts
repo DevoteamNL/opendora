@@ -19,7 +19,7 @@ function createService() {
           );
         }
         default: {
-          return res(ctx.status(404));
+          return res(ctx.status(400));
         }
       }
     }),
@@ -153,7 +153,7 @@ describe('BenchmarkService', () => {
       service.retrieveBenchmarkData({
         type: 'invalid_type',
       }),
-    ).rejects.toEqual(new Error('Not Found'));
+    ).rejects.toEqual(new Error('Bad Request'));
   });
 
   it('should throw an error when the server returns a non-ok status', async () => {
