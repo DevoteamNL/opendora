@@ -1,4 +1,25 @@
 {
-  "lt-6month": "Less then 6 months",
-  "data_unavailable": "Data unavailable"
+  "deployment_frequency": {
+    "labels": {
+      "deployment_frequency": "Deployment Frequency",
+      "deployment_frequency_average": "Deployment Frequency Average"
+    },
+    "overall_labels": {
+      "lt-6month": "Less then 6 months",
+      "on-demand": "On demand",
+      "week-month": "Week to month",
+      "month-6month": "Month to 6 months"
+    }
+  },
+
+  "dropdown_time_units": {
+    "time_unit": "Time Unit",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "quarterly": "Quarterly"
+  },
+
+  "custom_errors": {
+    "data_unavailable": "Data unavailable"
+  }
 }

@@ -145,7 +145,11 @@ export const DashboardComponent = ({
                       title=""
                       text=""
                       highlight={
-                        dfOverview ? t(dfOverview) : t('data_unavailable')
+                        dfOverview
+                          ? t(
+                              `deployment_frequency.overall_labels.${dfOverview}`,
+                            )
+                          : t('custom_errors.data_unavailable')
                       }
                       // to do: think of text colouring for different scenarios
                       textColour="positiveHighlight"
@@ -157,7 +161,7 @@ export const DashboardComponent = ({
 
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
-                <h1>Deployment Frequency</h1>
+                <h1>{t('deployment_frequency.labels.deployment_frequency')}</h1>
                 {dataError.countError ? (
                   <ResponseErrorPanel error={dataError.countError} />
                 ) : (
@@ -167,7 +171,11 @@ export const DashboardComponent = ({
             </Grid>
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
-                <h1>Deployment Frequency Average</h1>
+                <h1>
+                  {t(
+                    'deployment_frequency.labels.deployment_frequency_average',
+                  )}
+                </h1>
                 {dataError.averageError ? (
                   <ResponseErrorPanel error={dataError.averageError} />
                 ) : (
