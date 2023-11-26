@@ -5,10 +5,10 @@
       "deployment_frequency_average": "Deployment Frequency Average"
     },
     "overall_labels": {
-      "lt-6month": "Less then 6 months",
-      "on-demand": "On demand",
-      "week-month": "Week to month",
-      "month-6month": "Month to 6 months"
+      "lt-6month": "Fewer than once per six months",
+      "on-demand": "On-demand",
+      "week-month": "Between once per week and once per month",
+      "month-6month": "Between once per month and once every 6 months"
     }
   },
 

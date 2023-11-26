@@ -16,7 +16,7 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 import { ChartErrors } from '../../models/CustomErrors';
-import { dfEnum } from '../../models/DfBenchmarkData';
+import { dfBenchmarkKey } from '../../models/DfBenchmarkData';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 import '../../i18n';
 import { useTranslation } from 'react-i18next';
@@ -41,9 +41,11 @@ export const DashboardComponent = ({
   entityGroup,
 }: DashboardComponentProps) => {
   // Overview
-  const [dfOverview, setDfOverview] = React.useState<dfEnum | null>(null);
+  const [dfOverview, setDfOverview] = React.useState<dfBenchmarkKey | null>(
+    null,
+  );
 
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
 
   // Charts
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
@@ -51,7 +53,11 @@ export const DashboardComponent = ({
     React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
 
-  const initialErrors: ChartErrors = { countError: null, averageError: null };
+  const initialErrors: ChartErrors = {
+    countError: null,
+    averageError: null,
+    dfBenchmarkError: null,
+  };
 
   const [dataError, dispatch] = useReducer(dataErrorReducer, initialErrors);
 
@@ -96,9 +102,17 @@ export const DashboardComponent = ({
         },
       );
 
-    groupDataService.retrieveBenchmarkData({ type: 'df' }).then(response => {
-      setDfOverview(response.key);
-    });
+    groupDataService.retrieveBenchmarkData({ type: 'df' }).then(
+      response => {
+        setDfOverview(response.key);
+      },
+      (error: Error) => {
+        dispatch({
+          type: 'dfBenchmarkError',
+          error: error,
+        });
+      },
+    );
   }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (

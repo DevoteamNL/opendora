@@ -12,7 +12,7 @@ export const DropdownComponent = ({
   onSelect,
   selection,
 }: DropdownComponentProps) => {
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
   return (
     <Box sx={{ display: 'flex', m: 3, flexDirection: 'column' }}>
       <TextField
