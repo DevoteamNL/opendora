@@ -1,11 +1,28 @@
 import { MockConfigApi } from '@backstage/test-utils';
 import { rest } from 'msw';
-import { baseUrl, metricUrl } from '../../testing/mswHandlers';
+import { baseUrl, benchmarkUrl, metricUrl } from '../../testing/mswHandlers';
 import { server } from '../setupTests';
 import { GroupDataService } from './GroupDataService';
 
 function createService() {
   server.use(
+    rest.get(benchmarkUrl, (req, res, ctx) => {
+      const params = req.url.searchParams;
+      const type = params.get('type');
+
+      switch (type) {
+        case 'df': {
+          return res(
+            ctx.json({
+              key: 'lt-6month',
+            }),
+          );
+        }
+        default: {
+          return res(ctx.status(400));
+        }
+      }
+    }),
     rest.get(metricUrl, (req, res, ctx) => {
       const params = req.url.searchParams;
       const type = params.get('type');
@@ -115,6 +132,67 @@ describe('GroupDataService', () => {
     await expect(
       service.retrieveMetricDataPoints({
         type: 'df_count',
+      }),
+    ).rejects.toEqual(new Error('Internal Server Error'));
+  });
+});
+
+describe('BenchmarkService', () => {
+  it('should return deployment frequency overall data from the server', async () => {
+    const service = createService();
+
+    expect(await service.retrieveBenchmarkData({ type: 'df' })).toEqual({
+      key: 'lt-6month',
+    });
+  });
+
+  it('should throw an error if the response does not contain metric data', async () => {
+    const service = createService();
+
+    server.use(
+      rest.get(benchmarkUrl, (_, res, ctx) => {
+        return res(ctx.json({ other: 'data' }));
+      }),
+    );
+    await expect(
+      service.retrieveBenchmarkData({
+        type: 'df',
+      }),
+    ).rejects.toEqual(new Error('Unexpected response'));
+  });
+
+  it('should return 404 for invalid types', async () => {
+    const service = createService();
+
+    await expect(
+      service.retrieveBenchmarkData({
+        type: 'invalid_type',
+      }),
+    ).rejects.toEqual(new Error('Bad Request'));
+  });
+
+  it('should throw an error when the server returns a non-ok status', async () => {
+    const service = createService();
+
+    server.use(
+      rest.get(benchmarkUrl, (_, res, ctx) => {
+        return res(ctx.status(401));
+      }),
+    );
+    await expect(
+      service.retrieveBenchmarkData({
+        type: 'df',
+      }),
+    ).rejects.toEqual(new Error('Unauthorized'));
+
+    server.use(
+      rest.get(benchmarkUrl, (_, res, ctx) => {
+        return res(ctx.status(500));
+      }),
+    );
+    await expect(
+      service.retrieveBenchmarkData({
+        type: 'df',
       }),
     ).rejects.toEqual(new Error('Internal Server Error'));
   });
