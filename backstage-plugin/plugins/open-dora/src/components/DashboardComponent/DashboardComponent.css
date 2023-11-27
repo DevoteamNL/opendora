@@ -39,3 +39,9 @@
   height: 100%;
   padding: 15px;
 }
+
+h1 {
+  font-style: italic;
+  /* TODO: Orange for Duch version */
+  color: blueviolet;
+}

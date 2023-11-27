@@ -7,7 +7,7 @@ describe('HighlightTextBoxComponent', () => {
     const { getByText, queryByText } = render(
       <HighlightTextBoxComponent
         title="example title"
-        textColour="warning"
+        healthStatus="warning"
         highlight="example highlight"
       />,
     );
@@ -23,7 +23,7 @@ describe('HighlightTextBoxComponent', () => {
     const { queryByText } = render(
       <HighlightTextBoxComponent
         title="example title"
-        textColour="warning"
+        healthStatus="warning"
         highlight="example highlight"
         text="example text"
       />,
