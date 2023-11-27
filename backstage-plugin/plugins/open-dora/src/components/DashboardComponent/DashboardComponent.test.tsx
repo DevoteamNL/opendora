@@ -177,6 +177,22 @@ describe('DashboardComponent', () => {
 
     expect(queryAllByText('Error: Failed to fetch')).toHaveLength(2);
   });
+
+  it('should show error if there are no datapoints', async () => {
+    server.use(
+      rest.get(metricUrl, async (_, res, ctx) => {
+        return res(
+          ctx.json({
+            aggregation: 'weekly',
+            dataPoints: [],
+          }),
+        );
+      }),
+    );
+    const { queryAllByText } = await renderDashboardComponent();
+    expect(queryAllByText('No data found')).not.toBeNull();
+    expect(queryAllByText('No data found')).toHaveLength(2);
+  });
 });
 
 describe('EntityDashboardComponent', () => {
