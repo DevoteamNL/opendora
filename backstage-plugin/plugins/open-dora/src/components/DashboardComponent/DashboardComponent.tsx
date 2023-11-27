@@ -58,8 +58,14 @@ const BenchmarkGridItem = ({ type }: { type: string }) => {
       title=""
       text=""
       highlight={t(`deployment_frequency.overall_labels.${benchmark}`)}
-      // to do: think of text colouring for different scenarios
-      textColour="positiveHighlight"
+      healthStatus={
+        {
+          'on-demand': 'positive',
+          'lt-6month': 'critical',
+          'week-month': 'neutral',
+          'month-6month': 'negative',
+        }[benchmark]
+      }
     />
   ) : (
     <CircularProgress />
