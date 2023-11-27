@@ -156,7 +156,9 @@ export const DashboardComponent = ({
                 <Grid container>
                   <Grid item xs={3}>
                     <HighlightTextBoxComponent
-                      title=""
+                      title={t(
+                        'deployment_frequency.labels.deployment_frequency_overall',
+                      )}
                       text=""
                       highlight={
                         dfOverview
@@ -166,7 +168,16 @@ export const DashboardComponent = ({
                           : t('custom_errors.data_unavailable')
                       }
                       // to do: think of text colouring for different scenarios
-                      textColour="positiveHighlight"
+                      healthStatus={
+                        (dfOverview &&
+                          new Map([
+                            ['on-demand', 'positive'],
+                            ['lt-6month', 'critical'],
+                            ['week-month', 'neutral'],
+                            ['month-6month', 'negative'],
+                          ]).get(dfOverview)) ||
+                        'neutral'
+                      }
                     />
                   </Grid>
                 </Grid>

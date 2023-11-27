@@ -1,15 +1,16 @@
 .highlight {
   text-align: center;
   width: 100%;
-  font-size: 70px;
+  font-size: 42px;
 }
+
 
 .notification {
   text-align: right;
   font-style: italic;
 }
 
-.warning {
+.negative {
   color: #ffcc00;
 }
 
@@ -17,6 +18,21 @@
   color: red;
 }
 
-.positiveHighlight {
+.positive {
   color: #198754;
+}
+
+
+.neutral {
+  color: default;
+}
+
+.highlightTextBoxBorder{
+  padding: 20px;
+  border-style: hidden;
+  background-color: #333333;
+}
+
+.margin-left-offset-m25 {
+  margin: 0 0 0 -8px;
 }
