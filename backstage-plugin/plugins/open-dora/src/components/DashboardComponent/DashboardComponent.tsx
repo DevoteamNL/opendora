@@ -10,12 +10,10 @@ import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { CircularProgress, Grid } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMetricBenchmark } from '../../hooks/MetricBenchmarkHook';
+import { useMetricData } from '../../hooks/MetricDataHook';
 import '../../i18n';
 import { MetricContext } from '../../services/MetricContext';
-import {
-  useMetricData,
-  useMetricOverview,
-} from '../../services/MetricDataHook';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
@@ -51,15 +49,15 @@ const ChartGridItem = ({ type, label }: { type: string; label: string }) => {
   );
 };
 
-const OverviewGridItem = ({ type }: { type: string }) => {
+const BenchmarkGridItem = ({ type }: { type: string }) => {
   const [t] = useTranslation();
-  const { overview, error } = useMetricOverview(type);
+  const { benchmark, error } = useMetricBenchmark(type);
 
-  const testOrProgressComponent = overview ? (
+  const testOrProgressComponent = benchmark ? (
     <HighlightTextBoxComponent
       title=""
       text=""
-      highlight={t(`deployment_frequency.overall_labels.${overview}`)}
+      highlight={t(`deployment_frequency.overall_labels.${benchmark}`)}
       // to do: think of text colouring for different scenarios
       textColour="positiveHighlight"
     />
@@ -123,7 +121,7 @@ export const DashboardComponent = ({
                   </Grid>
                 </div>
               </Grid>
-              <OverviewGridItem type="df" />
+              <BenchmarkGridItem type="df" />
               <ChartGridItem
                 type="df_count"
                 label={t('deployment_frequency.labels.deployment_frequency')}
