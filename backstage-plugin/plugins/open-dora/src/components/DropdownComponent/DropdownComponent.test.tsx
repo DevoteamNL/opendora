@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { DropdownComponent } from './DropdownComponent';
+import '../../i18n';
 
 describe('DropdownComponent', () => {
   it('should create show a dropdown with the aggregation choices', async () => {

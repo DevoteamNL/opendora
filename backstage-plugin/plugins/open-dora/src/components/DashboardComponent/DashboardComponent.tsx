@@ -16,6 +16,10 @@ import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import './DashboardComponent.css';
 import { ChartErrors } from '../../models/CustomErrors';
+import { dfBenchmarkKey } from '../../models/DfBenchmarkData';
+import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
+import '../../i18n';
+import { useTranslation } from 'react-i18next';
 
 export interface DashboardComponentProps {
   entityName?: string;
@@ -36,12 +40,24 @@ export const DashboardComponent = ({
   entityName,
   entityGroup,
 }: DashboardComponentProps) => {
+  // Overview
+  const [dfOverview, setDfOverview] = React.useState<dfBenchmarkKey | null>(
+    null,
+  );
+
+  const [t] = useTranslation();
+
+  // Charts
   const [chartData, setChartData] = React.useState<MetricData | null>(null);
   const [chartDataAverage, setChartDataAverage] =
     React.useState<MetricData | null>(null);
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
 
-  const initialErrors: ChartErrors = { countError: null, averageError: null };
+  const initialErrors: ChartErrors = {
+    countError: null,
+    averageError: null,
+    dfBenchmarkError: null,
+  };
 
   const [dataError, dispatch] = useReducer(dataErrorReducer, initialErrors);
 
@@ -85,6 +101,18 @@ export const DashboardComponent = ({
           });
         },
       );
+
+    groupDataService.retrieveBenchmarkData({ type: 'df' }).then(
+      response => {
+        setDfOverview(response.key);
+      },
+      (error: Error) => {
+        dispatch({
+          type: 'dfBenchmarkError',
+          error: error,
+        });
+      },
+    );
   }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   const chartOrProgressComponent = chartData ? (
@@ -125,7 +153,29 @@ export const DashboardComponent = ({
 
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
-                <h1>Deployment Frequency</h1>
+                <Grid container>
+                  <Grid item xs={3}>
+                    <HighlightTextBoxComponent
+                      title=""
+                      text=""
+                      highlight={
+                        dfOverview
+                          ? t(
+                              `deployment_frequency.overall_labels.${dfOverview}`,
+                            )
+                          : t('custom_errors.data_unavailable')
+                      }
+                      // to do: think of text colouring for different scenarios
+                      textColour="positiveHighlight"
+                    />
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} className="gridBorder">
+              <div className="gridBoxText">
+                <h1>{t('deployment_frequency.labels.deployment_frequency')}</h1>
                 {dataError.countError ? (
                   <ResponseErrorPanel error={dataError.countError} />
                 ) : (
@@ -135,7 +185,11 @@ export const DashboardComponent = ({
             </Grid>
             <Grid item xs={12} className="gridBorder">
               <div className="gridBoxText">
-                <h1>Deployment Frequency Average</h1>
+                <h1>
+                  {t(
+                    'deployment_frequency.labels.deployment_frequency_average',
+                  )}
+                </h1>
                 {dataError.averageError ? (
                   <ResponseErrorPanel error={dataError.averageError} />
                 ) : (
