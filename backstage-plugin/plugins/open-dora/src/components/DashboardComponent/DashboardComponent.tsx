@@ -6,16 +6,16 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
-import { Grid } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import { CircularProgress, Grid } from '@material-ui/core';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
-import { dfBenchmarkKey } from '../../models/DfBenchmarkData';
-import { groupDataServiceApiRef } from '../../services/GroupDataService';
 import { MetricContext } from '../../services/MetricContext';
-import { useMetricData } from '../../services/MetricDataHook';
+import {
+  useMetricData,
+  useMetricOverview,
+} from '../../services/MetricDataHook';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
@@ -51,34 +51,47 @@ const ChartGridItem = ({ type, label }: { type: string; label: string }) => {
   );
 };
 
+const OverviewGridItem = ({ type }: { type: string }) => {
+  const [t] = useTranslation();
+  const { overview, error } = useMetricOverview(type);
+
+  const testOrProgressComponent = overview ? (
+    <HighlightTextBoxComponent
+      title=""
+      text=""
+      highlight={t(`deployment_frequency.overall_labels.${overview}`)}
+      // to do: think of text colouring for different scenarios
+      textColour="positiveHighlight"
+    />
+  ) : (
+    <CircularProgress />
+  );
+
+  const errorOrResponse = error ? (
+    <ResponseErrorPanel error={error} />
+  ) : (
+    testOrProgressComponent
+  );
+
+  return (
+    <Grid item xs={12} className="gridBorder">
+      <div className="gridBoxText">
+        <Grid container>
+          <Grid item xs={3}>
+            {errorOrResponse}
+          </Grid>
+        </Grid>
+      </div>
+    </Grid>
+  );
+};
+
 export const DashboardComponent = ({
   entityName,
   entityGroup,
 }: DashboardComponentProps) => {
-  // Overview
-  const [dfOverview, setDfOverview] = React.useState<dfBenchmarkKey | null>(
-    null,
-  );
-
   const [t] = useTranslation();
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-
-  const groupDataService = useApi(groupDataServiceApiRef);
-
-  useEffect(() => {
-    groupDataService.retrieveBenchmarkData({ type: 'df' }).then(
-      response => {
-        setDfOverview(response.key);
-      },
-      (error: Error) => {
-        console.error(error);
-        // dispatch({
-        //   type: 'dfBenchmarkError',
-        //   error: error,
-        // });
-      },
-    );
-  }, [entityGroup, entityName, selectedTimeUnit, groupDataService]);
 
   return (
     <MetricContext.Provider
@@ -110,27 +123,7 @@ export const DashboardComponent = ({
                   </Grid>
                 </div>
               </Grid>
-              <Grid item xs={12} className="gridBorder">
-                <div className="gridBoxText">
-                  <Grid container>
-                    <Grid item xs={3}>
-                      <HighlightTextBoxComponent
-                        title=""
-                        text=""
-                        highlight={
-                          dfOverview
-                            ? t(
-                                `deployment_frequency.overall_labels.${dfOverview}`,
-                              )
-                            : t('custom_errors.data_unavailable')
-                        }
-                        // to do: think of text colouring for different scenarios
-                        textColour="positiveHighlight"
-                      />
-                    </Grid>
-                  </Grid>
-                </div>
-              </Grid>
+              <OverviewGridItem type="df" />
               <ChartGridItem
                 type="df_count"
                 label={t('deployment_frequency.labels.deployment_frequency')}

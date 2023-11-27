@@ -1,5 +1,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useContext, useEffect, useState } from 'react';
+import { dfBenchmarkKey } from '../models/DfBenchmarkData';
 import { MetricData } from '../models/MetricData';
 import { groupDataServiceApiRef } from './GroupDataService';
 import { MetricContext } from './MetricContext';
@@ -28,4 +29,18 @@ export const useMetricData = (type: string) => {
   }, [aggregation, team, project, groupDataService, type]);
 
   return { error: error, chartData: chartData };
+};
+
+export const useMetricOverview = (type: string) => {
+  const groupDataService = useApi(groupDataServiceApiRef);
+  const [overview, setDfOverview] = useState<dfBenchmarkKey | undefined>();
+  const [error, setError] = useState<Error | undefined>();
+
+  useEffect(() => {
+    groupDataService.retrieveBenchmarkData({ type: type }).then(response => {
+      setDfOverview(response.key);
+    }, setError);
+  }, [groupDataService, type]);
+
+  return { error: error, overview: overview };
 };
