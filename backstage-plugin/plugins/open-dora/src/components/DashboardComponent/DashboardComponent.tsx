@@ -170,12 +170,12 @@ export const DashboardComponent = ({
                       // to do: think of text colouring for different scenarios
                       healthStatus={
                         (dfOverview &&
-                          new Map([
-                            ['on-demand', 'positive'],
-                            ['lt-6month', 'critical'],
-                            ['week-month', 'neutral'],
-                            ['month-6month', 'negative'],
-                          ]).get(dfOverview)) ||
+                          {
+                            'on-demand': 'positive',
+                            'lt-6month': 'critical',
+                            'week-month': 'neutral',
+                            'month-6month': 'negative',
+                          }[dfOverview]) ||
                         'neutral'
                       }
                     />
