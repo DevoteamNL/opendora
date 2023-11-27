@@ -90,4 +90,3 @@ jobs:
           yarn publish --non-interactive --tag pr
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.number }}
