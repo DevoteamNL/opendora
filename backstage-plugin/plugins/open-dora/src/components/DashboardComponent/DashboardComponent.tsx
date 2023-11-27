@@ -167,7 +167,6 @@ export const DashboardComponent = ({
                             )
                           : t('custom_errors.data_unavailable')
                       }
-                      // to do: think of text colouring for different scenarios
                       healthStatus={
                         (dfOverview &&
                           {
