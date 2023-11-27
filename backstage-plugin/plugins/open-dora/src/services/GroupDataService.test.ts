@@ -146,6 +146,21 @@ describe('BenchmarkService', () => {
     });
   });
 
+  it('should throw an error if the response does not contain metric data', async () => {
+    const service = createService();
+
+    server.use(
+      rest.get(benchmarkUrl, (_, res, ctx) => {
+        return res(ctx.json({ other: 'data' }));
+      }),
+    );
+    await expect(
+      service.retrieveBenchmarkData({
+        type: 'df',
+      }),
+    ).rejects.toEqual(new Error('Unexpected response'));
+  });
+
   it('should return 404 for invalid types', async () => {
     const service = createService();
 
