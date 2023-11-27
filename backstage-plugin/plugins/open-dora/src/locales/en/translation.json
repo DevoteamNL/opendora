@@ -2,12 +2,8 @@
   "deployment_frequency": {
     "labels": {
       "deployment_frequency": "Deployment Frequency",
-<<<<<<< HEAD
       "deployment_frequency_average": "Deployment Frequency Average",
       "deployment_frequency_overall": "Deployment frequency overall"
-=======
-      "deployment_frequency_average": "Deployment Frequency Average"
->>>>>>> 607984ba5965d294946e56df442b57f85ff1704b
     },
     "overall_labels": {
       "lt-6month": "Fewer than once per six months",
