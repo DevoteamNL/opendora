@@ -4,7 +4,6 @@
   font-size: 42px;
 }
 
-
 .notification {
   text-align: right;
   font-style: italic;
@@ -22,12 +21,11 @@
   color: #198754;
 }
 
-
 .neutral {
   color: default;
 }
 
-.highlightTextBoxBorder{
+.highlightTextBoxBorder {
   padding: 20px;
   border-style: hidden;
   background-color: #333333;
