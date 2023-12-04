@@ -52,6 +52,7 @@ paths:
             enum:
               - df_average
               - df_count
+              - mltc
         - name: aggregation
           in: query
           description: >-
