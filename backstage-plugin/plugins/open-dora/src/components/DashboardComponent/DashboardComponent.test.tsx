@@ -11,9 +11,9 @@ import { rest } from 'msw';
 import React from 'react';
 import { baseUrl, metricUrl } from '../../../testing/mswHandlers';
 import {
-  GroupDataService,
-  groupDataServiceApiRef,
-} from '../../services/GroupDataService';
+  DoraDataService,
+  doraDataServiceApiRef,
+} from '../../services/DoraDataService';
 import { server } from '../../setupTests';
 import {
   DashboardComponent,
@@ -26,8 +26,8 @@ async function renderComponentWithApis(component: JSX.Element) {
   });
 
   const apiRegistry = TestApiRegistry.from([
-    groupDataServiceApiRef,
-    new GroupDataService({ configApi: mockConfig }),
+    doraDataServiceApiRef,
+    new DoraDataService({ configApi: mockConfig }),
   ]);
 
   return await renderInTestApp(

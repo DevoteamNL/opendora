@@ -1,11 +1,11 @@
 import { createDevApp } from '@backstage/dev-utils';
+import { MockConfigApi } from '@backstage/test-utils';
 import React from 'react';
 import { openDoraPlugin, OpenDoraPluginPage } from '../src';
-import { MockConfigApi } from '@backstage/test-utils';
 import {
-  GroupDataService,
-  groupDataServiceApiRef,
-} from '../src/services/GroupDataService';
+  DoraDataService,
+  doraDataServiceApiRef,
+} from '../src/services/DoraDataService';
 
 const mockConfig = new MockConfigApi({
   'open-dora': {
@@ -16,9 +16,9 @@ const mockConfig = new MockConfigApi({
 createDevApp()
   .registerPlugin(openDoraPlugin)
   .registerApi({
-    api: groupDataServiceApiRef,
+    api: doraDataServiceApiRef,
     deps: {},
-    factory: () => new GroupDataService({ configApi: mockConfig }),
+    factory: () => new DoraDataService({ configApi: mockConfig }),
   })
   .addPage({
     element: <OpenDoraPluginPage />,

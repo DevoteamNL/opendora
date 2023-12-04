@@ -1,17 +1,17 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useContext, useEffect, useState } from 'react';
 import { MetricData } from '../models/MetricData';
-import { groupDataServiceApiRef } from '../services/GroupDataService';
+import { doraDataServiceApiRef } from '../services/DoraDataService';
 import { MetricContext } from '../services/MetricContext';
 
 export const useMetricData = (type: string) => {
-  const groupDataService = useApi(groupDataServiceApiRef);
+  const doraDataService = useApi(doraDataServiceApiRef);
   const [chartData, setChartData] = useState<MetricData | undefined>();
   const [error, setError] = useState<Error | undefined>();
   const { aggregation, team, project } = useContext(MetricContext);
 
   useEffect(() => {
-    groupDataService
+    doraDataService
       .retrieveMetricDataPoints({
         type: type,
         team: team,
@@ -25,7 +25,7 @@ export const useMetricData = (type: string) => {
           setError(new Error('No data found'));
         }
       }, setError);
-  }, [aggregation, team, project, groupDataService, type]);
+  }, [aggregation, team, project, doraDataService, type]);
 
   return { error: error, chartData: chartData };
 };

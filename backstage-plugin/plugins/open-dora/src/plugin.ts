@@ -6,9 +6,9 @@ import {
 } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
 import {
-  GroupDataService,
-  groupDataServiceApiRef,
-} from './services/GroupDataService';
+  DoraDataService,
+  doraDataServiceApiRef,
+} from './services/DoraDataService';
 
 export const openDoraPlugin = createPlugin({
   id: 'opendora',
@@ -17,9 +17,9 @@ export const openDoraPlugin = createPlugin({
   },
   apis: [
     createApiFactory({
-      api: groupDataServiceApiRef,
+      api: doraDataServiceApiRef,
       deps: { configApi: configApiRef },
-      factory: ({ configApi }) => new GroupDataService({ configApi }),
+      factory: ({ configApi }) => new DoraDataService({ configApi }),
     }),
   ],
 });
