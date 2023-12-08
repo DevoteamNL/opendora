@@ -1,7 +1,10 @@
 import { act } from '@testing-library/react';
 import { rest } from 'msw';
 import React from 'react';
-import { renderComponentWithApis } from '../../../testing/component-render-utils';
+import {
+  delayRequest,
+  renderComponentWithApis,
+} from '../../../testing/component-test-utils';
 import { metricUrl } from '../../../testing/mswHandlers';
 import '../../i18n';
 import { MetricContext } from '../../services/MetricContext';
@@ -9,13 +12,10 @@ import { server } from '../../setupTests';
 import { ChartGridItem } from './ChartGridItem';
 
 describe('ChartGridItem', () => {
-  function renderChartGridItem(
-    { type, label }: { type: string; label: string } = {
-      type: 'df_count',
-      label: 'Deployment Frequency',
-    },
-  ) {
-    return renderComponentWithApis(<ChartGridItem type={type} label={label} />);
+  function renderChartGridItem() {
+    return renderComponentWithApis(
+      <ChartGridItem type="df_count" label="Deployment Frequency" />,
+    );
   }
 
   it('should show the a bar chart and title when data is returned from the server', async () => {
@@ -26,20 +26,9 @@ describe('ChartGridItem', () => {
   });
 
   it('should show loading indicator when waiting on the data to return', async () => {
-    jest.useFakeTimers({
-      legacyFakeTimers: true,
-    });
-
-    server.use(
-      rest.get(metricUrl, async (_, res, ctx) => {
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        return res(
-          ctx.json({
-            aggregation: 'weekly',
-            dataPoints: [{ key: '10/23', value: 1.0 }],
-          }),
-        );
-      }),
+    delayRequest(
+      { aggregation: 'weekly', dataPoints: [{ key: '10/23', value: 1.0 }] },
+      metricUrl,
     );
 
     const { queryByText, queryByRole, findByRole } =

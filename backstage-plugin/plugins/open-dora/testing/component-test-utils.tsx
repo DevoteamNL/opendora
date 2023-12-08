@@ -4,11 +4,13 @@ import {
   renderInTestApp,
   TestApiRegistry,
 } from '@backstage/test-utils';
+import { rest } from 'msw';
 import React from 'react';
 import {
   DoraDataService,
   doraDataServiceApiRef,
 } from '../src/services/DoraDataService';
+import { server } from '../src/setupTests';
 import { baseUrl } from './mswHandlers';
 
 export async function renderComponentWithApis(component: JSX.Element) {
@@ -23,5 +25,18 @@ export async function renderComponentWithApis(component: JSX.Element) {
 
   return await renderInTestApp(
     <ApiProvider apis={apiRegistry}>{component}</ApiProvider>,
+  );
+}
+
+export function delayRequest(request: Object, url: string, delay = 10000) {
+  jest.useFakeTimers({
+    legacyFakeTimers: true,
+  });
+
+  server.use(
+    rest.get(url, async (_, res, ctx) => {
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return res(ctx.json(request));
+    }),
   );
 }

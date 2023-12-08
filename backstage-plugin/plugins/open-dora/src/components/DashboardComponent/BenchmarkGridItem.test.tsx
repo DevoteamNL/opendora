@@ -1,17 +1,18 @@
 import { act } from '@testing-library/react';
 import { rest } from 'msw';
 import React from 'react';
-import { renderComponentWithApis } from '../../../testing/component-render-utils';
+import {
+  delayRequest,
+  renderComponentWithApis,
+} from '../../../testing/component-test-utils';
 import { benchmarkUrl } from '../../../testing/mswHandlers';
 import '../../i18n';
 import { server } from '../../setupTests';
 import { BenchmarkGridItem } from './BenchmarkGridItem';
 
 describe('BenchmarkGridItem', () => {
-  function renderBenchmarkGridItem(
-    { type }: { type: string } = { type: 'df' },
-  ) {
-    return renderComponentWithApis(<BenchmarkGridItem type={type} />);
+  function renderBenchmarkGridItem() {
+    return renderComponentWithApis(<BenchmarkGridItem type="df" />);
   }
 
   it('should show the benchmark returned from the server', async () => {
@@ -21,20 +22,7 @@ describe('BenchmarkGridItem', () => {
   });
 
   it('should show loading indicator when waiting on the benchmark to return', async () => {
-    jest.useFakeTimers({
-      legacyFakeTimers: true,
-    });
-
-    server.use(
-      rest.get(benchmarkUrl, async (_, res, ctx) => {
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        return res(
-          ctx.json({
-            key: 'on-demand',
-          }),
-        );
-      }),
-    );
+    delayRequest({ key: 'on-demand' }, benchmarkUrl);
 
     const { queryByText, queryByRole, findByRole } =
       await renderBenchmarkGridItem();

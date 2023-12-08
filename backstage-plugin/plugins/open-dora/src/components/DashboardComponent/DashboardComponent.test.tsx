@@ -3,7 +3,7 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import React from 'react';
-import { renderComponentWithApis } from '../../../testing/component-render-utils';
+import { renderComponentWithApis } from '../../../testing/component-test-utils';
 import { metricUrl } from '../../../testing/mswHandlers';
 import { server } from '../../setupTests';
 import {
