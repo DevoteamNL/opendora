@@ -19,3 +19,6 @@ var QuarterlyDeploymentSql string
 
 //go:embed benchmark_df.sql
 var BenchmarkDfSql string
+
+//go:embed mltc.sql
+var MltcSql string
