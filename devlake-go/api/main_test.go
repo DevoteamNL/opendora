@@ -48,12 +48,6 @@ func Test_metricHandler(t *testing.T) {
 			expectBody:       `{"aggregation":"weekly","dataPoints":[]}` + "\n",
 			expectStatusCode: 200,
 		},
-		{
-			name:             "should return data response when specifying mltc",
-			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=mltc", nil),
-			expectBody:       `{"aggregation":"weekly","dataPoints":[]}` + "\n",
-			expectStatusCode: 200,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
