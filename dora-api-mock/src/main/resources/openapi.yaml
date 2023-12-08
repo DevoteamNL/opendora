@@ -39,6 +39,7 @@ paths:
         | --------------- | ----------------------------------------------------------------------------------- |
         | `df_average`    | Deployment frequency (average), aggregated according to the `aggregation` parameter |
         | `df_count`      | Amount of Deployments, aggregated according to the `aggregation` parameter          |
+        | `mltc`          | Median Lead Time for Changes, aggregated according to the `aggregation` parameter   |
 
       operationId: dataPointsByMetrics
       parameters:
@@ -52,6 +53,7 @@ paths:
             enum:
               - df_average
               - df_count
+              - mltc
         - name: aggregation
           in: query
           description: >-
