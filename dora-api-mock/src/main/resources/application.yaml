@@ -96,51 +96,6 @@ dora-api-mock:
       mediaType: application/json
       parameters:
         type: df
-    - name: mltc_weekly
-      path: /dora/api/metric
-      stubFile: stubs/metrics/mltc/mltc_weekly.json
-      mediaType: application/json
-      parameters:
-        type: mltc
-        aggregation: weekly
-    - name: mltc_weekly_component
-      path: /dora/api/metric
-      stubFile: stubs/metrics/mltc/mltc_weekly_component.json
-      mediaType: application/json
-      parameters:
-        type: mltc
-        aggregation: weekly
-        project: .+
-    - name: mltc_monthly
-      path: /dora/api/metric
-      stubFile: stubs/metrics/mltc/mltc_monthly.json
-      mediaType: application/json
-      parameters:
-        type: mltc
-        aggregation: monthly
-    - name: mltc_monthly_component
-      path: /dora/api/metric
-      stubFile: stubs/metrics/mltc/mltc_monthly_component.json
-      mediaType: application/json
-      parameters:
-        type: mltc
-        aggregation: monthly
-        project: .+
-    - name: mltc_quarterly
-      path: /dora/api/metric
-      stubFile: stubs/metrics/mltc/mltc_quarterly.json
-      mediaType: application/json
-      parameters:
-        type: mltc
-        aggregation: quarterly
-    - name: mltc_quarterly_component
-      path: /dora/api/metric
-      stubFile: stubs/metrics/mltc/mltc_quarterly_component.json
-      mediaType: application/json
-      parameters:
-        type: mltc
-        aggregation: quarterly
-        project: .+
 
 wiremock:
   server:
