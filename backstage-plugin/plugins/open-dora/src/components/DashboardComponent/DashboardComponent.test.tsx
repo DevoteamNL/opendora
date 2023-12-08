@@ -20,6 +20,8 @@ import {
   EntityDashboardComponent,
 } from './DashboardComponent';
 
+const NUMBER_OF_GRAPHS = 3;
+
 async function renderComponentWithApis(component: JSX.Element) {
   const mockConfig = new MockConfigApi({
     'open-dora': { apiBaseUrl: baseUrl },
@@ -143,7 +145,7 @@ describe('DashboardComponent', () => {
     const { queryByText, queryByRole, findAllByRole, queryAllByText } =
       await renderDashboardComponent();
 
-    expect(await findAllByRole('progressbar')).toHaveLength(2);
+    expect(await findAllByRole('progressbar')).toHaveLength(NUMBER_OF_GRAPHS);
     expect(queryByText('first_key')).toBeNull();
 
     await act(async () => {
@@ -151,7 +153,7 @@ describe('DashboardComponent', () => {
     });
 
     expect(queryByRole('progressbar')).toBeNull();
-    expect(queryAllByText('first_key')).toHaveLength(2);
+    expect(queryAllByText('first_key')).toHaveLength(NUMBER_OF_GRAPHS);
   });
 
   it('should show the error returned from the service', async () => {
@@ -161,7 +163,9 @@ describe('DashboardComponent', () => {
       }),
     );
     const { queryAllByText, getByText } = await renderDashboardComponent();
-    expect(queryAllByText('Error: Unauthorized')).toHaveLength(2);
+    expect(queryAllByText('Error: Unauthorized')).toHaveLength(
+      NUMBER_OF_GRAPHS,
+    );
 
     server.use(
       rest.get(metricUrl, (_, res) => {
@@ -175,7 +179,9 @@ describe('DashboardComponent', () => {
       fireEvent.click(screen.getByText('Monthly'));
     });
 
-    expect(queryAllByText('Error: Failed to fetch')).toHaveLength(2);
+    expect(queryAllByText('Error: Failed to fetch')).toHaveLength(
+      NUMBER_OF_GRAPHS,
+    );
   });
 
   it('should show error if there are no datapoints', async () => {
@@ -191,7 +197,7 @@ describe('DashboardComponent', () => {
     );
     const { queryAllByText } = await renderDashboardComponent();
     expect(queryAllByText('No data found')).not.toBeNull();
-    expect(queryAllByText('No data found')).toHaveLength(2);
+    expect(queryAllByText('No data found')).toHaveLength(NUMBER_OF_GRAPHS);
   });
 });
 

@@ -2,93 +2,23 @@ import {
   Content,
   Header,
   Page,
-  Progress,
-  ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
-import { CircularProgress, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMetricBenchmark } from '../../hooks/MetricBenchmarkHook';
-import { useMetricData } from '../../hooks/MetricDataHook';
 import '../../i18n';
 import { MetricContext } from '../../services/MetricContext';
-import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
-import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
+import { BenchmarkGridItem } from './BenchmarkGridItem';
+import { ChartGridItem } from './ChartGridItem';
 import './DashboardComponent.css';
 
 export interface DashboardComponentProps {
   entityName?: string;
   entityGroup?: string;
 }
-
-const ChartGridItem = ({ type, label }: { type: string; label: string }) => {
-  const { chartData, error } = useMetricData(type);
-
-  const chartOrProgressComponent = chartData ? (
-    <BarChartComponent metricData={chartData} />
-  ) : (
-    <Progress variant="indeterminate" />
-  );
-
-  const errorOrResponse = error ? (
-    <ResponseErrorPanel error={error} />
-  ) : (
-    chartOrProgressComponent
-  );
-
-  return (
-    <Grid item xs={12} className="gridBorder">
-      <div className="gridBoxText">
-        <h1>{label}</h1>
-        {errorOrResponse}
-      </div>
-    </Grid>
-  );
-};
-
-const BenchmarkGridItem = ({ type }: { type: string }) => {
-  const [t] = useTranslation();
-  const { benchmark, error } = useMetricBenchmark(type);
-
-  const testOrProgressComponent = benchmark ? (
-    <HighlightTextBoxComponent
-      title=""
-      text=""
-      highlight={t(`deployment_frequency.overall_labels.${benchmark}`)}
-      healthStatus={
-        {
-          'on-demand': 'positive',
-          'lt-6month': 'critical',
-          'week-month': 'neutral',
-          'month-6month': 'negative',
-        }[benchmark]
-      }
-    />
-  ) : (
-    <CircularProgress />
-  );
-
-  const errorOrResponse = error ? (
-    <ResponseErrorPanel error={error} />
-  ) : (
-    testOrProgressComponent
-  );
-
-  return (
-    <Grid item xs={12} className="gridBorder">
-      <div className="gridBoxText">
-        <Grid container>
-          <Grid item xs={3}>
-            {errorOrResponse}
-          </Grid>
-        </Grid>
-      </div>
-    </Grid>
-  );
-};
 
 export const DashboardComponent = ({
   entityName,
@@ -137,6 +67,10 @@ export const DashboardComponent = ({
                 label={t(
                   'deployment_frequency.labels.deployment_frequency_average',
                 )}
+              />
+              <ChartGridItem
+                type="mltc"
+                label={t('lead-time.labels.median_lead_time_for_changes')}
               />
             </Grid>
             <Grid item />
