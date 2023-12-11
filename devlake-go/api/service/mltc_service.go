@@ -11,11 +11,13 @@ type MltcService struct {
 }
 
 func (service MltcService) ServeRequest(params ServiceParameters) (models.MetricResponse, error) {
-	typeQueryMap := map[string]string{
-		"mltc": sql_queries.MltcSql,
+	aggregationQueryMap := map[string]string{
+		"weekly":    sql_queries.WeeklyMltcSql,
+		"monthly":   sql_queries.MonthlyMltcSql,
+		"quarterly": sql_queries.QuarterlyMltcSql,
 	}
 
-	query := typeQueryMap[params.TypeQuery]
+	query := aggregationQueryMap[params.Aggregation]
 
 	dataPoints, err := service.Client.QueryDeployments(query, sql_client.QueryParams{To: params.To, From: params.From, Project: params.Project})
 
