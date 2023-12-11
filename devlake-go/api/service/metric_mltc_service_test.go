@@ -10,21 +10,21 @@ import (
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
-func TestMetricMltcServiceMltcService_ServeRequest(t *testing.T) {
+func TestMetricMltcService_ServeRequest(t *testing.T) {
 
 	exampleWeeklyDataPoints := []models.DataPoint{{Key: "202338", Value: 0}, {Key: "202337", Value: 1}, {Key: "202336", Value: 2}}
 	exampleMonthlyDataPoints := []models.DataPoint{{Key: "23/04", Value: 6}, {Key: "23/03", Value: 5}, {Key: "23/02", Value: 4}}
 	exampleQuarterlyDataPoints := []models.DataPoint{{Key: "2024-01-01", Value: 6}, {Key: "2023-10-01", Value: 5}, {Key: "2023-07-01", Value: 4}}
 
 	dataMockMap := map[string]sql_client.MockDeploymentsDataReturn{
-		sql_queries.WeeklyMltcSql + sql_queries.CountSql:      {Data: exampleWeeklyDataPoints},
-		sql_queries.MonthlyMltcSql + sql_queries.CountSql:     {Data: exampleMonthlyDataPoints},
-		sql_queries.QuarterlyMltcSql + sql_queries.CountSql:   {Data: exampleQuarterlyDataPoints},}
+		sql_queries.WeeklyMltcSql:    {Data: exampleWeeklyDataPoints},
+		sql_queries.MonthlyMltcSql:   {Data: exampleMonthlyDataPoints},
+		sql_queries.QuarterlyMltcSql: {Data: exampleQuarterlyDataPoints}}
 
 	errorMockMap := map[string]sql_client.MockDeploymentsDataReturn{
-		sql_queries.WeeklyMltcSql + sql_queries.CountSql:      {Err: fmt.Errorf("error from weekly query")},
-		sql_queries.MonthlyMltcSql + sql_queries.CountSql:     {Err: fmt.Errorf("error from monthly query")},
-		sql_queries.QuarterlyMltcSql + sql_queries.CountSql:   {Err: fmt.Errorf("error from quarterly query")},
+		sql_queries.WeeklyMltcSql:    {Err: fmt.Errorf("error from weekly query")},
+		sql_queries.MonthlyMltcSql:   {Err: fmt.Errorf("error from monthly query")},
+		sql_queries.QuarterlyMltcSql: {Err: fmt.Errorf("error from quarterly query")},
 	}
 
 	tests := []struct {
