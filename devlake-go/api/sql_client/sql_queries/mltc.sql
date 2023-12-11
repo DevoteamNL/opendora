@@ -11,10 +11,14 @@ with _pr_stats as (
         join project_mapping pm on pr.base_repo_id = pm.row_id and pm.`table` = 'repos'
         join cicd_deployment_commits cdc on ppm.deployment_commit_id = cdc.id
     WHERE
-        pm.project_name in ($project)
+        (
+                    :project = ""
+                    OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
+        )
         and pr.merged_date is not null
         and ppm.pr_cycle_time is not null
-        and $__timeFilter(cdc.finished_date)
+        and cdc.finished_date BETWEEN FROM_UNIXTIME(:from)
+        AND FROM_UNIXTIME(:to)
 ),
 
 _find_median_clt_each_month_ranks as(
@@ -37,4 +41,5 @@ SELECT
 FROM
     calendar_months cm
     LEFT JOIN _clt on cm.month = _clt.month
-  WHERE $__timeFilter(cm.month_timestamp)
+  WHERE cm.month_timestamp BETWEEN FROM_UNIXTIME(:from)
+        AND FROM_UNIXTIME(:to)
