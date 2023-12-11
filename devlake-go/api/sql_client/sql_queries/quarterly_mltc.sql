@@ -1,22 +1,23 @@
-WITH RECURSIVE calendar_weeks AS (
+
+WITH RECURSIVE calendar_quarters AS (
     SELECT
-        STR_TO_DATE(
-            CONCAT(YEARWEEK(FROM_UNIXTIME(:from)), ' Sunday'),
-            '%X%V %W'
-        ) AS week_date
+        DATE_ADD(
+            MAKEDATE(YEAR(FROM_UNIXTIME(:from)), 1),
+            INTERVAL QUARTER(FROM_UNIXTIME(:from)) -1 QUARTER
+        ) AS quarter_date
     UNION
     ALL
     SELECT
-        DATE_ADD(week_date, INTERVAL 1 WEEK)
+        DATE_ADD(quarter_date, INTERVAL 1 QUARTER)
     FROM
-        calendar_weeks
+        calendar_quarters
     WHERE
-        week_date < FROM_UNIXTIME(:to)
+        quarter_date < FROM_UNIXTIME(:to)
 ), _pr_stats as (
--- get the cycle time of PRs deployed by the deployments finished each week
+-- get the cycle time of PRs deployed by the deployments finished each quarter
     SELECT
         distinct pr.id,
-        YEARWEEK(cdc.finished_date) AS week,
+        cdc.finished_date AS quarter,
         ppm.pr_cycle_time
     FROM
         pull_requests pr
@@ -35,25 +36,25 @@ WITH RECURSIVE calendar_weeks AS (
 ),
 
 
-_find_median_clt_each_week_ranks as(
-    SELECT *, percent_rank() over(PARTITION BY week order by pr_cycle_time) as ranks
+_find_median_clt_each_quarter_ranks as(
+    SELECT *, percent_rank() over(PARTITION BY quarter order by pr_cycle_time) as ranks
     FROM _pr_stats
 ),
 
 _clt as(
-    SELECT week, max(pr_cycle_time) as median_change_lead_time
-    FROM _find_median_clt_each_week_ranks
+    SELECT quarter, max(pr_cycle_time) as median_change_lead_time
+    FROM _find_median_clt_each_quarter_ranks
     WHERE ranks <= 0.5
-    group by week
+    group by quarter
 )
     SELECT
-        YEARWEEK(cw.week_date) AS data_key,
+        cq.quarter_date AS data_key,
         CASE
             WHEN _clt.median_change_lead_time IS NULL THEN 0
             ELSE _clt.median_change_lead_time
         END AS data_value
     FROM
-        calendar_weeks cw
-        LEFT JOIN _clt ON YEARWEEK(cw.week_date) = _clt.week
+        calendar_quarters cq
+        LEFT JOIN _clt ON cq.quarter_date = _clt.quarter
     ORDER BY
-        cw.week_date DESC
+        cq.quarter_date DESC
