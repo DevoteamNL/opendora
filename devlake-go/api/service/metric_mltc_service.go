@@ -6,11 +6,11 @@ import (
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
-type MltcService struct {
+type MetricMltcService struct {
 	Client sql_client.ClientInterface
 }
 
-func (service MltcService) ServeRequest(params ServiceParameters) (models.MetricResponse, error) {
+func (service MetricMltcService) ServeRequest(params ServiceParameters) (models.MetricResponse, error) {
 	aggregationQueryMap := map[string]string{
 		"weekly":    sql_queries.WeeklyMltcSql,
 		"monthly":   sql_queries.MonthlyMltcSql,
