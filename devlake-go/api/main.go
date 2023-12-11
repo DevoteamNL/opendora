@@ -48,7 +48,7 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 	serviceMap := map[string]service.Service[models.MetricResponse]{
 		"df_count":   dfService,
 		"df_average": dfService,
-		"mltc": mltcService,
+		"mltc":       mltcService,
 	}
 
 	return handler(validation.ValidMetricServiceParameters, serviceMap)
