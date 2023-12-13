@@ -13,12 +13,12 @@ on:
 
 jobs:
   build:
-    permissions:
-      contents: read
-      id-token: read
-      packages: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
