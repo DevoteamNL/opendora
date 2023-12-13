@@ -12,6 +12,10 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      id-token: read
+      packages: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -22,7 +26,11 @@ jobs:
         uses: azure/setup-helm@v3
 
       - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | helm registry login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package helm chart
         run: helm package open-dora-helm-chart
@@ -31,6 +39,3 @@ jobs:
         run: |
           export CHART_VERSION=$(grep 'version:' open-dora-helm-chart/Chart.yaml | tail -n1 | awk '{ print $2 }')
           helm push open-dora-helm-chart-${CHART_VERSION}.tgz oci://ghcr.io/devoteamnl/opendora/
-
-      - name: Helm logout
-        run: helm registry logout ghcr.io
