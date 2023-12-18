@@ -23,6 +23,7 @@ WITH RECURSIVE calendar_weeks AS (
         join project_pr_metrics ppm on ppm.id = pr.id
         join project_mapping pm on pr.base_repo_id = pm.row_id and pm.`table` = 'repos'
         join cicd_deployment_commits cdc on ppm.deployment_commit_id = cdc.id
+        join repos ON cdc.repo_id = repos.id
     WHERE
         (
             :project = ""
