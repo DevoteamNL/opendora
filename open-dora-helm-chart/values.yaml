@@ -2,42 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-devlake:
-  ingress:
-    enabled: true
-    hostname: devlake.demo.local
-  grafana:
-    # Disabling grafana doesn't work for some reason, it even sets up paths for the ingress, documentation suggests this would disable it.
-    enabled: false
-    external:
-      url: https://grafana.example.com
-  mysql:
-    useExternal: true
-    externalServer: host.minikube.internal
-    # external mysql port
-    externalPort: 3306
-    # the username for devlake database
-    username: merico
-    # the password for devlake database
-    password: merico
-    # the database for devlake
-    database: lake
-    # root password for mysql, only used when use_external=false
-    rootPassword: admin
-  lake:
-    encryptionSecret:
-      # Random secret, this should not be included as a static value in the repo/chart and instead be generated when installing the chart. Here temporarily for dev purposes
-      secret: ZVBUUCGRVEJLXHTGLBYIWDGGOEFJCWRQWOHSLVJUANHDHKWXYWLMXVSKMDOKDBOLQIOORFZZVWPHUIFVAXPKFYHRPTZXKWGDCDHYCHIVAXXYTYENQVWWWXARLYAVMSXI
+openDora:
+  devlakeDbAddress: devlake-mysql:3306
+  devlakeDbUser: merico
+  devlakeDbPass: merico
+  devlakeDbName: lake
 
 replicaCount: 1
 
 image:
-  repository: kylewatsondevoteam/open-dora-api
+  repository: ghcr.io/devoteamnl/opendora/opendora-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.1.0"
+  tag: latest
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: regcred
 nameOverride: ""
 fullnameOverride: ""
 

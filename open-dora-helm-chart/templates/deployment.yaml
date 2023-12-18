@@ -47,13 +47,13 @@ spec:
               port: {{ .Values.service.port }}
           env:
             - name: DEVLAKE_DBADDRESS
-              value: "{{ .Values.devlake.mysql.externalServer }}:{{ .Values.devlake.mysql.externalPort }}"
+              value: "{{ .Values.openDora.devlakeDbAddress }}"
             - name: DEVLAKE_DBUSER
-              value: "{{ .Values.devlake.mysql.username }}"
+              value: "{{ .Values.openDora.devlakeDbUser }}"
             - name: DEVLAKE_DBPASS
-              value: "{{ .Values.devlake.mysql.password }}"
+              value: "{{ .Values.openDora.devlakeDbPass }}"
             - name: DEVLAKE_DBNAME
-              value: "{{ .Values.devlake.mysql.database }}"
+              value: "{{ .Values.openDora.devlakeDbName }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
