@@ -13,6 +13,12 @@
     }
   },
 
+  "lead-time": {
+    "labels": {
+      "median_lead_time_for_changes": "Median Lead Time for Changes"
+    }
+  },
+
   "dropdown_time_units": {
     "time_unit": "Time Unit",
     "weekly": "Weekly",
