@@ -9,7 +9,11 @@
       "lt-6month": "Fewer than once per six months",
       "on-demand": "On-demand",
       "week-month": "Between once per week and once per month",
-      "month-6month": "Between once per month and once every 6 months"
+      "month-6month": "Between once per month and once every six months",
+      "lt-1hour": "Less then one hour",
+      "lt-1week": "Less then one week",
+      "week-6month": "Between one week and six months",
+      "mt-6month": "More then six months"
     }
   },
 

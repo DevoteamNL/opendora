@@ -176,9 +176,10 @@ paths:
         Returns a key corresponding to the benchmark calculated from the data points that match the filters. 
         The metrics currently supported are below:
 
-        | Metric Type | Description           | Benchmark keys                                 |
-        | ----------- | --------------------- | ---------------------------------------------- |
-        | `df`        | Deployment frequency. | on-demand, week-month, month-6month, lt-6month |
+        | Metric Type | Description                   | Benchmark keys                                 |
+        | ----------- | ------------------------------| ---------------------------------------------- |
+        | `df`        | Deployment frequency.         | on-demand, week-month, month-6month, lt-6month |
+        | `mltc`      | Median lead time for changes. | lt-1hour, lt-1week, week-6month, mt-6month     |
 
       operationId: benchmarkByMetric
       parameters:
