@@ -88,11 +88,17 @@ func Test_benchmarkHandler(t *testing.T) {
 			name:             "should throw 400 response when not specifying metric type",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/benchmark?", nil),
 			expectStatusCode: 400,
-			expectBody:       "type should be provided as one of the following: df\n",
+			expectBody:       "type should be provided as one of the following: df, mltc\n",
 		},
 		{
 			name:             "should return data response when specifying df",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df", nil),
+			expectBody:       `{"key":""}` + "\n",
+			expectStatusCode: 200,
+		},
+		{
+			name:             "should return data response when specifying mltc",
+			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=mltc", nil),
 			expectBody:       `{"key":""}` + "\n",
 			expectStatusCode: 200,
 		},
