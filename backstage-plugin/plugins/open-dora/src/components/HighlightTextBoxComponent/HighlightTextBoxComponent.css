@@ -1,7 +1,7 @@
 .highlight {
   text-align: center;
   width: 100%;
-  font-size: 42px;
+  font-size: 1.2vw;
 }
 
 .notification {
@@ -26,6 +26,7 @@
 }
 
 .highlightTextBoxBorder {
+  margin: 15px;
   padding: 20px;
   border-style: hidden;
   background-color: #333333;
@@ -34,3 +35,4 @@
 .margin-left-offset-m25 {
   margin: 0 0 0 -8px;
 }
+ 

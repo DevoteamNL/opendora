@@ -9,8 +9,13 @@ interface DeploymentFrequencyDataProp {
 export const BarChartComponent = ({
   metricData,
 }: DeploymentFrequencyDataProp) => {
-  const keys = metricData.dataPoints.map((item: DataPoint) => item.key);
-  const values = metricData.dataPoints.map((item: DataPoint) => item.value);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const dataPoints = metricData.dataPoints.slice(
+    currentIndex,
+    currentIndex + 5,
+  );
+  const keys = dataPoints.map((item: DataPoint) => item.key);
+  const values = dataPoints.map((item: DataPoint) => item.value);
 
   return (
     <BarChart
@@ -27,6 +32,7 @@ export const BarChartComponent = ({
         },
       ]}
       height={300}
+      margin={{ top: 20, right: 35, bottom: 35, left: 35 }}
     />
   );
 };
