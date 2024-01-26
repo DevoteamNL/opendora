@@ -482,7 +482,7 @@ func Test_ValidBenchmarkServiceParameters(t *testing.T) {
 			name:                    "should return an error for an invalid type parameter",
 			values:                  url.Values{"type": {"df_average"}},
 			expectServiceParameters: service.ServiceParameters{},
-			expectError:             "type should be provided as one of the following: df",
+			expectError:             "type should be provided as one of the following: df, mltc",
 		},
 		{
 			name:                    "should return service parameters with defaults for project, to and from",
