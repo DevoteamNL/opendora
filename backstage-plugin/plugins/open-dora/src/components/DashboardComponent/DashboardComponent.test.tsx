@@ -21,18 +21,18 @@ describe('DashboardComponent', () => {
   it('should show a dropdown with the aggregation choices', async () => {
     const { queryByText, getByText } = await renderDashboardComponent();
 
-    expect(queryByText('Weekly')).not.toBeNull();
+    expect(queryByText('Weekly')).toBeInTheDocument();
 
     fireEvent.mouseDown(getByText('Weekly'));
 
-    expect(queryByText('Monthly')).not.toBeNull();
-    expect(queryByText('Quarterly')).not.toBeNull();
+    expect(queryByText('Monthly')).toBeInTheDocument();
+    expect(queryByText('Quarterly')).toBeInTheDocument();
   });
 
   it('should show the title of the plugin', async () => {
     const { queryByText } = await renderDashboardComponent();
 
-    expect(queryByText('OpenDORA (by Devoteam)')).not.toBeNull();
+    expect(queryByText('OpenDORA (by Devoteam)')).toBeInTheDocument();
   });
 
   it('should show graphs for metric data', async () => {
@@ -47,16 +47,16 @@ describe('DashboardComponent', () => {
         );
       }),
     );
-    const { queryByText } = await renderDashboardComponent();
+    const { queryByText, queryAllByText } = await renderDashboardComponent();
 
-    expect(queryByText('Deployment Frequency')).not.toBeNull();
-    expect(queryByText('df_count_first_key')).not.toBeNull();
+    expect(queryAllByText('Deployment Frequency')).toHaveLength(2);
+    expect(queryByText('df_count_first_key')).toBeInTheDocument();
 
-    expect(queryByText('Deployment Frequency Average')).not.toBeNull();
-    expect(queryByText('df_average_first_key')).not.toBeNull();
+    expect(queryByText('Deployment Frequency Average')).toBeInTheDocument();
+    expect(queryByText('df_average_first_key')).toBeInTheDocument();
 
-    expect(queryByText('Median Lead Time for Changes')).not.toBeNull();
-    expect(queryByText('mltc_first_key')).not.toBeNull();
+    expect(queryByText('Median Lead Time for Changes')).toBeInTheDocument();
+    expect(queryAllByText('mltc_first_key')[0]).toBeInTheDocument();
   });
 
   it('should retrieve new data when the aggregation is changed', async () => {
@@ -73,18 +73,23 @@ describe('DashboardComponent', () => {
         );
       }),
     );
-    const { queryAllByText, getByText } = await renderDashboardComponent();
+    const { queryAllByText, getByText, queryByText } =
+      await renderDashboardComponent();
 
-    expect(queryAllByText('weekly_first_key')).toHaveLength(NUMBER_OF_METRICS);
-    expect(queryAllByText('monthly_first_key')).toHaveLength(0);
+    expect(queryAllByText('weekly_first_key')).toHaveLength(
+      NUMBER_OF_METRICS + 1,
+    );
+    expect(queryByText('monthly_first_key')).not.toBeInTheDocument();
 
     fireEvent.mouseDown(getByText('Weekly'));
     await act(async () => {
       fireEvent.click(screen.getByText('Monthly'));
     });
 
-    expect(queryAllByText('weekly_first_key')).toHaveLength(0);
-    expect(queryAllByText('monthly_first_key')).toHaveLength(NUMBER_OF_METRICS);
+    expect(queryByText('weekly_first_key')).not.toBeInTheDocument();
+    expect(queryAllByText('monthly_first_key')).toHaveLength(
+      NUMBER_OF_METRICS + 1,
+    );
   });
 });
 
@@ -135,7 +140,7 @@ describe('EntityDashboardComponent', () => {
 
     expect(
       queryByText('entity-name_owner-name_weekly_df_average_first_key'),
-    ).not.toBeNull();
+    ).toBeInTheDocument();
   });
 
   it('should send component info without owner info', async () => {
@@ -143,6 +148,6 @@ describe('EntityDashboardComponent', () => {
 
     expect(
       queryByText('entity-name_null_weekly_df_average_first_key'),
-    ).not.toBeNull();
+    ).toBeInTheDocument();
   });
 });

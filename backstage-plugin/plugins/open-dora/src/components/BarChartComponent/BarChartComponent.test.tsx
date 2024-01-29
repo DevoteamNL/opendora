@@ -1,10 +1,10 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { BarChartComponent } from './BarChartComponent';
 
 describe('BarChartComponent', () => {
   it('should create a bar chart with data from input', async () => {
-    const { queryByText } = render(
+    const { queryAllByText } = render(
       <BarChartComponent
         metricData={{
           aggregation: 'weekly',
@@ -16,7 +16,7 @@ describe('BarChartComponent', () => {
       />,
     );
 
-    expect(queryByText('data_key')).not.toBeNull();
-    expect(queryByText('data_key_2')).not.toBeNull();
+    expect(queryAllByText('data_key')[0]).toBeInTheDocument();
+    expect(queryAllByText('data_key_2')[0]).toBeInTheDocument();
   });
 });

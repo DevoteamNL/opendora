@@ -16,7 +16,6 @@ export const BarChartComponent = ({
     <BarChart
       xAxis={[
         {
-          id: 'barCategories',
           data: keys,
           scaleType: 'band',
         },
