@@ -33,10 +33,10 @@ _median_change_lead_time as(
 
 SELECT
   CASE
-    WHEN median_change_lead_time < 60 then "Less than one hour"
-    WHEN median_change_lead_time < 7 * 24 * 60 then "Less than one week"
-    WHEN median_change_lead_time < 180 * 24 * 60 then "Between one week and six months"
-    WHEN median_change_lead_time >= 180 * 24 * 60 then "More than six months"
-    ELSE "N/A.Please check if you have collected deployments/incidents."
+    WHEN median_change_lead_time < 60 then "lt-1hour"
+    WHEN median_change_lead_time < 7 * 24 * 60 then "lt-1week"
+    WHEN median_change_lead_time < 180 * 24 * 60 then "week-6month"
+    WHEN median_change_lead_time >= 180 * 24 * 60 then "mt-6month"
+    ELSE "N/A"
     END as median_change_lead_time
 FROM _median_change_lead_time
