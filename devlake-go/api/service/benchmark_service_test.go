@@ -10,14 +10,16 @@ import (
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
-func TestBenchmarkDfService_ServeRequest(t *testing.T) {
+func TestBenchmarkService_ServeRequest(t *testing.T) {
 
 	dataMockMap := map[string]sql_client.MockBenchmarkDataReturn{
-		sql_queries.BenchmarkDfSql: {Data: "example_key"},
+		sql_queries.BenchmarkDfSql:   {Data: "example_key"},
+		sql_queries.BenchmarkMltcSql: {Data: "example_key"},
 	}
 
 	errorMockMap := map[string]sql_client.MockBenchmarkDataReturn{
-		sql_queries.BenchmarkDfSql: {Err: fmt.Errorf("error from df benchmark query")},
+		sql_queries.BenchmarkDfSql:   {Err: fmt.Errorf("error from df benchmark query")},
+		sql_queries.BenchmarkMltcSql: {Err: fmt.Errorf("error from mltc benchmark query")},
 	}
 
 	tests := []struct {
@@ -41,10 +43,24 @@ func TestBenchmarkDfService_ServeRequest(t *testing.T) {
 			expectResponse: models.BenchmarkResponse{Key: "example_key"},
 			expectError:    "",
 		},
+		{
+			name:           "should return an error with an unexpected error from the database",
+			params:         ServiceParameters{TypeQuery: "mltc", Project: "", To: 0, From: 0},
+			mockClient:     sql_client.MockClient{MockBenchmarkDataMap: errorMockMap},
+			expectResponse: models.BenchmarkResponse{Key: ""},
+			expectError:    "error from mltc benchmark query",
+		},
+		{
+			name:           "should return the mltc benchmark key from the database",
+			params:         ServiceParameters{TypeQuery: "mltc", Project: "", To: 0, From: 0},
+			mockClient:     sql_client.MockClient{MockBenchmarkDataMap: dataMockMap},
+			expectResponse: models.BenchmarkResponse{Key: "example_key"},
+			expectError:    "",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dfService := BenchmarkDfService{Client: tt.mockClient}
+			dfService := BenchmarkService{Client: tt.mockClient}
 			got, err := dfService.ServeRequest(tt.params)
 
 			if err == nil && tt.expectError != "" {
@@ -54,7 +70,7 @@ func TestBenchmarkDfService_ServeRequest(t *testing.T) {
 				t.Errorf("expected '%v' got '%v'", tt.expectError, err)
 			}
 			if !reflect.DeepEqual(got, tt.expectResponse) {
-				t.Errorf("BenchmarkDfService.ServeRequest() = %v, want %v", got, tt.expectResponse)
+				t.Errorf("BenchmarkService.ServeRequest() = %v, want %v", got, tt.expectResponse)
 			}
 		})
 	}

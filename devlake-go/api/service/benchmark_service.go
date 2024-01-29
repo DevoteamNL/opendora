@@ -6,13 +6,14 @@ import (
 	"github.com/devoteamnl/opendora/api/sql_client/sql_queries"
 )
 
-type BenchmarkDfService struct {
+type BenchmarkService struct {
 	Client sql_client.ClientInterface
 }
 
-func (service BenchmarkDfService) ServeRequest(params ServiceParameters) (models.BenchmarkResponse, error) {
+func (service BenchmarkService) ServeRequest(params ServiceParameters) (models.BenchmarkResponse, error) {
 	typeQueryMap := map[string]string{
-		"df": sql_queries.BenchmarkDfSql,
+		"df":   sql_queries.BenchmarkDfSql,
+		"mltc": sql_queries.BenchmarkMltcSql,
 	}
 
 	query := typeQueryMap[params.TypeQuery]

@@ -55,9 +55,10 @@ func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter
 }
 
 func benchmarkHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
-	dfService := service.BenchmarkDfService{Client: client}
+	benchmarkService := service.BenchmarkService{Client: client}
 	serviceMap := map[string]service.Service[models.BenchmarkResponse]{
-		"df": dfService,
+		"df":   benchmarkService,
+		"mltc": benchmarkService,
 	}
 
 	return handler(validation.ValidBenchmarkServiceParameters, serviceMap)
