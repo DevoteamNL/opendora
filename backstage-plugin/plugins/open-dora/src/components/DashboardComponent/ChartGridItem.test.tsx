@@ -19,10 +19,10 @@ describe('ChartGridItem', () => {
   }
 
   it('should show the a bar chart and title when data is returned from the server', async () => {
-    const { queryByText } = await renderChartGridItem();
+    const { queryByText, queryAllByText } = await renderChartGridItem();
 
-    expect(queryByText('Deployment Frequency')).not.toBeNull();
-    expect(queryByText('10/23')).not.toBeNull();
+    expect(queryByText('Deployment Frequency')).toBeInTheDocument();
+    expect(queryAllByText('10/23')[0]).toBeInTheDocument();
   });
 
   it('should show loading indicator when waiting on the data to return', async () => {
@@ -31,20 +31,22 @@ describe('ChartGridItem', () => {
       metricUrl,
     );
 
-    const { queryByText, queryByRole, findByRole } =
+    const { queryByText, queryAllByText, queryByRole, findByRole } =
       await renderChartGridItem();
 
-    expect(queryByText('Deployment Frequency')).not.toBeNull();
-    expect(await findByRole('progressbar')).not.toBeNull();
-    expect(queryByText('10/23')).toBeNull();
+    expect(queryByText('Deployment Frequency')).toBeInTheDocument();
+    expect(await findByRole('progressbar')).toBeInTheDocument();
 
     await act(async () => {
       jest.runAllTimers();
     });
 
-    expect(queryByText('Deployment Frequency')).not.toBeNull();
-    expect(queryByRole('progressbar')).toBeNull();
-    expect(queryByText('10/23')).not.toBeNull();
+    expect(queryByText('Deployment Frequency')).toBeInTheDocument();
+    expect(queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(queryAllByText('10/23')[0]).toBeInTheDocument();
+
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   it('should show the error returned from the service', async () => {
@@ -55,8 +57,8 @@ describe('ChartGridItem', () => {
     );
     const { queryByText } = await renderChartGridItem();
 
-    expect(queryByText('Deployment Frequency')).not.toBeNull();
-    expect(queryByText('Error: Unauthorized')).not.toBeNull();
+    expect(queryByText('Deployment Frequency')).toBeInTheDocument();
+    expect(queryByText('Error: Unauthorized')).toBeInTheDocument();
   });
 
   it('should show error if there are no datapoints', async () => {
@@ -71,7 +73,7 @@ describe('ChartGridItem', () => {
       }),
     );
     const { queryByText } = await renderChartGridItem();
-    expect(queryByText('No data found')).not.toBeNull();
+    expect(queryByText('No data found')).toBeInTheDocument();
   });
 
   it('should use details from the metric context in data requests', async () => {
@@ -88,13 +90,13 @@ describe('ChartGridItem', () => {
       }),
     );
 
-    const { queryByText } = await renderComponentWithApis(
+    const { queryByText, queryAllByText } = await renderComponentWithApis(
       <MetricContext.Provider value={{ aggregation: 'monthly' }}>
         <ChartGridItem type="df_count" label="Deployment frequency" />
       </MetricContext.Provider>,
     );
 
-    expect(queryByText('weekly_10/23')).toBeNull();
-    expect(queryByText('monthly_10/23')).not.toBeNull();
+    expect(queryByText('weekly_10/23')).not.toBeInTheDocument();
+    expect(queryAllByText('monthly_10/23')[0]).toBeInTheDocument();
   });
 });

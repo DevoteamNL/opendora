@@ -82,6 +82,7 @@ describe('DoraDataService', () => {
     });
 
     it('should throw an error if the response does not contain metric data', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => {});
       const service = createService();
 
       server.use(
