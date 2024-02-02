@@ -22,18 +22,18 @@ func Test_metricHandler(t *testing.T) {
 			name:             "should throw 400 response when not specifying metric type",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?", nil),
 			expectStatusCode: 400,
-			expectBody:       "type should be provided as one of the following: df_count, df_average, mltc\n",
+			expectBody:       "type should be provided as one of the following: df_count, df_average, mltc, cfr\n",
 		},
 		{
 			name:             "should throw 400 response when specifying nonsense metric type",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=not_metric", nil),
-			expectBody:       "type should be provided as one of the following: df_count, df_average, mltc\n",
+			expectBody:       "type should be provided as one of the following: df_count, df_average, mltc, cfr\n",
 			expectStatusCode: 400,
 		},
 		{
 			name:             "should throw 400 response when specifying multiple metric types",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=df_count&type=df_average", nil),
-			expectBody:       "type should be provided as one of the following: df_count, df_average, mltc\n",
+			expectBody:       "type should be provided as one of the following: df_count, df_average, mltc, cfr\n",
 			expectStatusCode: 400,
 		},
 		{
@@ -51,6 +51,12 @@ func Test_metricHandler(t *testing.T) {
 		{
 			name:             "should return data response when specifying mltc",
 			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=mltc", nil),
+			expectBody:       `{"aggregation":"weekly","dataPoints":[]}` + "\n",
+			expectStatusCode: 200,
+		},
+		{
+			name:             "should return data response when specifying cfr",
+			req:              httptest.NewRequest(http.MethodGet, "/dora/api/metric?type=cfr", nil),
 			expectBody:       `{"aggregation":"weekly","dataPoints":[]}` + "\n",
 			expectStatusCode: 200,
 		},
