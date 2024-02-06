@@ -19,9 +19,10 @@ jobs:
         version: 'latest'
 
     - name: Package Helm Chart
+      working-directory: open-dora-helm-chart
       run: |
-        helm package open-dora-helm-chart/.
-        mv open-dora-helm-chart/open-dora-helm-chart-0.1.1.tgz $GITHUB_WORKSPACE
+        helm package .
+        mv *.tgz $GITHUB_WORKSPACE
 
     - name: Publish to GitHub Packages
       run: |
