@@ -20,8 +20,8 @@ jobs:
 
     - name: Package Helm Chart
       run: |
-        helm package .
-        mv *.tgz $GITHUB_WORKSPACE
+        helm package open-dora-helm-chart/.
+        mv open-dora-helm-chart/*.tgz $GITHUB_WORKSPACE
 
     - name: Publish to GitHub Packages
       run: |
