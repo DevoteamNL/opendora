@@ -1,0 +1,30 @@
+name: Publish Helm Chart
+
+on:
+  push:
+    branches:
+      - publish_helm
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: 'latest'
+
+    - name: Package Helm Chart
+      run: |
+        helm package .
+        mv *.tgz $GITHUB_WORKSPACE
+
+    - name: Publish to GitHub Packages
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker tag $GITHUB_WORKSPACE/*.tgz ghcr.io/${{ github.repository }}/open-dora-helm-chart:latest
+        docker push ghcr.io/${{ github.repository }}/open-dora-helm-chart:latest
