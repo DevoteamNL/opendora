@@ -28,5 +28,6 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         HELM_CHART_TGZ=$(basename $GITHUB_WORKSPACE/open-dora-helm-chart-*.tgz)
-        docker tag $GITHUB_WORKSPACE/$HELM_CHART_TGZ ghcr.io/${{ github.repository }}/open-dora-helm-chart:latest
-        docker push ghcr.io/${{ github.repository }}/open-dora-helm-chart:latest
+        DOCKER_IMAGE_NAME=ghcr.io/${{ github.repository }}/open-dora-helm-chart
+        docker tag $DOCKER_IMAGE_NAME:$HELM_CHART_TGZ $DOCKER_IMAGE_NAME:latest
+        docker push $DOCKER_IMAGE_NAME:latest
