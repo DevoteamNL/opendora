@@ -21,7 +21,7 @@ jobs:
     - name: Package Helm Chart
       run: |
         helm package open-dora-helm-chart/.
-        mv open-dora-helm-chart/*.tgz $GITHUB_WORKSPACE
+        mv open-dora-helm-chart/open-dora-helm-chart-0.1.1.tgz $GITHUB_WORKSPACE
 
     - name: Publish to GitHub Packages
       run: |
