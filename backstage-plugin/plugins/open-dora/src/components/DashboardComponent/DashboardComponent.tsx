@@ -70,7 +70,8 @@ export const DashboardComponent = ({
               }}
             >
               <BenchmarkGridItem type="df" />
-              <Box sx={{ flex: 3 }}>
+              <BenchmarkGridItem type="mltc" />
+              <Box sx={{ flex: 2 }}>
                 {/* Placeholder for other benchmark items */}
               </Box>
             </Box>
