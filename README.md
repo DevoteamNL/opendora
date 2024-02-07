@@ -16,11 +16,11 @@ DORA, short for [DevOps Research and Assessment](https://dora.dev), was created 
 
 The ingest script fetches data from external tools (Gitlab, Jira, etc) and pushes to Devlake, ideally run as a scheduled job. The `devlake-go` API exposes this data and provides API endpoints to retrieve it from Devlake. The `backstage-plugin` utilizes this API and renders the results on the Backstage frontend. This is a React plugin based on Material UI.
 
-![Screenshot of the main OpenDORA dashboard](images/architecture-diagram.png)
+![Screenshot of the main OpenDORA dashboard](/images/architecture-diagram.png)
 
 The resulting plugin as displayed within Backstage:
 
-![Screenshot of the main OpenDORA dashboard](images/screenshot-plugin.png)
+![Screenshot of the main OpenDORA dashboard](/images/screenshot-plugin.png)
 
 Below is a description of the main components of this repo.
 
