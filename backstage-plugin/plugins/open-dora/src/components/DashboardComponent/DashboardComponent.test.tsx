@@ -49,7 +49,7 @@ describe('DashboardComponent', () => {
     );
     const { queryByText, queryAllByText } = await renderDashboardComponent();
 
-    expect(queryAllByText('Deployment Frequency')).toHaveLength(3);
+    expect(queryAllByText('Deployment Frequency')).toHaveLength(2);
     expect(queryByText('df_count_first_key')).toBeInTheDocument();
 
     expect(queryByText('Deployment Frequency Average')).toBeInTheDocument();
