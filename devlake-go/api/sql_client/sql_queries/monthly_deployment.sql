@@ -28,10 +28,7 @@ WITH _deployments AS(
 ),
 count AS (
     SELECT
-        CASE
-            WHEN d.deployment_month IS NULL then 'N/A'
-            ELSE d.deployment_month
-        END AS data_key,
+        cm.month AS data_key,
         CASE
             WHEN d.deployment_count IS NULL THEN 0
             ELSE d.deployment_count
@@ -43,5 +40,5 @@ count AS (
         cm.month_timestamp BETWEEN FROM_UNIXTIME(:from)
         AND FROM_UNIXTIME(:to)
     ORDER BY
-        cm.month DESC
+        cm.month ASC
 )
