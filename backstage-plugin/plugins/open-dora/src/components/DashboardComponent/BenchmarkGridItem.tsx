@@ -20,6 +20,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           'lt-6month': 'critical',
           'week-month': 'neutral',
           'month-6month': 'negative',
+          'lt-1hour': 'positive',
+          'lt-1week': 'neutral',
+          'week-6month': 'negative',
+          'mt-6month': 'critical',
         }[benchmark]
       }
     />
@@ -35,7 +39,7 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
 
   return (
     <Box sx={{ bgcolor: '#424242', flex: 1 }}>
-      <h1>{t('deployment_frequency.labels.deployment_frequency')}</h1>
+      <h1>{t(`deployment_frequency.labels.${type}`)}</h1>
       {errorOrResponse}
     </Box>
   );

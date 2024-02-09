@@ -11,6 +11,7 @@ type BenchmarkService struct {
 }
 
 func (service BenchmarkService) ServeRequest(params ServiceParameters) (models.BenchmarkResponse, error) {
+
 	typeQueryMap := map[string]string{
 		"df":   sql_queries.BenchmarkDfSql,
 		"mltc": sql_queries.BenchmarkMltcSql,
