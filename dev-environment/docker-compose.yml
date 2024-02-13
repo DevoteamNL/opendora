@@ -1,6 +1,63 @@
 version: "3"
 services:
   # TODO: add backstage service, including the dora-plugin
+
+  opendora:
+    # profiles:
+      # - dev
+    build:
+      context: ../devlake-go/
+      dockerfile: Dockerfile
+      # target: dev
+      args:
+        USER_ID: ${USER_ID-1000}
+        GROUP_ID: ${GROUP_ID-1000}
+    restart: unless-stopped
+    ports:
+      - "10666:10666"
+    environment:
+      BACKSTAGE_URL: ${BACKSTAGE_URL-http://backstage:7007/}
+      DEVLAKE_URL: ${DEVLAKE_URL-http://config-ui:4000/}
+      DEVLAKE_DBUSER: ${DEVLAKE_DBUSER-merico}
+      DEVLAKE_DBPASS: ${DEVLAKE_DBPASS-merico}
+      DEVLAKE_DBADDRESS: ${DEVLAKE_DBADDRESS-mysql:3306}
+      DEVLAKE_DBNAME: ${DEVLAKE_DBNAME-lake}
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
+
+  backstage:
+    # profiles:
+    #   - dev
+    build:
+      context: ../backstage-opendora/
+      dockerfile: Dockerfile
+      # target: dev
+      args:
+        USER_ID: ${USER_ID-1000}
+        GROUP_ID: ${GROUP_ID-1000}
+    restart: unless-stopped
+    ports:
+      - "7007:7007"
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST-postgres}
+      POSTGRES_PORT: ${POSTGRES_PORT-5432}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD-pass}
+      POSTGRES_USER: ${POSTGRES_USER-postgres}
+      POSTGRES_DB: ${POSTGRES_DB-backstage}
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
+
+  postgres:
+    image: postgres:16
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD-pass}
+      POSTGRES_USER: ${POSTGRES_USER-postgres}
+      POSTGRES_DB: ${POSTGRES_DB-backstage}
+
   mysql:
     image: mysql:8
     volumes:
@@ -10,7 +67,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: lake
+      MYSQL_DATABASE: ${DEVLAKE_DBNAME-lake}
       MYSQL_USER: ${DEVLAKE_MYSQL_USER:-merico}
       MYSQL_PASSWORD: ${DEVLAKE_MYSQL_PASSWORD:-merico}
     command: --character-set-server=utf8mb4
@@ -28,8 +85,8 @@ services:
     environment:
       GF_SERVER_ROOT_URL: http://localhost:4000/grafana
       GF_USERS_DEFAULT_THEME: dark
-      MYSQL_URL: mysql:3306
-      MYSQL_DATABASE: lake
+      MYSQL_URL: ${DEVLAKE_DBADDRESS-mysql:3306}
+      MYSQL_DATABASE: ${DEVLAKE_DBNAME-lake}
       MYSQL_USER: ${DEVLAKE_MYSQL_USER:-merico}
       MYSQL_PASSWORD: ${DEVLAKE_MYSQL_PASSWORD:-merico}
     restart: unless-stopped
