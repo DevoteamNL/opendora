@@ -29,14 +29,15 @@ services:
     # profiles:
     #   - dev
     build:
-      context: ../backstage-opendora/
+      context: ./backstage/
       dockerfile: Dockerfile
-      # target: dev
+      target: dev
       args:
         USER_ID: ${USER_ID-1000}
         GROUP_ID: ${GROUP_ID-1000}
     restart: unless-stopped
     ports:
+      - "3000:3000"
       - "7007:7007"
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST-postgres}
@@ -46,17 +47,19 @@ services:
       POSTGRES_DB: ${POSTGRES_DB-backstage}
     extra_hosts:
         - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backstage/app:/app
 
   postgres:
     image: postgres:16
     ports:
       - 5432:5432
-    volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD-pass}
       POSTGRES_USER: ${POSTGRES_USER-postgres}
       POSTGRES_DB: ${POSTGRES_DB-backstage}
+    volumes:
+      - postgres-storage:/var/lib/postgresql/data
 
   mysql:
     image: mysql:8
@@ -124,4 +127,5 @@ services:
 
 volumes:
   mysql-storage:
+  postgres-storage:
   grafana-storage:
