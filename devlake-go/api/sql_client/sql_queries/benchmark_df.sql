@@ -147,7 +147,7 @@ _days_weeks_deploy AS(
 _monthly_deploy AS(
     -- calculate the number of deployment days every month
     SELECT
-        date(
+        DATE(
             DATE_ADD(
                 last_few_calendar_months.day,
                 INTERVAL - DAY(last_few_calendar_months.day) + 1 DAY
@@ -169,7 +169,7 @@ _monthly_deploy AS(
 _median_number_of_deployment_days_per_week_ranks AS(
     SELECT
         *,
-        percent_rank() over(
+        percent_rank() OVER(
             ORDER BY
                 days_deployed
         ) AS ranks
@@ -187,7 +187,7 @@ _median_number_of_deployment_days_per_week AS(
 _median_number_of_deployment_days_per_month_ranks AS(
     SELECT
         *,
-        percent_rank() over(
+        percent_rank() OVER(
             ORDER BY
                 months_deployed
         ) AS ranks

@@ -14,32 +14,32 @@ WITH RECURSIVE calendar_weeks AS (
         week_date < FROM_UNIXTIME(:to)
 ),
 
-_deployments as (
+_deployments AS (
    SELECT
-        cdc.cicd_deployment_id as deployment_id,
-        max(cdc.finished_date) as deployment_finished_date
+        cdc.cicd_deployment_id AS deployment_id,
+        max(cdc.finished_date) AS deployment_finished_date
     FROM
         cicd_deployment_commits cdc
-        JOIN project_mapping pm on cdc.cicd_scope_id = pm.row_id and pm.`table` = 'cicd_scopes'
+        JOIN project_mapping pm ON cdc.cicd_scope_id = pm.row_id AND pm.`table` = 'cicd_scopes'
     WHERE
         (
             :project = ""
             OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
         )
-        and cdc.result = 'SUCCESS'
-        and cdc.environment = 'PRODUCTION'
+        AND cdc.result = 'SUCCESS'
+        AND cdc.environment = 'PRODUCTION'
     GROUP BY 1
 ),
 
-_failure_caused_by_deployments as (
+_failure_caused_by_deployments AS (
    SELECT
         d.deployment_id,
         d.deployment_finished_date,
-        count(distinct case when i.type = 'INCIDENT' then d.deployment_id else null end) as has_incident
+        count(DISTINCT CASE WHEN i.type = 'INCIDENT' THEN d.deployment_id ELSE NULL END) AS has_incident
     FROM
         _deployments d
-        left join project_issue_metrics pim on d.deployment_id = pim.deployment_id
-        left join issues i on pim.id = i.id
+        LEFT JOIN project_issue_metrics pim ON d.deployment_id = pim.deployment_id
+        LEFT JOIN issues i ON pim.id = i.id
     GROUP BY 1,2
 ),
 
@@ -47,8 +47,8 @@ _change_failure_rate_for_each_week as (
     SELECT
         YEARWEEK(deployment_finished_date) AS week,
         case
-            when count(deployment_id) is null then null
-            else sum(has_incident)/count(deployment_id) end as change_failure_rate
+            WHERE count(deployment_id) IS NULL THEN NULL
+            ELSE sum(has_incident)/count(deployment_id) END AS change_failure_rate
     FROM
         _failure_caused_by_deployments
     GROUP BY 1
