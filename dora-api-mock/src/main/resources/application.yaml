@@ -147,6 +147,27 @@ dora-api-mock:
         type: mltc
         aggregation: quarterly
         project: .+
+    - name: cfr_weekly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/cfr/cfr_weekly.json
+      mediaType: application/json
+      parameters:
+        type: cfr
+        aggregation: weekly
+    - name: cfr_monthly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/cfr/cfr_monthly.json
+      mediaType: application/json
+      parameters:
+        type: cfr
+        aggregation: monthly
+    - name: cfr_quarterly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/cfr/cfr_quarterly.json
+      mediaType: application/json
+      parameters:
+        type: cfr
+        aggregation: quarterly
 
 wiremock:
   server:
