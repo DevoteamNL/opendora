@@ -13,7 +13,6 @@ WITH RECURSIVE calendar_weeks AS (
     WHERE
         week_date < FROM_UNIXTIME(:to)
 ), _pr_stats as (
--- get the cycle time of PRs deployed by the deployments finished each week
     SELECT
         DISTINCT pr.id,
         YEARWEEK(cdc.finished_date) AS week,

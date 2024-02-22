@@ -1,5 +1,4 @@
 WITH last_few_calendar_months AS(
-    -- construct the last few calendar months within the selected time period in the top-right corner
     SELECT
         CAST((SYSDATE() - INTERVAL (H + T + U) DAY) AS date) DAY
     FROM
@@ -104,7 +103,6 @@ WITH last_few_calendar_months AS(
         AND (SYSDATE() - INTERVAL (H + T + U) DAY) < FROM_UNIXTIME(:to)
 ),
 _production_deployment_days AS(
-    -- When deploying multiple commits in one pipeline, GitLab and BitBucket may generate more than one deployment. However, DevLake consider these deployments as ONE production deployment and use the last one's finished_date as the finished date.
     SELECT
         cdc.cicd_deployment_id AS deployment_id,
         max(DATE(cdc.finished_date)) AS DAY
@@ -122,7 +120,6 @@ _production_deployment_days AS(
         1
 ),
 _days_weeks_deploy AS(
-    -- calculate the number of deployment days every week
     SELECT
         date(
             DATE_ADD(
@@ -145,7 +142,6 @@ _days_weeks_deploy AS(
         week
 ),
 _monthly_deploy AS(
-    -- calculate the number of deployment days every month
     SELECT
         DATE(
             DATE_ADD(

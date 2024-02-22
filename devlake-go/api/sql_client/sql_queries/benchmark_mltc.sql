@@ -1,5 +1,4 @@
 with _pr_stats AS (
--- get the cycle time of PRs deployed by the deployments finished in the selected period
     SELECT
         DISTINCT pr.id,
         ppm.pr_cycle_time
@@ -25,7 +24,6 @@ _median_change_lead_time_ranks AS(
 ),
 
 _median_change_lead_time AS(
--- use median PR cycle time as the median change lead time
     SELECT max(pr_cycle_time) AS median_change_lead_time
     FROM _median_change_lead_time_ranks
     WHERE ranks <= 0.5
@@ -38,5 +36,5 @@ SELECT
     WHEN median_change_lead_time < 180 * 24 * 60 THEN "week-6month"
     WHEN median_change_lead_time >= 180 * 24 * 60 THEN "mt-6month"
     ELSE "N/A"
-    END AS median_change_lead_time
+    END AS data_key
 FROM _median_change_lead_time

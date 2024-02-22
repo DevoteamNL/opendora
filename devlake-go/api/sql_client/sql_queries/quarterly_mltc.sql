@@ -14,7 +14,6 @@ WITH RECURSIVE calendar_quarters AS (
     WHERE
         quarter_date < FROM_UNIXTIME(:to)
 ), _pr_stats as (
--- get the cycle time of PRs deployed by the deployments finished each quarter
     SELECT
         DISTINCT pr.id,
         cdc.finished_date AS quarter,

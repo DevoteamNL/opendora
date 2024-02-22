@@ -1,6 +1,4 @@
--- Metric 2: median change lead time per month
 WITH _pr_stats AS (
--- get the cycle time of PRs deployed by the deployments finished each month
     SELECT
         DISTINCT pr.id,
         DATE_FORMAT(cdc.finished_date,'%y/%m') AS month,
@@ -35,10 +33,10 @@ _clt as(
 )
 
 SELECT
-    cm.month,
+    cm.month AS data_key,
     CASE
         WHEN _clt.median_change_lead_time IS NULL THEN 0
-        ELSE _clt.median_change_lead_time/60 END AS median_change_lead_time_in_hour
+        ELSE _clt.median_change_lead_time/60 END AS data_value
 FROM
     calendar_months cm
     LEFT JOIN _clt ON cm.month = _clt.month

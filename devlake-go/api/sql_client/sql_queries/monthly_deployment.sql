@@ -28,7 +28,7 @@ WITH _deployments AS(
 ),
 count AS (
     SELECT
-        d.deployment_month AS data_key,
+        cm.month AS data_key,
         CASE
             WHEN d.deployment_count IS NULL THEN 0
             ELSE d.deployment_count

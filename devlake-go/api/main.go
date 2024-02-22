@@ -66,9 +66,29 @@ func benchmarkHandler(client sql_client.ClientInterface) func(w http.ResponseWri
 	return handler(validation.ValidBenchmarkServiceParameters, serviceMap)
 }
 
+func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Adjust this according to your needs
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Check if it's a preflight request
+		if r.Method == "OPTIONS" {
+			// Stop here for a preflight OPTIONS request
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Call the original handler
+		handler(w, r)
+	}
+}
+
 func main() {
+
 	sqlClient := sql_client.New()
-	http.HandleFunc("/dora/api/metric", metricHandler(sqlClient))
+	http.HandleFunc("/dora/api/metric", enableCORS(metricHandler(sqlClient)))
 	http.HandleFunc("/dora/api/benchmark", benchmarkHandler(sqlClient))
 	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
