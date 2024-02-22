@@ -4,9 +4,9 @@ with _pr_stats AS (
         ppm.pr_cycle_time
     FROM
         pull_requests pr
-        JOIN project_pr_metrics ppm ON ppm.id = pr.id
-        JOIN project_mapping pm ON pr.base_repo_id = pm.row_id
-        JOIN cicd_deployment_commits cdc ON ppm.deployment_commit_id = cdc.id
+        join project_pr_metrics ppm on ppm.id = pr.id
+        join cicd_deployment_commits cdc on ppm.deployment_commit_id = cdc.id
+        JOIN repos ON cdc.repo_id = repos.id
     WHERE
         (
             :project = ""
@@ -31,10 +31,10 @@ _median_change_lead_time AS(
 
 SELECT
   CASE
-    WHEN median_change_lead_time < 60 THEN "lt-1hour"
-    WHEN median_change_lead_time < 7 * 24 * 60 THEN "lt-1week"
-    WHEN median_change_lead_time < 180 * 24 * 60 THEN "week-6month"
-    WHEN median_change_lead_time >= 180 * 24 * 60 THEN "mt-6month"
-    ELSE "N/A"
-    END AS data_key
+    WHEN median_change_lead_time < 60 then "lt-1hour"
+    WHEN median_change_lead_time < 7 * 24 * 60 then "lt-1week"
+    WHEN median_change_lead_time < 180 * 24 * 60 then "week-6month"
+    WHEN median_change_lead_time >= 180 * 24 * 60 then "mt-6month"
+    ELSE "mt-6month"
+    END as data_key
 FROM _median_change_lead_time

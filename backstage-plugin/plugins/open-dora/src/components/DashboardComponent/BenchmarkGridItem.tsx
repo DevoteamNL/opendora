@@ -1,5 +1,5 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
-import { CircularProgress, Grid } from '@material-ui/core';
+import { Box, CircularProgress } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMetricBenchmark } from '../../hooks/MetricBenchmarkHook';
@@ -20,6 +20,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           'lt-6month': 'critical',
           'week-month': 'neutral',
           'month-6month': 'negative',
+          'lt-1hour': 'positive',
+          'lt-1week': 'neutral',
+          'week-6month': 'negative',
+          'mt-6month': 'critical',
         }[benchmark]
       }
     />
@@ -34,14 +38,9 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
   );
 
   return (
-    <Grid item xs={12} className="gridBorder">
-      <div className="gridBoxText">
-        <Grid container>
-          <Grid item xs={3}>
-            {errorOrResponse}
-          </Grid>
-        </Grid>
-      </div>
-    </Grid>
+    <Box sx={{ bgcolor: '#424242', flex: 1 }}>
+      <h1>{t(`deployment_frequency.labels.${type}`)}</h1>
+      {errorOrResponse}
+    </Box>
   );
 };

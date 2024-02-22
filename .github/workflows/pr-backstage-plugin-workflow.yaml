@@ -2,6 +2,12 @@ name: Verify Backstage Plugin
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "backstage-plugin/**"
+      - ".github/workflows/pr-backstage-plugin-workflow.yaml"
   pull_request:
     branches:
       - main
@@ -82,6 +88,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
 
       - name: publish
+        if: github.event_name == 'pull_request'
         working-directory: backstage-plugin/plugins/open-dora
         run: |
           # Replace the @devoteam-nl with @devoteamnl in package.json

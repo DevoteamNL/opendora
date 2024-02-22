@@ -40,5 +40,5 @@ count AS (
         cm.month_timestamp BETWEEN FROM_UNIXTIME(:from)
         AND FROM_UNIXTIME(:to)
     ORDER BY
-        cm.month DESC
+        cm.month ASC
 )

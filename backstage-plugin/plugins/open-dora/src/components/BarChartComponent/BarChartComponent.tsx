@@ -16,7 +16,6 @@ export const BarChartComponent = ({
     <BarChart
       xAxis={[
         {
-          id: 'barCategories',
           data: keys,
           scaleType: 'band',
         },
@@ -27,6 +26,7 @@ export const BarChartComponent = ({
         },
       ]}
       height={300}
+      margin={{ top: 20, right: 35, bottom: 35, left: 35 }}
     />
   );
 };

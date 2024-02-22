@@ -1,6 +1,8 @@
 {
   "deployment_frequency": {
     "labels": {
+      "df": "Deployment Frequency",
+      "mltc": "Median Lead time for change",
       "deployment_frequency": "Deployment Frequency",
       "deployment_frequency_average": "Deployment Frequency Average",
       "deployment_frequency_overall": "Deployment frequency overall"

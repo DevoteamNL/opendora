@@ -1,5 +1,5 @@
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
-import { Grid } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import React from 'react';
 import { useMetricData } from '../../hooks/MetricDataHook';
 import { BarChartComponent } from '../BarChartComponent/BarChartComponent';
@@ -26,11 +26,9 @@ export const ChartGridItem = ({
   );
 
   return (
-    <Grid item xs={12} className="gridBorder">
-      <div className="gridBoxText">
-        <h1>{label}</h1>
-        {errorOrResponse}
-      </div>
-    </Grid>
+    <Box sx={{ bgcolor: '#424242', flex: 1 }}>
+      <h1>{label}</h1>
+      {errorOrResponse}
+    </Box>
   );
 };
