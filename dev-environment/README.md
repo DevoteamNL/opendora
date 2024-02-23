@@ -25,8 +25,8 @@ Some environment variables can be customised. The list below has all of them as 
 | Variable Name                  | Default Value                                                          |
 |--------------------------------|------------------------------------------------------------------------|
 | `DEVLAKE_ENCRYPTION_SECRET`    |                                                                        |
-| `DEVLAKE_DBUSER`           | `merico`                                                               |
-| `DEVLAKE_DBPASS`       | `merico`                                                               |
+| `DEVLAKE_DBUSER`               | `merico`                                                               |
+| `DEVLAKE_DBPASS`               | `merico`                                                               |
 | `DEVLAKE_MYSQL_CONNECTION_URL` | `mysql://merico:merico@mysql:3306/lake?charset=utf8mb4&parseTime=True` |
 | `DEVLAKE_ADMIN_USER`           | `devlake`                                                              |
 | `DEVLAKE_ADMIN_PASSWORD`       | `merico`                                                               |
