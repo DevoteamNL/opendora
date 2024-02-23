@@ -1,10 +1,9 @@
 version: "3"
 services:
-  # TODO: add backstage service, including the dora-plugin
 
   opendora:
-    # profiles:
-      # - dev
+    profiles:
+      - test
     build:
       context: ../devlake-go/
       dockerfile: Dockerfile
@@ -25,9 +24,21 @@ services:
     extra_hosts:
         - "host.docker.internal:host-gateway"
 
+  dora-mock-api:
+    profiles:
+      - dev
+    build:
+      context: ../dora-api-mock/
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        USER_ID: ${USER_ID-1000}
+        GROUP_ID: ${GROUP_ID-1000}
+    restart: unless-stopped
+    ports:
+      - "10666:10666"
+
   backstage:
-    # profiles:
-    #   - dev
     build:
       context: ./backstage/
       dockerfile: Dockerfile
@@ -63,6 +74,8 @@ services:
 
   mysql:
     image: mysql:8
+    profiles:
+      - test
     volumes:
       - mysql-storage:/var/lib/mysql
     restart: unless-stopped
@@ -97,6 +110,8 @@ services:
       - mysql
 
   devlake:
+    profiles:
+    - test
     image: devlake.docker.scarf.sh/apache/devlake:v0.18.0
     ports:
       - "8080:8080"
@@ -111,6 +126,8 @@ services:
       - mysql
 
   config-ui:
+    profiles:
+      - test
     image: devlake.docker.scarf.sh/apache/devlake-config-ui:v0.18.0
     ports:
       - "4000:4000"
