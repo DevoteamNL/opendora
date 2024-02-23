@@ -71,8 +71,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: ${DEVLAKE_DBNAME-lake}
-      MYSQL_USER: ${DEVLAKE_MYSQL_USER:-merico}
-      MYSQL_PASSWORD: ${DEVLAKE_MYSQL_PASSWORD:-merico}
+      MYSQL_USER: ${DEVLAKE_DBUSER:-merico}
+      MYSQL_PASSWORD: ${DEVLAKE_DBPASS:-merico}
     command: --character-set-server=utf8mb4
       --collation-server=utf8mb4_bin
       --skip-log-bin
@@ -90,8 +90,8 @@ services:
       GF_USERS_DEFAULT_THEME: dark
       MYSQL_URL: ${DEVLAKE_DBADDRESS-mysql:3306}
       MYSQL_DATABASE: ${DEVLAKE_DBNAME-lake}
-      MYSQL_USER: ${DEVLAKE_MYSQL_USER:-merico}
-      MYSQL_PASSWORD: ${DEVLAKE_MYSQL_PASSWORD:-merico}
+      MYSQL_USER: ${DEVLAKE_DBUSER:-merico}
+      MYSQL_PASSWORD: ${DEVLAKE_DBPASS:-merico}
     restart: unless-stopped
     depends_on:
       - mysql
