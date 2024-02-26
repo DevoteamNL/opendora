@@ -187,3 +187,7 @@
 **/logs
 **/bin
 **/cover.*
+
+# Dev environment
+dev-environment/backstage/app/*
+dev-environment/.env
