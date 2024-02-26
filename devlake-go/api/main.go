@@ -45,10 +45,12 @@ func handler[R models.Response](
 func metricHandler(client sql_client.ClientInterface) func(w http.ResponseWriter, r *http.Request) {
 	dfService := service.MetricDfService{Client: client}
 	mltcService := service.MetricMltcService{Client: client}
+	cfrService := service.MetricCfrService{Client: client}
 	serviceMap := map[string]service.Service[models.MetricResponse]{
 		"df_count":   dfService,
 		"df_average": dfService,
 		"mltc":       mltcService,
+		"cfr":        cfrService,
 	}
 
 	return handler(validation.ValidMetricServiceParameters, serviceMap)

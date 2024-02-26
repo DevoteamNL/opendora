@@ -115,7 +115,7 @@ func ValidMetricServiceParameters(queries url.Values) (service.ServiceParameters
 		return service.ServiceParameters{}, fmt.Errorf("aggregation should be provided as either weekly, monthly or quarterly")
 	}
 
-	serviceParameters, err := validServiceParameters(queries, []string{"df_count", "df_average", "mltc"})
+	serviceParameters, err := validServiceParameters(queries, []string{"df_count", "df_average", "mltc", "cfr"})
 	if err != nil {
 		return serviceParameters, err
 	}
