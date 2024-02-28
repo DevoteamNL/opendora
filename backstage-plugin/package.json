@@ -52,5 +52,7 @@
       "prettier --write"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "recharts": "^2.12.1"
+  }
 }

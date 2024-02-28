@@ -14,6 +14,7 @@ import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { BenchmarkGridItem } from './BenchmarkGridItem';
 import { ChartGridItem } from './ChartGridItem';
 import './DashboardComponent.css';
+import { ChartGridItemPoC } from './ChartGridItemPoC';
 
 export interface DashboardComponentProps {
   entityName?: string;
@@ -87,11 +88,9 @@ export const DashboardComponent = ({
                 type="df_count"
                 label={t('deployment_frequency.labels.deployment_frequency')}
               />
-              <ChartGridItem
-                type="df_average"
-                label={t(
-                  'deployment_frequency.labels.deployment_frequency_average',
-                )}
+              <ChartGridItemPoC
+                type="df_count"
+                label={t('deployment_frequency.labels.deployment_frequency')}
               />
             </Box>
             <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
@@ -99,6 +98,7 @@ export const DashboardComponent = ({
                 type="mltc"
                 label={t('lead-time.labels.median_lead_time_for_changes')}
               />
+              <ChartGridItemPoC type="mltc" label="NewPoC" />
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other chart items */}
               </Box>
