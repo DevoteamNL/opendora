@@ -3,6 +3,7 @@
     "labels": {
       "df": "Deployment Frequency",
       "mltc": "Median Lead time for change",
+      "cfr": "Change Failure RateZZZZZ",
       "deployment_frequency": "Deployment Frequency",
       "deployment_frequency_average": "Deployment Frequency Average",
       "deployment_frequency_overall": "Deployment frequency overall"
@@ -22,6 +23,12 @@
   "lead-time": {
     "labels": {
       "median_lead_time_for_changes": "Median Lead Time for Changes"
+    }
+  },
+
+  "failure-rate": {
+    "labels": {
+      "change_failure_rate": "Change Failure RateSSSSSS"
     }
   },
 
