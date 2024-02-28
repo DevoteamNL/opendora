@@ -48,7 +48,7 @@ export const DashboardComponent = ({
               sx={{
                 bgcolor: '#424242',
                 position: 'sticky',
-                top: 80,
+                top: 8,
                 display: 'flex',
                 gridGap: 8,
                 zIndex: 1,
