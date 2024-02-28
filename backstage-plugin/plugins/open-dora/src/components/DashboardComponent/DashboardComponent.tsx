@@ -48,7 +48,7 @@ export const DashboardComponent = ({
               sx={{
                 bgcolor: '#424242',
                 position: 'sticky',
-                top: 8,
+                top: 80,
                 display: 'flex',
                 gridGap: 8,
                 zIndex: 1,
@@ -66,7 +66,7 @@ export const DashboardComponent = ({
                 display: 'flex',
                 marginTop: 8,
                 gridGap: 8,
-                maxHeight: 180,
+                maxHeight: 900,
               }}
             >
               <BenchmarkGridItem type="df" />
@@ -86,12 +86,12 @@ export const DashboardComponent = ({
             >
               <ChartGridItem
                 type="df_count"
-                label={t('software_delivery_performance_metrics.labels.deployment_frequency')}
+                label={t('deployment-frequency.labels.deployment_frequency')}
               />
               <ChartGridItem
                 type="df_average"
                 label={t(
-                  'software_delivery_performance_metrics.labels.deployment_frequency_average',
+                  'deployment-frequency.labels.deployment_frequency_average',
                 )}
               />
             </Box>
