@@ -102,6 +102,12 @@ dora-api-mock:
       mediaType: application/json
       parameters:
         type: mltc
+    - name: cfr_benchmark
+      path: /dora/api/benchmark
+      stubFile: stubs/benchmark/cfr/cfr_benchmark.json
+      mediaType: application/json
+      parameters:
+        type: cfr
     - name: mltc_weekly
       path: /dora/api/metric
       stubFile: stubs/metrics/mltc/mltc_weekly.json

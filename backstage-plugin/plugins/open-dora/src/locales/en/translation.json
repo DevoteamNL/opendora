@@ -1,8 +1,9 @@
 {
-  "deployment_frequency": {
+  "software_delivery_performance_metrics": {
     "labels": {
       "df": "Deployment Frequency",
       "mltc": "Median Lead time for change",
+      "cfr": "Change Failure Rate",
       "deployment_frequency": "Deployment Frequency",
       "deployment_frequency_average": "Deployment Frequency Average",
       "deployment_frequency_overall": "Deployment frequency overall"
@@ -15,13 +16,23 @@
       "lt-1hour": "Less than one hour",
       "lt-1week": "Less than one week",
       "week-6month": "Between one week and six months",
-      "mt-6month": "More than six months"
+      "mt-6month": "More than six months",
+      "lt-15%": "Less than 15%",
+      "15-24.99%": "15-25%",
+      "25-30%": "25-30%",
+      "mt-30%": "More than 30%"
     }
   },
 
   "lead-time": {
     "labels": {
       "median_lead_time_for_changes": "Median Lead Time for Changes"
+    }
+  },
+
+  "failure-rate": {
+    "labels": {
+      "change_failure_rate": "Change Failure Rate"
     }
   },
 
