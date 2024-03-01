@@ -1,0 +1,14 @@
+name: 'Release'
+'on':
+  release:
+    types: [published]
+
+jobs:
+  backstage-plugin:
+    uses: ./.github/workflows/publish/publish-backstage-plugin-npm.yaml
+
+  devlake-go:
+    uses: ./.github/workflows/publish/publish-go-api-docker.yaml
+
+  opendora-helm-chart:
+    uses: ./.github/workflows/publish/publish-opendora-helm-chart.yaml

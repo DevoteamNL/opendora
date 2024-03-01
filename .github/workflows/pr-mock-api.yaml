@@ -1,0 +1,22 @@
+name: Test OpenDORA API Mock
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "dora-api-mock/**"
+      - ".github/workflows/pr-mock-api.yaml"
+      - ".github/workflows/test/test-mock-api.yaml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "dora-api-mock/**"
+      - ".github/workflows/pr-mock-api.yaml"
+      - ".github/workflows/test/test-mock-api.yaml"
+
+jobs:
+  test:
+    uses: ./.github/workflows/test/test-mock-api.yaml

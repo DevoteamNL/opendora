@@ -1,16 +1,10 @@
-name: Verify DORA API Mock
-
+name: 'Test mock API'
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "dora-api-mock/**"
-      - ".github/workflows/pr-mock-api-workflow.yaml"
+  workflow_call:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 

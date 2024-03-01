@@ -1,0 +1,27 @@
+name: Test Backstage Plugin
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "backstage-plugin/**"
+      - ".github/workflows/pr-backstage-plugin.yaml"
+      - "./.github/workflows/test/test-backstage-plugin.yaml"
+      - "./.github/workflows/publish/publish-backstage-plugin-npm.yaml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "backstage-plugin/**"
+      - ".github/workflows/pr-backstage-plugin.yaml"
+      - "./.github/workflows/test/test-backstage-plugin.yaml"
+      - "./.github/workflows/publish/publish-backstage-plugin-npm.yaml"
+
+jobs:
+  test:
+    uses: ./.github/workflows/test/test-backstage-plugin.yaml
+
+  publish:
+    uses: ./.github/workflows/publish/publish-backstage-plugin-npm.yaml

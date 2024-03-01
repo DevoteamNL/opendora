@@ -1,19 +1,8 @@
-name: Verify Go Module
+name: 'Test Go API'
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "devlake-go/**"
-      - ".github/workflows/pr-go-workflow.yaml"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "devlake-go/**"
-      - ".github/workflows/pr-go-workflow.yaml"
+  workflow_call:
 
 jobs:
   build:
