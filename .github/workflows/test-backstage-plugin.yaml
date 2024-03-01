@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
 
-permissions: read-all
+permissions: write-all
 
 jobs:
   test:
