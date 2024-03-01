@@ -60,6 +60,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to GHCR
+        if: github.event_name == 'release'
         working-directory: backstage-plugin/plugins/open-dora
         run: |
           # Replace the @devoteam-nl with @devoteamnl in package.json
