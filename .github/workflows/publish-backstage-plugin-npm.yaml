@@ -10,7 +10,10 @@ jobs:
     timeout-minutes: 20
 
     permissions:
-      contents: read
+      actions: write
+      checks: write
+      contents: write
+      statuses: write
 
     defaults:
       run:
