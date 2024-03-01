@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  publish:
+  chart:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

@@ -5,7 +5,7 @@ name: 'Release'
 
 jobs:
   backstage-plugin:
-    uses: ./.github/workflows/publish-backstage-plugin-npm.yaml
+    uses: ./.github/workflows/publish-backstage-plugin-package.yaml
 
   devlake-go:
     uses: ./.github/workflows/publish-go-api-docker.yaml
