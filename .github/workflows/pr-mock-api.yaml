@@ -19,4 +19,4 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/test/test-mock-api.yaml
+    uses: ./.github/workflows/test-mock-api.yaml

@@ -19,4 +19,4 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/test/test-go-api.yaml
+    uses: ./.github/workflows/test-go-api.yaml

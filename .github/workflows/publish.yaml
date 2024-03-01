@@ -5,10 +5,10 @@ name: 'Release'
 
 jobs:
   backstage-plugin:
-    uses: ./.github/workflows/publish/publish-backstage-plugin-npm.yaml
+    uses: ./.github/workflows/publish-backstage-plugin-npm.yaml
 
   devlake-go:
-    uses: ./.github/workflows/publish/publish-go-api-docker.yaml
+    uses: ./.github/workflows/publish-go-api-docker.yaml
 
   opendora-helm-chart:
-    uses: ./.github/workflows/publish/publish-opendora-helm-chart.yaml
+    uses: ./.github/workflows/publish-opendora-helm-chart.yaml

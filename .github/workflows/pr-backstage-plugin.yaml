@@ -21,7 +21,7 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/test/test-backstage-plugin.yaml
+    uses: ./.github/workflows/test-backstage-plugin.yaml
 
   publish:
-    uses: ./.github/workflows/publish/publish-backstage-plugin-npm.yaml
+    uses: ./.github/workflows/publish-backstage-plugin-npm.yaml
