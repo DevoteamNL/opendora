@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   workflow_call:
 
+permissions: read-all
+
 jobs:
   test:
     runs-on: ubuntu-latest
