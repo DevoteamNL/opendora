@@ -5,11 +5,11 @@ on:
   workflow_call:
   release:
     types: [published]
-    push:
-      tags:
-        - "*.*.*"
-      branches:
-        - main
+  push:
+    tags:
+      - "*.*.*"
+    branches:
+      - main
 
 jobs:
   publish:
