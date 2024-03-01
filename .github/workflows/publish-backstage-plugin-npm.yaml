@@ -9,12 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
-    permissions:
-      actions: write
-      checks: write
-      contents: write
-      statuses: write
-
     defaults:
       run:
         working-directory: backstage-plugin
