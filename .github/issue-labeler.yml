@@ -1,0 +1,21 @@
+critical:
+  - '(critical|urgent)'
+
+enhancement:
+  -'(Feature|feature|enhancement|Improvement|improvement)'
+
+bug:
+  - '(bug)'
+
+docker:
+  - '(docker|dockerfile|docker-compose)'
+
+kubernetes:
+  - '(kubernetes|k8s|k3s|helm)'
+
+documentation:
+  -'(Docs|docs|documentation|README)'
+
+ci/cd:
+  -'(github_actions|ci|CI|cd||CD|CICD|continuous integration|cicd)'
+
