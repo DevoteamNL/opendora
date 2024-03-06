@@ -34,6 +34,7 @@ func (client Client) connectToDatabase() {
 		Net:    "tcp",
 		Addr:   os.Getenv("DEVLAKE_DBADDRESS"),
 		DBName: os.Getenv("DEVLAKE_DBNAME"),
+		AllowNativePasswords: true,
 	}
 
 	var err error
