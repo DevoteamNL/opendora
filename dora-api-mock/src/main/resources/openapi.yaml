@@ -41,6 +41,7 @@ paths:
         | `df_count`      | Amount of Deployments, aggregated according to the `aggregation` parameter          |
         | `mltc`          | Median Lead Time for Changes, aggregated according to the `aggregation` parameter   |
         | `cfr`           | Change Failure Rate, aggregated according to the `aggregation` parameter            |
+        | `mttr`          | Mean Time to Recovery, aggregated according to the `aggregation` parameter          |
 
       operationId: dataPointsByMetrics
       parameters:
@@ -56,6 +57,7 @@ paths:
               - df_count
               - mltc
               - cfr
+              - mttr
         - name: aggregation
           in: query
           description: >-
@@ -182,6 +184,8 @@ paths:
         | ----------- | ------------------------------| ---------------------------------------------- |
         | `df`        | Deployment frequency.         | on-demand, week-month, month-6month, lt-6month |
         | `mltc`      | Median lead time for changes. | lt-1hour, lt-1week, week-6month, mt-6month     |
+        | `cfr`       | Change Failure Rate           | lt-15%, 15-24.99%, 25-30%, mt-30%              |
+        | `mttr`      | Mean Time to Recovery         | lt-1hour, lt-1day, day-week, mt-6month         |
 
       operationId: benchmarkByMetric
       parameters:
