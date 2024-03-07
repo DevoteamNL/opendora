@@ -1,0 +1,41 @@
+{
+  "deployment_frequency": {
+    "labels": {
+      "df": "Deployment frequentie",
+      "mltc": "Median Lead time for change",
+      "deployment_frequency": "Deployment Frequency",
+      "deployment_frequency_average": "Gemiddelde Deployment Frequentie",
+      "deployment_frequency_overall": "Totale Deployment Frequentie"
+    },
+    "overall_labels": {
+      "lt-6month": "Minder dan eenmaal per zes maanden",
+      "on-demand": "Op aanvraag",
+      "week-month": "Tussen eenmaal per week en eenmaal per maand",
+      "month-6month": "Tussen eenmaal per maand en eenmaal per zes maanden",
+      "lt-1hour": "Minder dan één uur",
+      "lt-1week": "Minder dan één week",
+      "week-6month": "Tussen één week en zes maanden",
+      "mt-6month": "Meer dan zes maanden"
+    }
+  },
+  "lead-time": {
+    "labels": {
+      "median_lead_time_for_changes": "Gemiddelde doorlooptijd voor wijzigingen"
+    }
+  },
+  "dropdown_time_units": {
+    "time_unit": "Tijdeenheid",
+    "weekly": "Wekelijks",
+    "monthly": "Maandelijks",
+    "quarterly": "Per kwartaal"
+  },
+  "drowdown_languages": {
+    "select_language": "Taal selecteren",
+    "english": "Engels",
+    "dutch": "Nederlands"
+  },
+  "custom_errors": {
+    "data_unavailable": "Gegevens niet beschikbaar"
+  }
+  }
+  

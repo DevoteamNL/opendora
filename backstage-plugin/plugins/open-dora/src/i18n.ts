@@ -1,14 +1,18 @@
-/* istanbul ignore file */
+// /* istanbul ignore file */
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 // Import all translation files
 import translationEnglish from './locales/en/translation.json';
+import translationDutch from './locales/nl/translation.json';
 
 // Using translation
 const resources = {
   en: {
     translation: translationEnglish,
+  },
+  nl: {
+    translation: translationDutch,
   },
 };
 

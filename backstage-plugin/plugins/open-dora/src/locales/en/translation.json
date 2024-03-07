@@ -32,6 +32,12 @@
     "quarterly": "Quarterly"
   },
 
+  "drowdown_languages": {
+    "select_language": "Language",
+    "english": "English",
+    "dutch": "Dutch"
+  },
+
   "custom_errors": {
     "data_unavailable": "Data unavailable"
   }

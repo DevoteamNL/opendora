@@ -1,0 +1,60 @@
+{
+    "software_delivery_performance_metrics": {
+      "labels": {
+        "df": "Deployment Frequentie",
+        "mltc": "Mediane Doorlooptijd voor Verandering",
+        "cfr": "Faalpercentage"
+      },
+      "overall_labels": {
+        "lt-6month": "Minder dan één keer per zes maanden",
+        "on-demand": "Op aanvraag",
+        "week-month": "Tussen één keer per week en één keer per maand",
+        "month-6month": "Tussen één keer per maand en één keer per zes maanden",
+        "lt-1hour": "Minder dan een uur",
+        "lt-1week": "Minder dan een week",
+        "week-6month": "Tussen één week en zes maanden",
+        "mt-6month": "Meer dan zes maanden",
+        "lt-15%": "Minder dan 15%",
+        "15-24.99%": "15-25%",
+        "25-30%": "25-30%",
+        "mt-30%": "Meer dan 30%"
+      }
+    },
+  
+    "deployment-frequency": {
+      "labels": {
+        "deployment_frequency": "Deployment Frequentie",
+        "deployment_frequency_average": "Gemiddelde Deployment Frequentie",
+        "deployment_frequency_overall": "Algemene Deployment Frequentie"     
+      }
+    },
+  
+    "lead-time": {
+      "labels": {
+        "median_lead_time_for_changes": "Mediane Doorlooptijd voor Verandering"
+      }
+    },
+  
+    "failure-rate": {
+      "labels": {
+        "change_failure_rate": "Faalpercentage"
+      }
+    },
+  
+    "dropdown_time_units": {
+      "time_unit": "Tijdseenheid",
+      "weekly": "Wekelijks",
+      "monthly": "Maandelijks",
+      "quarterly": "per Kwartaal"
+    },
+
+    "drowdown_languages": {
+      "select_language": "Taal",
+      "english": "Engels",
+      "dutch": "Nederlands"
+    },
+  
+    "custom_errors": {
+      "data_unavailable": "Data niet beschikbaar"
+    }
+  }
