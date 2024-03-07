@@ -32,10 +32,10 @@
     "quarterly": "Quarterly"
   },
 
-  "drowdown_languages": {
+  "dropdown_language": {
     "select_language": "Language",
-    "english": "English",
-    "dutch": "Dutch"
+    "english": "EN",
+    "dutch": "NL"
   },
 
   "custom_errors": {

@@ -50,8 +50,8 @@
 
     "drowdown_languages": {
       "select_language": "Taal",
-      "english": "Engels",
-      "dutch": "Nederlands"
+      "english": "EN",
+      "dutch": "NL"
     },
   
     "custom_errors": {
