@@ -58,7 +58,6 @@ describe('DashboardComponent', () => {
     expect(queryByText('Median Lead Time for Changes')).toBeInTheDocument();
     expect(queryAllByText('mltc_first_key')[0]).toBeInTheDocument();
 
-    
     expect(queryAllByText('Change Failure Rate')).toHaveLength(2);
     expect(queryAllByText('cfr_first_key')[0]).toBeInTheDocument();
   });
