@@ -13,7 +13,9 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
     <HighlightTextBoxComponent
       title=""
       text=""
-      highlight={t(`software_delivery_performance_metrics.overall_labels.${benchmark}`)}
+      highlight={t(
+        `software_delivery_performance_metrics.overall_labels.${benchmark}`,
+      )}
       healthStatus={
         {
           'on-demand': 'positive',
