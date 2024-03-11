@@ -29,11 +29,12 @@ func New() Client {
 
 func (client Client) connectToDatabase() {
 	cfg := mysql.Config{
-		User:   os.Getenv("DEVLAKE_DBUSER"),
-		Passwd: os.Getenv("DEVLAKE_DBPASS"),
-		Net:    "tcp",
-		Addr:   os.Getenv("DEVLAKE_DBADDRESS"),
-		DBName: os.Getenv("DEVLAKE_DBNAME"),
+		User:                 os.Getenv("DEVLAKE_DBUSER"),
+		Passwd:               os.Getenv("DEVLAKE_DBPASS"),
+		Net:                  "tcp",
+		Addr:                 os.Getenv("DEVLAKE_DBADDRESS"),
+		DBName:               os.Getenv("DEVLAKE_DBNAME"),
+		AllowNativePasswords: true,
 	}
 
 	var err error
