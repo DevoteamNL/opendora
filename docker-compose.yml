@@ -5,8 +5,8 @@ services:
     profiles:
       - test
     build:
-      context: ../devlake-go/
-      dockerfile: Dockerfile
+      context: ./devlake-go/
+      dockerfile: docker/devlake/go/Dockerfile
       # target: dev
       args:
         USER_ID: ${USER_ID-1000}
@@ -24,12 +24,12 @@ services:
     extra_hosts:
         - "host.docker.internal:host-gateway"
 
-  dora-mock-api:
+  dora-api-mock:
     profiles:
       - dev
     build:
-      context: ../dora-api-mock/
-      dockerfile: Dockerfile
+      context: ./dora-api-mock
+      dockerfile: ../docker/dora-api-mock/Dockerfile
       target: dev
       args:
         USER_ID: ${USER_ID-1000}
@@ -40,9 +40,9 @@ services:
 
   backstage:
     build:
-      context: ./backstage/
-      dockerfile: Dockerfile
-      target: dev
+      context: ./
+      dockerfile: ./docker/backstage/Dockerfile
+      target: prod
       args:
         USER_ID: ${USER_ID-1000}
         GROUP_ID: ${GROUP_ID-1000}
@@ -59,7 +59,8 @@ services:
     extra_hosts:
         - "host.docker.internal:host-gateway"
     volumes:
-      - ./backstage/app:/app
+      - ./backstage-plugin/plugins:/app/plugins
+      - backstage-storage:/app/node_modules
 
   postgres:
     image: postgres:16
@@ -143,6 +144,7 @@ services:
       - devlake
 
 volumes:
+  backstage-storage:
   mysql-storage:
   postgres-storage:
   grafana-storage:

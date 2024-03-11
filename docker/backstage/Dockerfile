@@ -1,6 +1,6 @@
 FROM node:18-bookworm-slim AS node
 
-FROM node as dev
+FROM node as generate
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -8,31 +8,29 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends git python3 g++ build-essential && \
     yarn config set python /usr/bin/python3
 
-COPY --chown=node:node app-config.yaml App.tsx Root.tsx /
-COPY --chmod=755 entrypoint.sh /bin
+WORKDIR /app
 
-# From here on we use the least-privileged `node` user to run the backend.
-USER node
+RUN yes app | npx @backstage/create-app@latest --path /app
 
-# This should create the app dir as `node`.
-# If it is instead created as `root` then the `tar` command below will
-# fail: `can't create directory 'packages/': Permission denied`.
-# If this occurs, then ensure BuildKit is enabled (`DOCKER_BUILDKIT=1`)
-# so the app dir is correctly created as `node`.
-WORKDIR /
+COPY --chown=node:node backstage-plugin/plugins /app/plugins
 
-ENTRYPOINT [ "entrypoint.sh" ]
+COPY --chown=node:node docker/backstage/app-config.yaml /app
+
+COPY --chown=node:node docker/backstage/App.tsx /app/packages/app/src/App.tsx
+
+COPY --chown=node:node docker/backstage/Root.tsx /app/packages/app/src/components/Root/Root.tsx
 
 # Stage 1 - Create yarn install skeleton layer
 FROM node AS packages
 
 WORKDIR /app
+
 COPY --from=generate /app/package.json /app/yarn.lock ./
 
 COPY --from=generate /app/packages packages
 
 # Comment this out if you don't have any internal plugins
-COPY --from=generate /app/plugins plugins
+COPY --from=generate /app/plugins /app/plugins
 
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
@@ -56,12 +54,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 USER node
 WORKDIR /app
 
+COPY --from=generate --chown=node:node /app .
+
 COPY --from=packages --chown=node:node /app .
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
     yarn install --frozen-lockfile --network-timeout 600000
-
-COPY --from=generate --chown=node:node /app .
 
 RUN yarn tsc
 RUN yarn --cwd packages/backend build
@@ -89,9 +87,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 #     apt-get update && \
 #     apt-get install -y --no-install-recommends libsqlite3-dev
 
-# From here on we use the least-privileged `node` user to run the backend.
-USER node
-
 # This should create the app dir as `node`.
 # If it is instead created as `root` then the `tar` command below will
 # fail: `can't create directory 'packages/': Permission denied`.
@@ -103,7 +98,7 @@ WORKDIR /app
 COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton/ ./
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn install --frozen-lockfile --production --network-timeout 600000
+    yarn install --frozen-lockfile --network-timeout 600000
 
 # Copy the built packages from the build stage
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
@@ -111,7 +106,12 @@ COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 # Copy any other files that we need at runtime
 COPY --from=generate --chown=node:node /app/app-config.yaml ./
 
+RUN chown -R node:node /app
+
+# From here on we use the least-privileged `node` user to run the backend.
+USER node
+
 # This switches many Node.js dependencies to production mode.
-ENV NODE_ENV production
+# ENV NODE_ENV production
 
 CMD ["node", "packages/backend", "--config", "app-config.yaml"]
