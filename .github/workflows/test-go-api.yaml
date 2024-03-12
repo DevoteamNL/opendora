@@ -1,22 +1,11 @@
-name: Verify Go Module
+name: 'Test Go API'
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "devlake-go/**"
-      - ".github/workflows/pr-go-workflow.yaml"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "devlake-go/**"
-      - ".github/workflows/pr-go-workflow.yaml"
+  workflow_call:
 
 jobs:
-  build:
+  api:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -28,12 +17,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: "1.21"
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v4
         with:
           version: v1.54
           working-directory: devlake-go

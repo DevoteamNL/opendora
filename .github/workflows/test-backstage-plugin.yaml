@@ -1,0 +1,35 @@
+name: 'Test Backstage plugin'
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backstage-plugin
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: "yarn"
+          cache-dependency-path: backstage-plugin/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint:all
+
+      - name: Format
+        run: yarn prettier:check
+
+      - name: Test
+        run: yarn workspace @devoteam-nl/open-dora-backstage-plugin test:coverage
