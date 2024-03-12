@@ -30,6 +30,8 @@
   padding: 20px;
   border-style: hidden;
   background-color: #333333;
+  min-height: 100px;
+  display: grid;
 }
 
 .margin-left-offset-m25 {
