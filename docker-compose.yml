@@ -38,18 +38,16 @@ services:
     ports:
       - "10666:10666"
 
-  backstage:
+  backstage-plugin:
     build:
       context: ./
       dockerfile: ./docker/backstage/Dockerfile
-      target: prod
+      target: dev
       args:
         USER_ID: ${USER_ID-1000}
         GROUP_ID: ${GROUP_ID-1000}
     restart: unless-stopped
-    ports:
-      - "3000:3000"
-      - "7007:7007"
+    network_mode: host
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST-postgres}
       POSTGRES_PORT: ${POSTGRES_PORT-5432}
@@ -59,8 +57,7 @@ services:
     extra_hosts:
         - "host.docker.internal:host-gateway"
     volumes:
-      - ./backstage-plugin/plugins:/app/plugins
-      - backstage-storage:/app/node_modules
+      - ./backstage-plugin:/app/backstage-plugin
 
   postgres:
     image: postgres:16
@@ -144,7 +141,6 @@ services:
       - devlake
 
 volumes:
-  backstage-storage:
   mysql-storage:
   postgres-storage:
   grafana-storage:
