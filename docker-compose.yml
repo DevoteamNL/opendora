@@ -5,9 +5,8 @@ services:
     profiles:
       - test
     build:
-      context: ./devlake-go/
-      dockerfile: docker/devlake/go/Dockerfile
-      # target: dev
+      context: ./
+      dockerfile: docker/devlake-go/Dockerfile
       args:
         USER_ID: ${USER_ID-1000}
         GROUP_ID: ${GROUP_ID-1000}
@@ -28,8 +27,8 @@ services:
     profiles:
       - dev
     build:
-      context: ./dora-api-mock
-      dockerfile: ../docker/dora-api-mock/Dockerfile
+      context: ./
+      dockerfile: docker/dora-api-mock/Dockerfile
       target: dev
       args:
         USER_ID: ${USER_ID-1000}
@@ -41,7 +40,7 @@ services:
   backstage-plugin:
     build:
       context: ./
-      dockerfile: ./docker/backstage/Dockerfile
+      dockerfile: docker/backstage/Dockerfile
       target: dev
       args:
         USER_ID: ${USER_ID-1000}
