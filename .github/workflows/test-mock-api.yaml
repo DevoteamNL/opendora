@@ -1,16 +1,10 @@
-name: Verify DORA API Mock
-
+name: 'Test mock API'
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "dora-api-mock/**"
-      - ".github/workflows/pr-mock-api-workflow.yaml"
+  workflow_call:
 
 jobs:
-  build:
+  mock:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -18,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
