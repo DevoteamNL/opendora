@@ -1,55 +1,14 @@
-name: Verify Backstage Plugin
+name: Publish OpenDORA Backstage Plugin NPM Package
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "backstage-plugin/**"
-      - ".github/workflows/pr-backstage-plugin-workflow.yaml"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "backstage-plugin/**"
-      - ".github/workflows/pr-backstage-plugin-workflow.yaml"
+  workflow_call:
 
 jobs:
-  verify:
-    name: install, lint, format, test
+  package:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: backstage-plugin
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: setup nodejs
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: "yarn"
-          cache-dependency-path: backstage-plugin/yarn.lock
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: lint
-        run: yarn lint:all
-
-      - name: format
-        run: yarn prettier:check
-
-      - name: test
-        run: yarn workspace @devoteam-nl/open-dora-backstage-plugin test:coverage
-
-  publish:
-    name: type-check, build, and publish
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
     defaults:
       run:
         working-directory: backstage-plugin
@@ -60,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: setup nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: "yarn"
@@ -71,23 +30,25 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: type checking and declarations
+      - name: Type checking and declarations
         run: yarn tsc
 
-      - name: build
+      - name: Build
         run: yarn build:all
 
       - name: Install GitVersion
+        if: github.event_name == 'pull_request'
         uses: gittools/actions/gitversion/setup@v0
         with:
           versionSpec: "5.x"
           preferLatestVersion: true
 
       - name: Determine Version
+        if: github.event_name == 'pull_request'
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0
 
-      - name: publish
+      - name: Publish PR
         if: github.event_name == 'pull_request'
         working-directory: backstage-plugin/plugins/open-dora
         run: |
@@ -95,5 +56,15 @@ jobs:
           sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
           yarn version --new-version ${{ steps.gitversion.outputs.fullSemVer }} --no-git-tag-version
           yarn publish --non-interactive --tag pr
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GHCR
+        if: github.event_name == 'release'
+        working-directory: backstage-plugin/plugins/open-dora
+        run: |
+          # Replace the @devoteam-nl with @devoteamnl in package.json
+          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
+          yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

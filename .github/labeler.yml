@@ -1,0 +1,12 @@
+ci/cd:
+- any: ['.github/*']
+
+documentation:
+- any: ['*.md', '*.MD']
+
+kubernetes:
+- any: ['open-dora-helm-chart/*']
+
+docker:
+- any: ['d/*', 'dev-environment/docker-compose.yml', 'dev-environment/docker-compose.*.yml']
+

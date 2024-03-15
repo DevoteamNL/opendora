@@ -2,6 +2,7 @@ name: Publish OpenDORA API Docker Image
 
 on:
   workflow_dispatch:
+  workflow_call:
   release:
     types: [published]
     push:
@@ -11,7 +12,7 @@ on:
         - main
 
 jobs:
-  build:
+  image:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -64,7 +65,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v5
         with:
-          context: ./devlake-go
+          context: ./
+          file: docker/devlake-go/
           push: true
           platforms: ${{ matrix.platforms }}
           tags: ${{ steps.meta.outputs.tags }}

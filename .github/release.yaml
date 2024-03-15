@@ -1,0 +1,33 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - octocat
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - Semver-Major
+        - breaking-change
+    - title: Exciting New Features 🎉
+      labels:
+        - Semver-Minor
+        - enhancement
+    - title: Bug 🐛
+      labels:
+        - bug
+    - title: Docker 🐳
+      labels:
+        - docker
+    - title: Kubernetes ☸
+      labels:
+        - kubernetes
+    - title: Documentation 📖
+      labels:
+        - documentation
+    - title: Dependabot 🤖
+      labels:
+        - dependabot
+    - title: Other Changes
+      labels:
+        - "*"
