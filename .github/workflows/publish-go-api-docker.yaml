@@ -65,8 +65,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v5
         with:
-          context: ./
-          file: docker/devlake-go/
+          context: .
+          file: docker/devlake-go/Dockerfile
           push: true
           platforms: ${{ matrix.platforms }}
           tags: ${{ steps.meta.outputs.tags }}
