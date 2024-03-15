@@ -9,7 +9,7 @@ ARG TARGETARCH
 
 ARG HOMEDIR
 
-ADD . /app/
+ADD ./devlake-go /app/
 WORKDIR /app/
 
 RUN make build-static

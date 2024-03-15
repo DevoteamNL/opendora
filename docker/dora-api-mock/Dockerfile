@@ -2,13 +2,13 @@ FROM eclipse-temurin:17-jdk-alpine as dev
 
 WORKDIR /app
 
-COPY .mvn/ .mvn/
+COPY ./dora-api-mock/.mvn/ .mvn/
 
-COPY mvnw .
+COPY ./dora-api-mock/mvnw .
 
-COPY pom.xml .
+COPY ./dora-api-mock/pom.xml .
 
-COPY src ./src
+COPY ./dora-api-mock/src ./src
 
 RUN ./mvnw install
 
