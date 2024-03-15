@@ -26,10 +26,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           'lt-1week': 'neutral',
           'week-6month': 'negative',
           'mt-6month': 'critical',
-          'lt-15%': 'positive',
-          '15-24.99%': 'neutral',
-          '25-30%': 'negative',
-          'mt-30%': 'critical',
+          'lt-15p': 'positive',
+          '15-25p': 'neutral',
+          '25-30p': 'negative',
+          'mt-30p': 'critical',
         }[benchmark]
       }
     />

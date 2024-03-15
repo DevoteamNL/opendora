@@ -14,10 +14,10 @@
       "lt-1week": "Less than one week",
       "week-6month": "Between one week and six months",
       "mt-6month": "More than six months",
-      "lt-15%": "Less than 15%",
-      "15-24.99%": "15-25%",
-      "25-30%": "25-30%",
-      "mt-30%": "More than 30%"
+      "lt-15p": "Less than 15%",
+      "15-25p": "15-25%",
+      "25-30p": "25-30%",
+      "mt-30p": "More than 30%"
     }
   },
 

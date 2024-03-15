@@ -182,7 +182,7 @@ paths:
         | ----------- | ------------------------------| ---------------------------------------------- |
         | `df`        | Deployment frequency.         | on-demand, week-month, month-6month, lt-6month |
         | `mltc`      | Median lead time for changes. | lt-1hour, lt-1week, week-6month, mt-6month     |
-        | `cfr`       | Change Failure Rate.          | lt-15%, 15-24.99%, 25-30%, mt-30%              |       
+        | `cfr`       | Change Failure Rate.          | lt-15p, 15-25p, 25-30p, mt-30p              |       
 
       operationId: benchmarkByMetric
       parameters:
