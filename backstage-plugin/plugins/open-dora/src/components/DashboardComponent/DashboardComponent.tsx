@@ -66,12 +66,13 @@ export const DashboardComponent = ({
                 display: 'flex',
                 marginTop: 8,
                 gridGap: 8,
-                maxHeight: 180,
+                maxHeight: 900,
               }}
             >
               <BenchmarkGridItem type="df" />
               <BenchmarkGridItem type="mltc" />
-              <Box sx={{ flex: 2 }}>
+              <BenchmarkGridItem type="cfr" />
+              <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other benchmark items */}
               </Box>
             </Box>
@@ -85,12 +86,12 @@ export const DashboardComponent = ({
             >
               <ChartGridItem
                 type="df_count"
-                label={t('deployment_frequency.labels.deployment_frequency')}
+                label={t('deployment-frequency.labels.deployment_frequency')}
               />
               <ChartGridItem
                 type="df_average"
                 label={t(
-                  'deployment_frequency.labels.deployment_frequency_average',
+                  'deployment-frequency.labels.deployment_frequency_average',
                 )}
               />
             </Box>
@@ -98,6 +99,15 @@ export const DashboardComponent = ({
               <ChartGridItem
                 type="mltc"
                 label={t('lead-time.labels.median_lead_time_for_changes')}
+              />
+              <Box sx={{ flex: 1 }}>
+                {/* Placeholder for other chart items */}
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
+              <ChartGridItem
+                type="cfr"
+                label={t('failure-rate.labels.change_failure_rate')}
               />
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other chart items */}

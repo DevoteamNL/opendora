@@ -11,7 +11,7 @@ import {
   EntityDashboardComponent,
 } from './DashboardComponent';
 
-const NUMBER_OF_METRICS = 3;
+const NUMBER_OF_METRICS = 4;
 
 describe('DashboardComponent', () => {
   function renderDashboardComponent() {
@@ -57,6 +57,9 @@ describe('DashboardComponent', () => {
 
     expect(queryByText('Median Lead Time for Changes')).toBeInTheDocument();
     expect(queryAllByText('mltc_first_key')[0]).toBeInTheDocument();
+
+    expect(queryAllByText('Change Failure Rate')).toHaveLength(2);
+    expect(queryAllByText('cfr_first_key')[0]).toBeInTheDocument();
   });
 
   it('should retrieve new data when the aggregation is changed', async () => {

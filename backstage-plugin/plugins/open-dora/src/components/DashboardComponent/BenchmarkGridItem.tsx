@@ -13,7 +13,9 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
     <HighlightTextBoxComponent
       title=""
       text=""
-      highlight={t(`deployment_frequency.overall_labels.${benchmark}`)}
+      highlight={t(
+        `software_delivery_performance_metrics.overall_labels.${benchmark}`,
+      )}
       healthStatus={
         {
           'on-demand': 'positive',
@@ -24,6 +26,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           'lt-1week': 'neutral',
           'week-6month': 'negative',
           'mt-6month': 'critical',
+          'lt-15p': 'positive',
+          '15-25p': 'neutral',
+          '25-30p': 'negative',
+          'mt-30p': 'critical',
         }[benchmark]
       }
     />
@@ -39,7 +45,7 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
 
   return (
     <Box sx={{ bgcolor: '#424242', flex: 1 }}>
-      <h1>{t(`deployment_frequency.labels.${type}`)}</h1>
+      <h1>{t(`software_delivery_performance_metrics.labels.${type}`)}</h1>
       {errorOrResponse}
     </Box>
   );
