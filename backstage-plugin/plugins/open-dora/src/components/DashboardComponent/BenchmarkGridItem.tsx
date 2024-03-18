@@ -16,25 +16,23 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
       highlight={t(
         `software_delivery_performance_metrics.overall_labels.${benchmark}`,
       )}
-      healthStatus={
-        {
-          'on-demand': 'positive',
-          'lt-6month': 'critical',
-          "day-week": "negative",
-          'week-month': 'neutral',
-          'month-6month': 'negative',
-          'lt-1hour': 'positive',
-          "lt-1day": "neutral",
-          'lt-1week': 'neutral',
-          'week-6month': 'negative',
-          'mt-1week': 'critical',
-          'mt-6month': 'critical',
-          'lt-15p': 'positive',
-          '15-25p': 'neutral',
-          '25-30p': 'negative',
-          'mt-30p': 'critical',
-        }[benchmark]
-      }
+      healthStatus={{
+        'on-demand': 'positive',
+        'lt-6month': 'critical',
+        'day-week': 'negative',
+        'week-month': 'neutral',
+        'month-6month': 'negative',
+        'lt-1hour': 'positive',
+        'lt-1day': 'neutral',
+        'lt-1week': 'neutral',
+        'week-6month': 'negative',
+        'mt-1week': 'critical',
+        'mt-6month': 'critical',
+        'lt-15p': 'positive',
+        '15-25p': 'neutral',
+        '25-30p': 'negative',
+        'mt-30p': 'critical',
+      }[benchmark]}
     />
   ) : (
     <CircularProgress />

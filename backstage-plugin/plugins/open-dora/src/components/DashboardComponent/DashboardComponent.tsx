@@ -4,7 +4,10 @@ import {
   Page,
   SupportButton,
 } from '@backstage/core-components';
-import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
+import {
+  getEntityRelations,
+  useEntity
+} from '@backstage/plugin-catalog-react';
 import { Box } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -72,7 +75,7 @@ export const DashboardComponent = ({
               <BenchmarkGridItem type="df" />
               <BenchmarkGridItem type="mltc" />
               <BenchmarkGridItem type="cfr" />
-              <BenchmarkGridItem type="mttr" />              
+              <BenchmarkGridItem type="mttr" />
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other benchmark items */}
               </Box>
@@ -114,7 +117,7 @@ export const DashboardComponent = ({
                   'failure-rate.labels.change_failure_rate',
                 )}
               />
-            </Box>         
+            </Box>
             <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
               <ChartGridItem
                 type="mttr"
