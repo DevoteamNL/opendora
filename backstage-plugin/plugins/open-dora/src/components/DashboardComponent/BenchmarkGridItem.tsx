@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useMetricBenchmark } from "../../hooks/MetricBenchmarkHook";
 import { HighlightTextBoxComponent } from "../HighlightTextBoxComponent/HighlightTextBoxComponent";
 
-export const BenchmarkGridItem = ({ type }, { type: string }) => {
+export const BenchmarkGridItem = ({ type }: { type: string }) => {
   const [t] = useTranslation();
   const { benchmark, error } = useMetricBenchmark(type);
 
