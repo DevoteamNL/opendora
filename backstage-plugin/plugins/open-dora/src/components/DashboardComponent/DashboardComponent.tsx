@@ -72,6 +72,7 @@ export const DashboardComponent = ({
               <BenchmarkGridItem type="df" />
               <BenchmarkGridItem type="mltc" />
               <BenchmarkGridItem type="cfr" />
+              <BenchmarkGridItem type="mttr" />              
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other benchmark items */}
               </Box>
@@ -108,6 +109,15 @@ export const DashboardComponent = ({
               <ChartGridItem
                 type="cfr"
                 label={t('failure-rate.labels.change_failure_rate')}
+              />
+              <Box sx={{ flex: 1 }}>
+                {/* Placeholder for other chart items */}
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
+              <ChartGridItem
+                type="cfr"
+                label={t('recovery-time.labels.mean_time_to_recovery')}
               />
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other chart items */}

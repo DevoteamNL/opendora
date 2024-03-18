@@ -108,6 +108,12 @@ dora-api-mock:
       mediaType: application/json
       parameters:
         type: cfr
+    - name: mttr_benchmark
+      path: /dora/api/benchmark
+      stubFile: stubs/benchmark/mttr/mttr_benchmark.json
+      mediaType: application/json
+      parameters:
+        type: mttr
     - name: mltc_weekly
       path: /dora/api/metric
       stubFile: stubs/metrics/mltc/mltc_weekly.json
@@ -173,6 +179,27 @@ dora-api-mock:
       mediaType: application/json
       parameters:
         type: cfr
+        aggregation: quarterly
+    - name: mttr_weekly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/mttr/mttr_weekly.json
+      mediaType: application/json
+      parameters:
+        type: mttr
+        aggregation: weekly
+    - name: mttr_monthly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/mttr/mttr_monthly.json
+      mediaType: application/json
+      parameters:
+        type: mttr
+        aggregation: monthly
+    - name: mttr_quarterly
+      path: /dora/api/metric
+      stubFile: stubs/metrics/mttr/mttr_quarterly.json
+      mediaType: application/json
+      parameters:
+        type: mttr
         aggregation: quarterly
 
 wiremock:
