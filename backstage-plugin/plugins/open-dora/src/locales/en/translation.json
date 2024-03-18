@@ -25,7 +25,6 @@
 
     }
   },
-
   "deployment-frequency": {
     "labels": {
       "deployment_frequency": "Deployment Frequency",
@@ -33,32 +32,27 @@
       "deployment_frequency_overall": "Deployment frequency overall"
     }
   },
-
   "lead-time": {
     "labels": {
       "median_lead_time_for_changes": "Median Lead Time for Changes"
     }
   },
-
   "failure-rate": {
     "labels": {
       "change_failure_rate": "Change Failure Rate"
     }
   },
-
   "recovery-time": {
     "labels": {
       "mean_time_to_recovery": "Mean Time to Recovery"
     }
   },  
-
   "dropdown_time_units": {
     "time_unit": "Time Unit",
     "weekly": "Weekly",
     "monthly": "Monthly",
     "quarterly": "Quarterly"
   },
-
   "custom_errors": {
     "data_unavailable": "Data unavailable"
   }
