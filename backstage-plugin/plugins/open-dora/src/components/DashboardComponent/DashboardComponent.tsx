@@ -4,10 +4,7 @@ import {
   Page,
   SupportButton,
 } from '@backstage/core-components';
-import {
-  getEntityRelations,
-  useEntity
-} from '@backstage/plugin-catalog-react';
+import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
 import { Box } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -113,9 +110,7 @@ export const DashboardComponent = ({
               />
               <ChartGridItem
                 type="cfr"
-                label={t(
-                  'failure-rate.labels.change_failure_rate',
-                )}
+                label={t('failure-rate.labels.change_failure_rate')}
               />
             </Box>
             <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>

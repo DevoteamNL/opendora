@@ -1,9 +1,9 @@
-import { ResponseErrorPanel } from "@backstage/core-components";
-import { Box, CircularProgress } from "@material-ui/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useMetricBenchmark } from "../../hooks/MetricBenchmarkHook";
-import { HighlightTextBoxComponent } from "../HighlightTextBoxComponent/HighlightTextBoxComponent";
+import { ResponseErrorPanel } from '@backstage/core-components';
+import { Box, CircularProgress } from '@material-ui/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useMetricBenchmark } from '../../hooks/MetricBenchmarkHook';
+import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/HighlightTextBoxComponent';
 
 export const BenchmarkGridItem = ({ type }: { type: string }) => {
   const [t] = useTranslation();
@@ -18,21 +18,21 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
       )}
       healthStatus={
         {
-          "on-demand": "positive",
-          "lt-6month": "critical",
-          "day-week": "negative",
-          "week-month": "neutral",
-          "month-6month": "negative",
-          "lt-1hour": "positive",
-          "lt-1day": "neutral",
-          "lt-1week": "neutral",
-          "week-6month": "negative",
-          "mt-1week": "critical",
-          "mt-6month": "critical",
-          "lt-15p": "positive",
-          "15-25p": "neutral",
-          "25-30p": "negative",
-          "mt-30p": "critical",
+          'on-demand': 'positive',
+          'lt-6month': 'critical',
+          'day-week': 'negative',
+          'week-month': 'neutral',
+          'month-6month': 'negative',
+          'lt-1hour': 'positive',
+          'lt-1day': 'neutral',
+          'lt-1week': 'neutral',
+          'week-6month': 'negative',
+          'mt-1week': 'critical',
+          'mt-6month': 'critical',
+          'lt-15p': 'positive',
+          '15-25p': 'neutral',
+          '25-30p': 'negative',
+          'mt-30p': 'critical',
         }[benchmark]
       }
     />
@@ -47,7 +47,7 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
   );
 
   return (
-    <Box sx={{ bgcolor: "#424242", flex: 1 }}>
+    <Box sx={{ bgcolor: '#424242', flex: 1 }}>
       <h1>{t(`software_delivery_performance_metrics.labels.${type}`)}</h1>
       {errorOrResponse}
     </Box>
