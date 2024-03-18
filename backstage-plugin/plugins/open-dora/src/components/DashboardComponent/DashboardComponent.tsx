@@ -124,8 +124,6 @@ export const DashboardComponent = ({
                 {/* Placeholder for other chart items */}
               </Box>
             </Box>
-
-
           </Box>
         </Content>
       </Page>
