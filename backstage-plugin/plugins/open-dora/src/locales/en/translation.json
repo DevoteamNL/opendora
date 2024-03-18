@@ -13,7 +13,7 @@
       "week-month": "Between once per week and once per month",
       "month-6month": "Between once per month and once every six months",
       "lt-1hour": "Less than one hour",
-      "lt-1day": "Less than one day",      
+      "lt-1day": "Less than one day",
       "lt-1week": "Less than one week",
       "week-6month": "Between one week and six months",
       "mt-1week": "More than one week",
@@ -22,7 +22,6 @@
       "15-25p": "15-25%",
       "25-30p": "25-30%",
       "mt-30p": "More than 30%"
-
     }
   },
   "deployment-frequency": {
@@ -46,7 +45,7 @@
     "labels": {
       "mean_time_to_recovery": "Mean Time to Recovery"
     }
-  },  
+  },
   "dropdown_time_units": {
     "time_unit": "Time Unit",
     "weekly": "Weekly",
