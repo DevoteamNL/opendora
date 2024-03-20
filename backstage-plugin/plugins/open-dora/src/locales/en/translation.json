@@ -2,17 +2,21 @@
   "software_delivery_performance_metrics": {
     "labels": {
       "df": "Deployment Frequency",
-      "mltc": "Median Lead time for change",
-      "cfr": "Change Failure Rate"
+      "mltc": "Median Lead Time for Change",
+      "cfr": "Change Failure Rate",
+      "mttr": "Mean Time to Recovery"
     },
     "overall_labels": {
       "lt-6month": "Fewer than once per six months",
       "on-demand": "On-demand",
+      "day-week": "Between one day and one week",
       "week-month": "Between once per week and once per month",
       "month-6month": "Between once per month and once every six months",
       "lt-1hour": "Less than one hour",
+      "lt-1day": "Less than one day",
       "lt-1week": "Less than one week",
       "week-6month": "Between one week and six months",
+      "mt-1week": "More than one week",
       "mt-6month": "More than six months",
       "lt-15p": "Less than 15%",
       "15-25p": "15-25%",
@@ -20,7 +24,6 @@
       "mt-30p": "More than 30%"
     }
   },
-
   "deployment-frequency": {
     "labels": {
       "deployment_frequency": "Deployment Frequency",
@@ -28,26 +31,27 @@
       "deployment_frequency_overall": "Deployment frequency overall"
     }
   },
-
   "lead-time": {
     "labels": {
       "median_lead_time_for_changes": "Median Lead Time for Changes"
     }
   },
-
   "failure-rate": {
     "labels": {
       "change_failure_rate": "Change Failure Rate"
     }
   },
-
+  "recovery-time": {
+    "labels": {
+      "mean_time_to_recovery": "Mean Time to Recovery"
+    }
+  },
   "dropdown_time_units": {
     "time_unit": "Time Unit",
     "weekly": "Weekly",
     "monthly": "Monthly",
     "quarterly": "Quarterly"
   },
-
   "custom_errors": {
     "data_unavailable": "Data unavailable"
   }

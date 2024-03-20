@@ -72,6 +72,7 @@ export const DashboardComponent = ({
               <BenchmarkGridItem type="df" />
               <BenchmarkGridItem type="mltc" />
               <BenchmarkGridItem type="cfr" />
+              <BenchmarkGridItem type="mttr" />
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other benchmark items */}
               </Box>
@@ -95,19 +96,27 @@ export const DashboardComponent = ({
                 )}
               />
             </Box>
-            <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                marginTop: 8,
+                gridGap: 8,
+                justifyContent: 'space-evenly',
+              }}
+            >
               <ChartGridItem
                 type="mltc"
                 label={t('lead-time.labels.median_lead_time_for_changes')}
               />
-              <Box sx={{ flex: 1 }}>
-                {/* Placeholder for other chart items */}
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
               <ChartGridItem
                 type="cfr"
                 label={t('failure-rate.labels.change_failure_rate')}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
+              <ChartGridItem
+                type="mttr"
+                label={t('recovery-time.labels.mean_time_to_recovery')}
               />
               <Box sx={{ flex: 1 }}>
                 {/* Placeholder for other chart items */}
