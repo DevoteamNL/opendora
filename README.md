@@ -10,7 +10,7 @@ OpenDORA includes an open-source plugin for [Backstage](https://backstage.io), a
 
 ## What are DORA metrics?
 
-DORA, short for [DevOps Research and Assessment](https://dora.dev), was created 6 years ago by researchers based on data from thousands of teams, to find a reliable way to measure software team performance.
+DORA, short for [DevOps Research and Assessment](https://dora.dev), is a research program that began in 2013 investigating ways to measure and improve software delivery, operations, team, and organizational performance. The program has collected data from thousands of professionals and [publishes findings in annual reports](https://dora.dev/publications/).
 
 The key 4 DORA metrics are:
 - Deployment frequency
