@@ -437,7 +437,7 @@ func Test_ValidMetricServiceParameters(t *testing.T) {
 			name:                    "should return an error for an invalid type parameter",
 			values:                  url.Values{"type": {"df"}},
 			expectServiceParameters: service.ServiceParameters{},
-			expectError:             "type should be provided as one of the following: df_count, df_average, mltc, cfr",
+			expectError:             "type should be provided as one of the following: df_count, df_average, mltc, cfr, mttr",
 		},
 		{
 			name:                    "should return an error for an invalid aggregation parameter",
