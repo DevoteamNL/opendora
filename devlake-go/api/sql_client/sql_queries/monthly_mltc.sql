@@ -11,8 +11,8 @@ WITH _pr_stats AS (
         JOIN repos ON cdc.repo_id = repos.id
     WHERE
         (
-                    :project = ""
-                    OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
+            :project = ""
+            OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
         )
         AND pr.merged_date IS NOT NULL
         AND ppm.pr_cycle_time IS NOT NULL
@@ -33,11 +33,11 @@ _clt as(
 )
 
 SELECT
-    cm.month as data_key,
-    case
-        when _clt.median_change_lead_time is null then 0
-        else _clt.median_change_lead_time/60 
-    end as data_value
+    cm.month AS data_key,
+    CASE
+        WHEN _clt.median_change_lead_time IS NULL THEN 0
+        ELSE _clt.median_change_lead_time/60 
+    END AS data_value
 FROM
     calendar_months cm
     LEFT JOIN _clt ON cm.month = _clt.month
