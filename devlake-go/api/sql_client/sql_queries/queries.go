@@ -40,3 +40,12 @@ var MonthlyCfrSql string
 
 //go:embed quarterly_cfr.sql
 var QuarterlyCfrSql string
+
+//go:embed weekly_mttr.sql
+var WeeklyMttrSql string
+
+//go:embed monthly_mttr.sql
+var MonthlyMttrSql string
+
+//go:embed quarterly_mttr.sql
+var QuarterlyMttrSql string
