@@ -13,12 +13,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
     <HighlightTextBoxComponent
       title=""
       text=""
-      highlight={
-        `${benchmarkValue} ` +
-        t(
+      highlight={`${benchmarkValue} 
+        ${t(
           `software_delivery_performance_metrics.overall_labels.${benchmarkKey}`,
-        )
-      }
+        )}`}
       healthStatus={
         {
           'week-elite': 'elite',
