@@ -21,7 +21,20 @@
       "lt-15p": "Less than 15%",
       "15-25p": "15-25%",
       "25-30p": "25-30%",
-      "mt-30p": "More than 30%"
+      "mt-30p": "More than 30%",
+      "week-elite": "deployment days per week(elite)",
+      "week-high": "deployment days per week(high)",
+      "month-medium": "deployment days per month(medium)",
+      "month-low": "deployment days per month(low)",
+      "na-deployments": "N/A. Please check if you have collected deployments",
+      "na-deployments-pullrequests": "N/A. Please check if you have collected deployments/pull requests",
+      "na-incidents": "N/A. Please check if you have collected incidents",
+      "na-deployments-incidents": "N/A. Please check if you have collected deployments/incidents",
+      "invalid-dora": "Invalid dora report",
+      "elite": "(elite)",
+      "high": "(high)",
+      "medium": "(medium)",
+      "low": "(low)"
     }
   },
   "deployment-frequency": {

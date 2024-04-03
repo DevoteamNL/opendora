@@ -1,18 +1,23 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useState } from 'react';
-import { dfBenchmarkKey } from '../models/DfBenchmarkData';
 import { doraDataServiceApiRef } from '../services/DoraDataService';
 
 export const useMetricBenchmark = (type: string) => {
   const doraDataService = useApi(doraDataServiceApiRef);
-  const [benchmark, setDfBenchmark] = useState<dfBenchmarkKey | undefined>();
+  const [benchmarkKey, setBenchmarkKey] = useState<string | undefined>();
+  const [benchmarkValue, setBenchmarkValue] = useState<string | undefined>();
   const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
     doraDataService.retrieveBenchmarkData({ type: type }).then(response => {
-      setDfBenchmark(response.key);
+      console.log(
+        '🚀 ~ doraDataService.retrieveBenchmarkData ~ response:',
+        response,
+      );
+      setBenchmarkKey(response.key);
+      setBenchmarkValue(response.value);
     }, setError);
   }, [doraDataService, type]);
 
-  return { error: error, benchmark: benchmark };
+  return { error: error, benchmarkKey, benchmarkValue };
 };

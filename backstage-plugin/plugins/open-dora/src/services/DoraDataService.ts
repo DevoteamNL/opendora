@@ -1,5 +1,5 @@
 import { ConfigApi, createApiRef } from '@backstage/core-plugin-api';
-import { dfBenchmarkData } from '../models/DfBenchmarkData';
+import { dfBenchmarkData } from '../models/BenchmarkData';
 import { MetricData } from '../models/MetricData';
 
 export const doraDataServiceApiRef = createApiRef<DoraDataService>({

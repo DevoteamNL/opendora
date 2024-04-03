@@ -15,6 +15,8 @@ func (service BenchmarkService) ServeRequest(params ServiceParameters) (models.B
 	typeQueryMap := map[string]string{
 		"df":   sql_queries.BenchmarkDfSql,
 		"mltc": sql_queries.BenchmarkMltcSql,
+		"cfr":  sql_queries.BenchmarkCfrSql,
+		"mttr": sql_queries.BenchmarkMttrSql,
 	}
 
 	query := typeQueryMap[params.TypeQuery]

@@ -14,7 +14,7 @@ WITH _pr_stats AS (
         )
         AND pr.merged_date IS NOT NULL
         AND ppm.pr_cycle_time IS NOT NULL
-        and cdc.finished_date BETWEEN FROM_UNIXTIME(:from)
+        AND cdc.finished_date BETWEEN FROM_UNIXTIME(:from)
         AND FROM_UNIXTIME(:to)
 ),
 

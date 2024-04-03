@@ -9,18 +9,21 @@
   font-style: italic;
 }
 
-.negative {
-  color: #ffcc00;
+.medium {
+  color: #fade2a;
 }
 
-.critical {
-  color: red;
+.low {
+  color: #f2495c;
 }
 
-.positive {
-  color: #198754;
+.high {
+  color: #73bf69;
 }
 
+.elite {
+  color: #b877d9;
+}
 .neutral {
   color: default;
 }

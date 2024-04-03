@@ -73,9 +73,6 @@ export const DashboardComponent = ({
               <BenchmarkGridItem type="mltc" />
               <BenchmarkGridItem type="cfr" />
               <BenchmarkGridItem type="mttr" />
-              <Box sx={{ flex: 1 }}>
-                {/* Placeholder for other benchmark items */}
-              </Box>
             </Box>
             <Box
               sx={{
