@@ -1,40 +1,48 @@
-with _pr_stats AS (
+WITH _pr_stats AS (
     SELECT
         DISTINCT pr.id,
         ppm.pr_cycle_time
     FROM
-        pull_requests pr
-        join project_pr_metrics ppm on ppm.id = pr.id
-        join cicd_deployment_commits cdc on ppm.deployment_commit_id = cdc.id
-        JOIN repos ON cdc.repo_id = repos.id
+        pull_requests pr 
+        JOIN project_pr_metrics ppm ON ppm.id = pr.id
+        JOIN project_mapping pm ON pr.base_repo_id = pm.row_id AND pm.`table` = 'repos'
+        JOIN cicd_deployment_commits cdc ON ppm.deployment_commit_id = cdc.id
     WHERE
         (
             :project = ""
             OR LOWER(repos.name) LIKE CONCAT('%/', LOWER(:project))
         )
-        and pr.merged_date IS NOT NULL
-        and ppm.pr_cycle_time IS NOT NULL
+        AND pr.merged_date IS NOT NULL
+        AND ppm.pr_cycle_time IS NOT NULL
         and cdc.finished_date BETWEEN FROM_UNIXTIME(:from)
         AND FROM_UNIXTIME(:to)
 ),
 
-_median_change_lead_time_ranks AS(
-    SELECT *, percent_rank() OVER(ORDER BY pr_cycle_time) AS ranks
+_median_change_lead_time_ranks as(
+    SELECT *, percent_rank() over(order by pr_cycle_time) as ranks
     FROM _pr_stats
 ),
 
-_median_change_lead_time AS(
-    SELECT max(pr_cycle_time) AS median_change_lead_time
+_median_change_lead_time as(
+-- use median PR cycle time as the median change lead time
+    SELECT max(pr_cycle_time) as median_change_lead_time
     FROM _median_change_lead_time_ranks
     WHERE ranks <= 0.5
 )
 
-SELECT
+SELECT 
   CASE
-    WHEN median_change_lead_time < 60 then "lt-1hour"
-    WHEN median_change_lead_time < 7 * 24 * 60 then "lt-1week"
-    WHEN median_change_lead_time < 180 * 24 * 60 then "week-6month"
-    WHEN median_change_lead_time >= 180 * 24 * 60 then "mt-6month"
-    ELSE "mt-6month"
-    END as data_key
+        WHEN median_change_lead_time < 24 * 60 THEN "elite"
+        WHEN median_change_lead_time < 7 * 24 * 60 THEN "high"
+        WHEN median_change_lead_time < 30 * 24 * 60 THEN "medium"
+        WHEN median_change_lead_time >= 30 * 24 * 60 THEN "low"
+        ELSE "N/A. Please check if you have collected deployments/pull_requests."
+        END AS data_key,
+  CASE
+        WHEN median_change_lead_time < 24 * 60 THEN round(median_change_lead_time/60,1)
+        WHEN median_change_lead_time < 7 * 24 * 60 THEN round(median_change_lead_time/60,1)
+        WHEN median_change_lead_time < 30 * 24 * 60 THEN round(median_change_lead_time/60,1)
+        WHEN median_change_lead_time >= 30 * 24 * 60 THEN round(median_change_lead_time/60,1)
+        ELSE ""
+        END AS data_value
 FROM _median_change_lead_time
