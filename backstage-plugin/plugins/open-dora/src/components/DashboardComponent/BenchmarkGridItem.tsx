@@ -8,7 +8,6 @@ import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/Highligh
 export const BenchmarkGridItem = ({ type }: { type: string }) => {
   const [t] = useTranslation();
   const { benchmarkKey, benchmarkValue, error } = useMetricBenchmark(type);
-  console.log('🚀 ~ BenchmarkGridItem ~ benchmark:', benchmarkKey);
 
   const testOrProgressComponent = benchmarkKey ? (
     <HighlightTextBoxComponent
@@ -45,7 +44,9 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
 
   return (
     <Box sx={{ bgcolor: '#424242', flex: 1 }}>
-      <h1>{t(`software_delivery_performance_metrics.labels.${type}`)}</h1>
+      <h3>
+        {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
+      </h3>
       {errorOrResponse}
     </Box>
   );

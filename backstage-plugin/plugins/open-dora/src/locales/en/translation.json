@@ -4,7 +4,11 @@
       "df": "Deployment Frequency",
       "mltc": "Median Lead Time for Change",
       "cfr": "Change Failure Rate",
-      "mttr": "Mean Time to Recovery"
+      "mttr": "Mean Time to Recovery",
+      "benchmark_df": "Deployment Frequency",
+      "benchmark_mltc": "Median Lead Time for Changes in Hours",
+      "benchmark_cfr": "Change Failure Rate",
+      "benchmark_mttr": "Mean Time to Restore Service in Hours"
     },
     "overall_labels": {
       "lt-6month": "Fewer than once per six months",

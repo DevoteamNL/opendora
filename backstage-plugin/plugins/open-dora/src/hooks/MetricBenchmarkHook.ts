@@ -10,10 +10,6 @@ export const useMetricBenchmark = (type: string) => {
 
   useEffect(() => {
     doraDataService.retrieveBenchmarkData({ type: type }).then(response => {
-      console.log(
-        '🚀 ~ doraDataService.retrieveBenchmarkData ~ response:',
-        response,
-      );
       setBenchmarkKey(response.key);
       setBenchmarkValue(response.value);
     }, setError);

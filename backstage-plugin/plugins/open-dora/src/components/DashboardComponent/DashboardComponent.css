@@ -5,3 +5,11 @@ h1 {
   color: blueviolet;
   margin-left: 15px;
 }
+
+h3 {
+  font-size: 1vw;
+  font-style: italic;
+  /* TODO: Orange for Duch version */
+  color: blueviolet;
+  margin-left: 15px;
+}
