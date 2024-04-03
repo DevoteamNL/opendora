@@ -18,24 +18,24 @@ describe('BenchmarkGridItem', () => {
   it('should show the benchmark returned from the server', async () => {
     const { queryByText } = await renderBenchmarkGridItem();
 
-    expect(queryByText('On-demand')).not.toBeNull();
+    expect(queryByText('On-demand', { exact: false })).not.toBeNull();
   });
 
   it('should show loading indicator when waiting on the benchmark to return', async () => {
-    delayRequest({ key: 'on-demand' }, benchmarkUrl);
+    delayRequest({ key: 'week-elite', value: '3' }, benchmarkUrl);
 
     const { queryByText, queryByRole, findByRole } =
       await renderBenchmarkGridItem();
 
     expect(await findByRole('progressbar')).not.toBeNull();
-    expect(queryByText('On-demand')).toBeNull();
+    expect(queryByText('3 deployment days per week(elite)')).toBeNull();
 
     await act(async () => {
       jest.runAllTimers();
     });
 
     expect(queryByRole('progressbar')).toBeNull();
-    expect(queryByText('On-demand')).not.toBeNull();
+    expect(queryByText('3 deployment days per week(elite)')).not.toBeNull();
   });
 
   it('should show the error returned from the service', async () => {
