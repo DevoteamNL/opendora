@@ -15,11 +15,15 @@ func TestBenchmarkService_ServeRequest(t *testing.T) {
 	dataMockMap := map[string]sql_client.MockBenchmarkDataReturn{
 		sql_queries.BenchmarkDfSql:   {Data: "example_key"},
 		sql_queries.BenchmarkMltcSql: {Data: "example_key"},
+		sql_queries.BenchmarkCfrSql:  {Data: "example_key"},
+		sql_queries.BenchmarkMttrSql: {Data: "example_key"},
 	}
 
 	errorMockMap := map[string]sql_client.MockBenchmarkDataReturn{
 		sql_queries.BenchmarkDfSql:   {Err: fmt.Errorf("error from df benchmark query")},
 		sql_queries.BenchmarkMltcSql: {Err: fmt.Errorf("error from mltc benchmark query")},
+		sql_queries.BenchmarkCfrSql:  {Err: fmt.Errorf("error from mltc benchmark query")},
+		sql_queries.BenchmarkMttrSql: {Err: fmt.Errorf("error from mltc benchmark query")},
 	}
 
 	tests := []struct {

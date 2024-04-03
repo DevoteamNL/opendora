@@ -36,13 +36,10 @@ SELECT
         WHEN median_change_lead_time < 7 * 24 * 60 THEN "high"
         WHEN median_change_lead_time < 30 * 24 * 60 THEN "medium"
         WHEN median_change_lead_time >= 30 * 24 * 60 THEN "low"
-        ELSE "N/A. Please check if you have collected deployments/pull_requests."
+        ELSE "na-deployments-pullrequests"
         END AS data_key,
   CASE
-        WHEN median_change_lead_time < 24 * 60 THEN round(median_change_lead_time/60,1)
-        WHEN median_change_lead_time < 7 * 24 * 60 THEN round(median_change_lead_time/60,1)
-        WHEN median_change_lead_time < 30 * 24 * 60 THEN round(median_change_lead_time/60,1)
-        WHEN median_change_lead_time >= 30 * 24 * 60 THEN round(median_change_lead_time/60,1)
+        WHEN median_change_lead_time > 0 THEN round(median_change_lead_time/60,1)
         ELSE ""
         END AS data_value
 FROM _median_change_lead_time
