@@ -1,5 +1,5 @@
 import { ConfigApi, createApiRef } from '@backstage/core-plugin-api';
-import { dfBenchmarkData } from '../models/BenchmarkData';
+import { benchmarkData } from '../models/BenchmarkData';
 import { MetricData } from '../models/MetricData';
 
 export const doraDataServiceApiRef = createApiRef<DoraDataService>({
@@ -54,6 +54,6 @@ export class DoraDataService {
       throw new Error('Unexpected response');
     }
 
-    return response as dfBenchmarkData;
+    return response as benchmarkData;
   }
 }
