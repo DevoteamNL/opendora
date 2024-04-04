@@ -22,7 +22,7 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           'week-elite': 'elite',
           'week-high': 'high',
           'month-medium': 'medium',
-          'month-lo': 'low',
+          'month-low': 'low',
           elite: 'elite',
           high: 'high',
           medium: 'medium',
