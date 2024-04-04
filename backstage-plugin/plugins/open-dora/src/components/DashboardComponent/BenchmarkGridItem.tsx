@@ -22,12 +22,12 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           'week-elite': 'elite',
           'week-high': 'high',
           'month-medium': 'medium',
-          'month-low': 'low',
+          'month-lo': 'low',
           elite: 'elite',
           high: 'high',
           medium: 'medium',
           low: 'low',
-        }[benchmarkKey]
+        }[benchmarkKey] || 'neutral'
       }
     />
   ) : (
