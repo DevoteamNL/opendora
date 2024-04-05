@@ -55,13 +55,17 @@ describe('DashboardComponent', () => {
     expect(queryByText('Deployment Frequency Average')).toBeInTheDocument();
     expect(queryByText('df_average_first_key')).toBeInTheDocument();
 
-    expect(queryByText('Median Lead Time for Changes')).toBeInTheDocument();
+    expect(
+      queryByText('Median Lead Time for Changes in Hours'),
+    ).toBeInTheDocument();
     expect(queryAllByText('mltc_first_key')[0]).toBeInTheDocument();
 
     expect(queryAllByText('Change Failure Rate')).toHaveLength(2);
     expect(queryAllByText('cfr_first_key')[0]).toBeInTheDocument();
 
-    expect(queryAllByText('Mean Time to Recovery')).toHaveLength(2);
+    expect(
+      queryAllByText('Mean Time to Restore Service in Hours'),
+    ).toHaveLength(1);
     expect(queryAllByText('mttr_first_key')[0]).toBeInTheDocument();
   });
 

@@ -7,7 +7,7 @@ describe('HighlightTextBoxComponent', () => {
     const { getByText, queryByText } = render(
       <HighlightTextBoxComponent
         title="example title"
-        healthStatus="warning"
+        healthStatus="low"
         highlight="example highlight"
       />,
     );
@@ -15,7 +15,7 @@ describe('HighlightTextBoxComponent', () => {
     expect(queryByText('example title')).not.toBeNull();
 
     const highlightElement = getByText('example highlight');
-    expect(highlightElement.parentElement).toHaveClass('warning');
+    expect(highlightElement.parentElement).toHaveClass('low');
 
     expect(queryByText('example text')).toBeNull();
   });
@@ -23,7 +23,7 @@ describe('HighlightTextBoxComponent', () => {
     const { queryByText } = render(
       <HighlightTextBoxComponent
         title="example title"
-        healthStatus="warning"
+        healthStatus="low"
         highlight="example highlight"
         text="example text"
       />,

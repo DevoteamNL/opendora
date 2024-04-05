@@ -23,6 +23,12 @@ var BenchmarkDfSql string
 //go:embed benchmark_mltc.sql
 var BenchmarkMltcSql string
 
+//go:embed benchmark_cfr.sql
+var BenchmarkCfrSql string
+
+//go:embed benchmark_mttr.sql
+var BenchmarkMttrSql string
+
 //go:embed monthly_mltc.sql
 var MonthlyMltcSql string
 

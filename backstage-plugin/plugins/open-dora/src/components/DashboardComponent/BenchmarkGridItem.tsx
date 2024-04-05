@@ -7,33 +7,27 @@ import { HighlightTextBoxComponent } from '../HighlightTextBoxComponent/Highligh
 
 export const BenchmarkGridItem = ({ type }: { type: string }) => {
   const [t] = useTranslation();
-  const { benchmark, error } = useMetricBenchmark(type);
+  const { benchmarkKey, benchmarkValue, error } = useMetricBenchmark(type);
 
-  const testOrProgressComponent = benchmark ? (
+  const testOrProgressComponent = benchmarkKey ? (
     <HighlightTextBoxComponent
       title=""
       text=""
-      highlight={t(
-        `software_delivery_performance_metrics.overall_labels.${benchmark}`,
-      )}
+      highlight={`${benchmarkValue} 
+        ${t(
+          `software_delivery_performance_metrics.overall_labels.${benchmarkKey}`,
+        )}`}
       healthStatus={
         {
-          'on-demand': 'positive',
-          'lt-6month': 'critical',
-          'day-week': 'negative',
-          'week-month': 'neutral',
-          'month-6month': 'negative',
-          'lt-1hour': 'positive',
-          'lt-1day': 'neutral',
-          'lt-1week': 'neutral',
-          'week-6month': 'negative',
-          'mt-1week': 'critical',
-          'mt-6month': 'critical',
-          'lt-15p': 'positive',
-          '15-25p': 'neutral',
-          '25-30p': 'negative',
-          'mt-30p': 'critical',
-        }[benchmark]
+          'week-elite': 'elite',
+          'week-high': 'high',
+          'month-medium': 'medium',
+          'month-low': 'low',
+          elite: 'elite',
+          high: 'high',
+          medium: 'medium',
+          low: 'low',
+        }[benchmarkKey] || 'neutral'
       }
     />
   ) : (
@@ -48,7 +42,9 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
 
   return (
     <Box sx={{ bgcolor: '#424242', flex: 1 }}>
-      <h1>{t(`software_delivery_performance_metrics.labels.${type}`)}</h1>
+      <h3>
+        {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
+      </h3>
       {errorOrResponse}
     </Box>
   );
