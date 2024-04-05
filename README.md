@@ -50,12 +50,6 @@ This is a basic Spring application used to provide a mock for the DORA API metri
 
 [More details](dora-api-mock/README.md)
 
-### dev-environment
-
-Contains an initial docker compose with the services needed to test the metrics in the dev's local environment.
-
-[More details](dev-environment/README.md)
-
 ## Setup
 
 Goto [Plugin setup documentation](backstage-plugin/plugins/open-dora/README.md) and follow the steps to install and setup the plugin in your Backstage environment.
@@ -74,6 +68,45 @@ We also accept pull requests for the code and documentation. Kindly use the disc
 - Docker Compose
 
 ## Configuring the Environment
+
+### Running the Dev Environment
+
+OpenDORA contains an initial Docker Compose with the services needed to test the metrics in the dev's local environment.
+
+- Make sure you have copied the .env.dist to .env. The .env is in .gitignore because it contains secrets and custom configuration
+
+```shell
+cp .env.dist .env
+```
+
+- Run the Docker environment with Docker Compose v2.*
+
+```shell
+docker compose --profile dev up -d
+```
+
+It may take some time for all the containers to be available. Healthchecks to monitor this are not available right now.
+
+- When using the development profile. There won't be a Devlake available to manage. Instead, It will use a mock-api to create responses. If you want to test Opendora with a Devlake instance, use the `test` profile.
+
+```shell
+docker compose --profile test up -d
+```
+
+- A Grafana container is also available in case you want to access the default dashboards delivered with Apache DevLake.
+
+To start it, run the below:
+
+```shell
+docker compose --profile dashboard up -d
+```
+
+After that, the services will be accessible on the below:
+
+- DevLake Configuration UI: http://localhost:4000
+- Grafana Dashboards (if started with profile `dashboard`): http://localhost:3002 (initial credential: `admin`/`admin`)
+
+For more information about Docker Compose, check their official documentation: [Docker Compose](https://docs.docker.com/compose/)
 
 ### Apache DevLake
 
@@ -104,40 +137,3 @@ For more information on how to configure Apache DevLake with docker compose, che
 Also, make sure to check [DevLake's Configuration documentation](https://devlake.apache.org/docs/v0.18/Configuration) to correctly configure
 the connection, data scope, etc. For the DORA metrics, the most important part is the [transformations](https://devlake.apache.org/docs/v0.18/Configuration/Tutorial#step-3---add-transformations-optional), 
 so make sure to configure it accordingly (job names) for the metrics to be properly calculated.
-
-## Running the Dev Environment
-
-- Docker Compose v1.*
-
-```shell
-docker-compose up -d
-```
-
-- Docker Compose v2.*
-
-```shell
-docker compose up -d
-```
-
-A Grafana container is also available in case you want to access the default dashboards delivered with Apache DevLake.
-
-To start it, run the below:
-
-- Docker Compose v1.*
-
-```shell
-docker-compose --profile dashboard up -d
-```
-
-- Docker Compose v2.*
-
-```shell
-docker compose --profile dashboard up -d
-```
-
-After that, the services will be accessible on the below:
-
-- DevLake Configuration UI: http://localhost:4000
-- Grafana Dashboards (if started with profile `dashboard`): http://localhost:3000 (initial credential: `admin`/`admin`)
-
-For more information about Docker Compose, check their official documentation: [Docker Compose](https://docs.docker.com/compose/)
