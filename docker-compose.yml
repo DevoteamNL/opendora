@@ -1,4 +1,3 @@
-version: "3"
 services:
 
   opendora:
@@ -73,6 +72,7 @@ services:
     image: mysql:8
     profiles:
       - test
+      - dashboard
     volumes:
       - mysql-storage:/var/lib/mysql
     restart: unless-stopped
@@ -109,6 +109,7 @@ services:
   devlake:
     profiles:
     - test
+    - dashboard
     image: devlake.docker.scarf.sh/apache/devlake:v0.18.0
     ports:
       - "8080:8080"
@@ -125,6 +126,7 @@ services:
   config-ui:
     profiles:
       - test
+      - dashboard
     image: devlake.docker.scarf.sh/apache/devlake-config-ui:v0.18.0
     ports:
       - "4000:4000"

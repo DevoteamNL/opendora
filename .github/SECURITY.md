@@ -8,7 +8,7 @@ At OpenDORA, we take security seriously. If you believe you have found a securit
 
 1. **Do not disclose the issue publicly.** Please do not post the issue on GitHub, forums, or any other public platform until we have had a chance to address it.
 
-2. **Submit a report.** Send a detailed email to [jeroen.van.der.meulen@devoteam.com](mailto:jeroen.van.der.meulen@devoteam.com) with the following information:
+2. **Submit a report.** Send a detailed email to [opendora@devoteam.com](mailto:opendora@devoteam.com) with the following information:
     - Your name and affiliation (if any).
     - A detailed description of the vulnerability, including steps to reproduce it.
     - Attach any necessary PoC (Proof of Concept) files or code snippets.
