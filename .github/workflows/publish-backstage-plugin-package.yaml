@@ -26,6 +26,7 @@ jobs:
           cache-dependency-path: backstage-plugin/yarn.lock
           registry-url: https://registry.npmjs.org
           always-auth: true
+          scope: "@devoteam-nl"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
