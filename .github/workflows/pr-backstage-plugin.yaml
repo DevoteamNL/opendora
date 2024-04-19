@@ -9,7 +9,7 @@ on:
       - "backstage-plugin/**"
       - ".github/workflows/pr-backstage-plugin.yaml"
       - "./.github/workflows/test/test-backstage-plugin.yaml"
-      - "./.github/workflows/publish/publish-backstage-plugin-npm.yaml"
+      - "./.github/workflows/publish/publish-backstage-plugin-package.yaml"
   pull_request:
     branches:
       - main
@@ -17,7 +17,7 @@ on:
       - "backstage-plugin/**"
       - ".github/workflows/pr-backstage-plugin.yaml"
       - "./.github/workflows/test/test-backstage-plugin.yaml"
-      - "./.github/workflows/publish/publish-backstage-plugin-npm.yaml"
+      - "./.github/workflows/publish/publish-backstage-plugin-package.yaml"
 
 jobs:
   test:
