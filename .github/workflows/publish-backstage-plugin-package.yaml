@@ -63,7 +63,6 @@ jobs:
         working-directory: backstage-plugin/plugins/open-dora
         run: |
           # Replace the @devoteam-nl with @devoteamnl in package.json
-          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
           yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
