@@ -38,7 +38,7 @@ describe('BenchmarkGridItem', () => {
     expect(queryByText('3 deployment days per week(elite)')).not.toBeNull();
   });
 
-  it('should show the error returned from the services', async () => {
+  it('should show the error returned from the servicess', async () => {
     server.use(
       rest.get(benchmarkUrl, (_, res, ctx) => {
         return res(ctx.status(401));
