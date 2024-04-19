@@ -57,7 +57,7 @@ jobs:
           yarn version --new-version ${{ steps.gitversion.outputs.fullSemVer }} --no-git-tag-version
           yarn publish --non-interactive --tag pr
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_APR_2024 }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to GHCR
         if: github.event_name == 'release'
@@ -67,4 +67,4 @@ jobs:
           sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
           yarn publish --non-interactive
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_APR_2024 }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
