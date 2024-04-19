@@ -53,7 +53,6 @@ jobs:
         working-directory: backstage-plugin/plugins/open-dora
         run: |
           # Replace the @devoteam-nl with @devoteamnl in package.json
-          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
           yarn version --new-version ${{ steps.gitversion.outputs.fullSemVer }} --no-git-tag-version
           yarn publish --non-interactive --tag pr
         env:
@@ -64,7 +63,6 @@ jobs:
         working-directory: backstage-plugin/plugins/open-dora
         run: |
           # Replace the @devoteam-nl with @devoteamnl in package.json
-          sed -i 's/"@devoteam-nl\//"@devoteamnl\//g' package.json
           yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_APR_2024 }}
