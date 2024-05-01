@@ -3633,10 +3633,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/x-charts@^6.18.7":
-  version "6.18.7"
-  resolved "https://registry.yarnpkg.com/@mui/x-charts/-/x-charts-6.18.7.tgz#3febea719cf007c775946f72dde20304ad2a223e"
-  integrity sha512-s7a24H0vEnOGjLv4DNHsjLAScu6rLHOLDUV5LFe22Kv0//Xl4r8bjmX7BXzy3ma3z9Uy2gw5Ey9ASpi0sQKjeg==
+"@mui/x-charts@^6.19.11":
+  version "6.19.8"
+  resolved "https://registry.yarnpkg.com/@mui/x-charts/-/x-charts-6.19.8.tgz#df2d4ee0a185d37481928355f69925c8af2c4329"
+  integrity sha512-cjwsCJrUPDlMytJHBV+g3gDoSRURiphjclZs8sRnkZ+h4QbHn24K5QkK4bxEj7aCkO2HVJmDE0aqYEg4BnWCOA==
   dependencies:
     "@babel/runtime" "^7.23.2"
     "@mui/base" "^5.0.0-beta.22"
