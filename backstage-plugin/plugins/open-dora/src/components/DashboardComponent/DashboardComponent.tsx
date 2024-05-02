@@ -13,6 +13,7 @@ import { MetricContext } from '../../services/MetricContext';
 import { DropdownComponent } from '../DropdownComponent/DropdownComponent';
 import { BenchmarkGridItem } from './BenchmarkGridItem';
 import { ChartGridItem } from './ChartGridItem';
+import { useTheme } from '@mui/material/styles';
 import './DashboardComponent.css';
 
 export interface DashboardComponentProps {
@@ -26,7 +27,7 @@ export const DashboardComponent = ({
 }: DashboardComponentProps) => {
   const [t] = useTranslation();
   const [selectedTimeUnit, setSelectedTimeUnit] = React.useState('weekly');
-
+  const theme = useTheme();
   return (
     <MetricContext.Provider
       value={{
@@ -43,17 +44,24 @@ export const DashboardComponent = ({
           <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
         </Header>
         <Content>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <Box
               sx={{
-                bgcolor: '#424242',
-                position: 'sticky',
+                bgcolor: theme.palette.background.paper,
                 top: 8,
                 display: 'flex',
                 gridGap: 8,
-                zIndex: 1,
-                boxShadow:
-                  '0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)',
+                boxShadow: `
+                  0px 2px 2px -1px rgba(0,0,0,0.05), 
+                  0px 2px 2px 0px rgba(0,0,0,0.07),
+                  0px 1px 5px 0px rgba(0,0,0,0.06)`,
+                position: 'sticky',
+                zIndex: 2,
               }}
             >
               <DropdownComponent
@@ -63,9 +71,11 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
+                top: 8,
                 display: 'flex',
-                marginTop: 8,
                 gridGap: 8,
+                zIndex: 1,
+                marginTop: 8,
                 maxHeight: 900,
               }}
             >
@@ -76,9 +86,11 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
+                top: 8,
                 display: 'flex',
-                marginTop: 8,
                 gridGap: 8,
+                zIndex: 1,
+                marginTop: 8,
                 justifyContent: 'space-evenly',
               }}
             >
@@ -95,9 +107,11 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
+                top: 8,
                 display: 'flex',
-                marginTop: 8,
                 gridGap: 8,
+                zIndex: 1,
+                marginTop: 8,
                 justifyContent: 'space-evenly',
               }}
             >
@@ -110,7 +124,15 @@ export const DashboardComponent = ({
                 label={t('failure-rate.labels.change_failure_rate')}
               />
             </Box>
-            <Box sx={{ display: 'flex', marginY: 1, gridGap: 8 }}>
+            <Box
+              sx={{
+                top: 8,
+                display: 'flex',
+                gridGap: 8,
+                zIndex: 1,
+                marginY: 1,
+              }}
+            >
               <ChartGridItem
                 type="mttr"
                 label={t('recovery-time.labels.mean_time_to_recovery')}
