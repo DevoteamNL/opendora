@@ -1,6 +1,5 @@
 import React from 'react';
 import './HighlightTextBoxComponent.css';
-import { useTheme } from '@material-ui/core';
 
 interface HighlightTextBoxComponentProps {
   title: string;
@@ -11,12 +10,8 @@ interface HighlightTextBoxComponentProps {
 export const HighlightTextBoxComponent = (
   props: HighlightTextBoxComponentProps,
 ) => {
-  const theme = useTheme();
   return (
-    <div
-      className="highlightTextBoxBorder"
-      style={{ background: theme.palette.background.default }}
-    >
+    <div className="highlightTextBoxBorder">
       <h1 className="margin-left-offset-m25 headerStyle">{props.title}</h1>
       <div className={props.healthStatus}>
         <div className="highlight">{props.highlight}</div>

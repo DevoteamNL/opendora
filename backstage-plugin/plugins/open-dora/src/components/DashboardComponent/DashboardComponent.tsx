@@ -52,14 +52,9 @@ export const DashboardComponent = ({
           >
             <Box
               sx={{
-                bgcolor: theme.palette.background.paper,
-                top: 8,
+                bgcolor: theme.palette.background.default,
                 display: 'flex',
-                gridGap: 8,
-                boxShadow: `
-                  0px 2px 2px -1px rgba(0,0,0,0.05), 
-                  0px 2px 2px 0px rgba(0,0,0,0.07),
-                  0px 1px 5px 0px rgba(0,0,0,0.06)`,
+                top: 8,
                 position: 'sticky',
                 zIndex: 2,
               }}

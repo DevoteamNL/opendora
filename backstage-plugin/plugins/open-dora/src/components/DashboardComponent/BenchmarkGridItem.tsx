@@ -50,9 +50,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
           0px 2px 2px -1px rgba(0,0,0,0.05), 
           0px 2px 2px 0px rgba(0,0,0,0.07),
           0px 1px 5px 0px rgba(0,0,0,0.06)`,
+        borderRadius: 10,
       }}
     >
-      <h3 style={{ color: theme.palette.primary.main }}>
+      <h3 style={{ color: theme.palette.primary.main, fontStyle: 'normal' }}>
         {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
       </h3>
       {errorOrResponse}
