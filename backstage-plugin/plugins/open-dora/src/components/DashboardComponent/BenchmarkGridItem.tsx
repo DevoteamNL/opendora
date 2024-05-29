@@ -44,6 +44,9 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
   return (
     <div
       style={{
+        display: 'flex',
+
+        flexDirection: 'column',
         color: theme.palette.text.primary,
         fontStyle: 'normal',
         marginRight: 30,

@@ -45,13 +45,9 @@ export const DashboardComponent = ({
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'flex-start',
+              alignItems: 'center',
             }}
           >
-            <DropdownComponent
-              onSelect={setSelectedTimeUnit}
-              selection={selectedTimeUnit}
-            />
             <BenchmarkGridItem type="df" />
             <BenchmarkGridItem type="mltc" />
             <BenchmarkGridItem type="cfr" />
@@ -61,6 +57,10 @@ export const DashboardComponent = ({
           </Box>
         </Header>
         <Content>
+          <DropdownComponent
+            onSelect={setSelectedTimeUnit}
+            selection={selectedTimeUnit}
+          />
           <Box
             sx={{
               display: 'flex',
