@@ -17,6 +17,7 @@ export const DropdownComponent = ({
     <Box
       sx={{
         display: 'flex',
+        marginRight: 50,
       }}
     >
       <TextField

@@ -46,11 +46,10 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
       style={{
         color: theme.palette.text.primary,
         fontStyle: 'normal',
-        marginRight: 35,
-        marginLeft: 35,
-        fontSize: '1.2em',
-        textAlign: 'center',
-        marginBottom: 20,
+        marginRight: 30,
+        marginBottom: 25,
+        fontSize: '1em',
+        textAlign: 'start',
       }}
     >
       {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}

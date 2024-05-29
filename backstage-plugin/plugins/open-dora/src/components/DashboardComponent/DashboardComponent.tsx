@@ -41,20 +41,26 @@ export const DashboardComponent = ({
           title="OpenDORA (by Devoteam)"
           subtitle="Through insight to perfection"
         >
-          <DropdownComponent
-            onSelect={setSelectedTimeUnit}
-            selection={selectedTimeUnit}
-          />
-
-          <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
-        </Header>
-        <Content>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+            }}
+          >
+            <DropdownComponent
+              onSelect={setSelectedTimeUnit}
+              selection={selectedTimeUnit}
+            />
             <BenchmarkGridItem type="df" />
             <BenchmarkGridItem type="mltc" />
             <BenchmarkGridItem type="cfr" />
             <BenchmarkGridItem type="mttr" />
+
+            <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
           </Box>
+        </Header>
+        <Content>
           <Box
             sx={{
               display: 'flex',
