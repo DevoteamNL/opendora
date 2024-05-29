@@ -41,9 +41,20 @@ export const DashboardComponent = ({
           title="OpenDORA (by Devoteam)"
           subtitle="Through insight to perfection"
         >
+          <DropdownComponent
+            onSelect={setSelectedTimeUnit}
+            selection={selectedTimeUnit}
+          />
+
           <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
         </Header>
         <Content>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <BenchmarkGridItem type="df" />
+            <BenchmarkGridItem type="mltc" />
+            <BenchmarkGridItem type="cfr" />
+            <BenchmarkGridItem type="mttr" />
+          </Box>
           <Box
             sx={{
               display: 'flex',
@@ -52,40 +63,10 @@ export const DashboardComponent = ({
           >
             <Box
               sx={{
-                bgcolor: theme.palette.background.default,
                 display: 'flex',
-                top: 8,
-                position: 'sticky',
-                zIndex: 2,
-              }}
-            >
-              <DropdownComponent
-                onSelect={setSelectedTimeUnit}
-                selection={selectedTimeUnit}
-              />
-            </Box>
-            <Box
-              sx={{
-                top: 8,
-                display: 'flex',
-                gridGap: 8,
+                gridGap: 16,
                 zIndex: 1,
-                marginTop: 8,
-                maxHeight: 900,
-              }}
-            >
-              <BenchmarkGridItem type="df" />
-              <BenchmarkGridItem type="mltc" />
-              <BenchmarkGridItem type="cfr" />
-              <BenchmarkGridItem type="mttr" />
-            </Box>
-            <Box
-              sx={{
-                top: 8,
-                display: 'flex',
-                gridGap: 8,
-                zIndex: 1,
-                marginTop: 8,
+                marginTop: 16,
                 justifyContent: 'space-evenly',
               }}
             >
@@ -102,11 +83,10 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
-                top: 8,
                 display: 'flex',
-                gridGap: 8,
+                gridGap: 16,
                 zIndex: 1,
-                marginTop: 8,
+                marginTop: 16,
                 justifyContent: 'space-evenly',
               }}
             >
@@ -121,11 +101,10 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
-                top: 8,
                 display: 'flex',
-                gridGap: 8,
+                gridGap: 16,
                 zIndex: 1,
-                marginY: 1,
+                marginTop: 16,
               }}
             >
               <ChartGridItem

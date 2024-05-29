@@ -42,21 +42,19 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
     testOrProgressComponent
   );
   return (
-    <Box
-      sx={{
-        flex: 1,
-        bgcolor: theme.palette.background.paper,
-        boxShadow: `
-          0px 2px 2px -1px rgba(0,0,0,0.05), 
-          0px 2px 2px 0px rgba(0,0,0,0.07),
-          0px 1px 5px 0px rgba(0,0,0,0.06)`,
-        borderRadius: 10,
+    <div
+      style={{
+        color: theme.palette.text.primary,
+        fontStyle: 'normal',
+        marginRight: 35,
+        marginLeft: 35,
+        fontSize: '1.2em',
+        textAlign: 'center',
+        marginBottom: 20,
       }}
     >
-      <h3 style={{ color: theme.palette.primary.main, fontStyle: 'normal' }}>
-        {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
-      </h3>
+      {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
       {errorOrResponse}
-    </Box>
+    </div>
   );
 };

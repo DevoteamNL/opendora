@@ -7,6 +7,11 @@ interface DeploymentFrequencyDataProp {
   metricData: MetricData;
 }
 
+const customize = {
+  height: 300,
+  legend: { hidden: true },
+};
+
 export const LineChartComponent = ({
   metricData,
 }: DeploymentFrequencyDataProp) => {
@@ -27,9 +32,10 @@ export const LineChartComponent = ({
           data: values,
           area: true,
           color: theme.palette.primary.main,
+          showMark: false,
         },
       ]}
-      height={300}
+      {...customize}
     />
   );
 };

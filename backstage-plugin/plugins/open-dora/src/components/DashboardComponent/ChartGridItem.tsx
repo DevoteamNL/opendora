@@ -37,7 +37,15 @@ export const ChartGridItem = ({
         borderRadius: 10,
       }}
     >
-      <h3 style={{ color: theme.palette.primary.main, fontStyle: 'normal' }}>
+      <h3
+        style={{
+          color: theme.palette.primary.main,
+          fontStyle: 'normal',
+          fontSize: '1.3em',
+          marginBottom: -15,
+          marginLeft: 30,
+        }}
+      >
         {label}
       </h3>
       {errorOrResponse}

@@ -17,7 +17,6 @@ export const DropdownComponent = ({
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
       }}
     >
       <TextField

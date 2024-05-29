@@ -12,10 +12,10 @@ export const HighlightTextBoxComponent = (
 ) => {
   return (
     <div className="highlightTextBoxBorder">
-      <h1 className="margin-left-offset-m25 headerStyle">{props.title}</h1>
       <div className={props.healthStatus}>
         <div className="highlight">{props.highlight}</div>
       </div>
+      <h1 className="headerStyle">{props.title}</h1>
       <div className="notification">{props.text}</div>
     </div>
   );
