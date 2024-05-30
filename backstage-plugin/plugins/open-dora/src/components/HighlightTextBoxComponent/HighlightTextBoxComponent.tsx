@@ -15,7 +15,7 @@ export const HighlightTextBoxComponent = (
       <div className={props.healthStatus}>
         <div className="highlight">{props.highlight}</div>
       </div>
-      <h1 className="headerStyle">{props.title}</h1>
+      <span className="headerStyle">{props.title}</span>
       <div className="notification">{props.text}</div>
     </div>
   );

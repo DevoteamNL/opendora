@@ -5,7 +5,7 @@ import {
   SupportButton,
 } from '@backstage/core-components';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
-import { Box } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
@@ -48,19 +48,27 @@ export const DashboardComponent = ({
               alignItems: 'center',
             }}
           >
-            <BenchmarkGridItem type="df" />
-            <BenchmarkGridItem type="mltc" />
-            <BenchmarkGridItem type="cfr" />
-            <BenchmarkGridItem type="mttr" />
-
+            <DropdownComponent
+              onSelect={setSelectedTimeUnit}
+              selection={selectedTimeUnit}
+            />
             <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
           </Box>
         </Header>
         <Content>
-          <DropdownComponent
-            onSelect={setSelectedTimeUnit}
-            selection={selectedTimeUnit}
-          />
+          <Box
+            sx={{
+              display: 'flex',
+              gridGap: 16,
+              zIndex: 1,
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <BenchmarkGridItem type="df" />
+            <BenchmarkGridItem type="mltc" />
+            <BenchmarkGridItem type="cfr" />
+            <BenchmarkGridItem type="mttr" />
+          </Box>
           <Box
             sx={{
               display: 'flex',

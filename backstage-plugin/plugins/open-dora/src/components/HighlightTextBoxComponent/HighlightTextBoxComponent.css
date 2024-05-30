@@ -1,10 +1,10 @@
 .highlightTextBoxBorder {
-  max-height: 20px;
 }
 
 .highlight {
   margin: auto;
-  font-size: 1.25em;
+  font-size: 1.15em;
+  font-weight: bold;
 }
 
 .notification {
