@@ -12,7 +12,7 @@ OpenDORA includes an open-source plugin for [Backstage](https://backstage.io), a
 
 DORA, short for [DevOps Research and Assessment](https://dora.dev), is a research program that began in 2013 investigating ways to measure and improve software delivery, operations, team, and organizational performance. The program has collected data from thousands of professionals and [publishes findings in annual reports](https://dora.dev/publications/).
 
-The key 4 DORA metrics are:
+The key [4 DORA metrics](https://dora.dev/guides/dora-metrics-four-keys/) are:
 - Deployment frequency
 - Lead time to changes
 - Change failure rate
