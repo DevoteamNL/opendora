@@ -5,7 +5,7 @@ import {
   SupportButton,
 } from '@backstage/core-components';
 import { getEntityRelations, useEntity } from '@backstage/plugin-catalog-react';
-import { Box } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
@@ -41,9 +41,34 @@ export const DashboardComponent = ({
           title="OpenDORA (by Devoteam)"
           subtitle="Through insight to perfection"
         >
-          <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <DropdownComponent
+              onSelect={setSelectedTimeUnit}
+              selection={selectedTimeUnit}
+            />
+            <SupportButton>Plugin for displaying DORA Metrics</SupportButton>
+          </Box>
         </Header>
         <Content>
+          <Box
+            sx={{
+              display: 'flex',
+              gridGap: 16,
+              zIndex: 1,
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <BenchmarkGridItem type="df" />
+            <BenchmarkGridItem type="mltc" />
+            <BenchmarkGridItem type="cfr" />
+            <BenchmarkGridItem type="mttr" />
+          </Box>
           <Box
             sx={{
               display: 'flex',
@@ -52,45 +77,10 @@ export const DashboardComponent = ({
           >
             <Box
               sx={{
-                bgcolor: theme.palette.background.paper,
-                top: 8,
                 display: 'flex',
-                gridGap: 8,
-                boxShadow: `
-                  0px 2px 2px -1px rgba(0,0,0,0.05), 
-                  0px 2px 2px 0px rgba(0,0,0,0.07),
-                  0px 1px 5px 0px rgba(0,0,0,0.06)`,
-                position: 'sticky',
-                zIndex: 2,
-              }}
-            >
-              <DropdownComponent
-                onSelect={setSelectedTimeUnit}
-                selection={selectedTimeUnit}
-              />
-            </Box>
-            <Box
-              sx={{
-                top: 8,
-                display: 'flex',
-                gridGap: 8,
+                gridGap: 16,
                 zIndex: 1,
-                marginTop: 8,
-                maxHeight: 900,
-              }}
-            >
-              <BenchmarkGridItem type="df" />
-              <BenchmarkGridItem type="mltc" />
-              <BenchmarkGridItem type="cfr" />
-              <BenchmarkGridItem type="mttr" />
-            </Box>
-            <Box
-              sx={{
-                top: 8,
-                display: 'flex',
-                gridGap: 8,
-                zIndex: 1,
-                marginTop: 8,
+                marginTop: 16,
                 justifyContent: 'space-evenly',
               }}
             >
@@ -107,11 +97,10 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
-                top: 8,
                 display: 'flex',
-                gridGap: 8,
+                gridGap: 16,
                 zIndex: 1,
-                marginTop: 8,
+                marginTop: 16,
                 justifyContent: 'space-evenly',
               }}
             >
@@ -126,11 +115,10 @@ export const DashboardComponent = ({
             </Box>
             <Box
               sx={{
-                top: 8,
                 display: 'flex',
-                gridGap: 8,
+                gridGap: 16,
                 zIndex: 1,
-                marginY: 1,
+                marginTop: 16,
               }}
             >
               <ChartGridItem

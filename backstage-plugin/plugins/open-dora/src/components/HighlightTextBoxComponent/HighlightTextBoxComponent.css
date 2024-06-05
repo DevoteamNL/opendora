@@ -1,7 +1,10 @@
+.highlightTextBoxBorder {
+}
+
 .highlight {
-  text-align: center;
-  width: 100%;
-  font-size: 1.2vw;
+  margin: auto;
+  font-size: 1.15em;
+  font-weight: bold;
 }
 
 .notification {
@@ -26,14 +29,6 @@
 }
 .neutral {
   color: default;
-}
-
-.highlightTextBoxBorder {
-  margin: 15px;
-  padding: 20px;
-  border-style: hidden;
-  min-height: 100px;
-  display: grid;
 }
 
 .margin-left-offset-m25 {

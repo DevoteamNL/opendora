@@ -14,7 +14,7 @@ export const DropdownComponent = ({
 }: DropdownComponentProps) => {
   const [t] = useTranslation();
   return (
-    <Box sx={{ display: 'flex', m: 3, flexDirection: 'column' }}>
+    <Box sx={{ width: 150 }}>
       <TextField
         style={{ width: '100%' }}
         variant="outlined"

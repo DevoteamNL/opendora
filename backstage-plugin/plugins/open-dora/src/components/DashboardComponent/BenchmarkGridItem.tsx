@@ -1,5 +1,5 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
-import { Box, CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress, Grid } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMetricBenchmark } from '../../hooks/MetricBenchmarkHook';
@@ -42,20 +42,35 @@ export const BenchmarkGridItem = ({ type }: { type: string }) => {
     testOrProgressComponent
   );
   return (
-    <Box
-      sx={{
-        flex: 1,
-        bgcolor: theme.palette.background.paper,
+    <Grid
+      item
+      style={{
+        width: '100%',
+        backgroundColor: theme.palette.background.paper,
         boxShadow: `
-          0px 2px 2px -1px rgba(0,0,0,0.05), 
-          0px 2px 2px 0px rgba(0,0,0,0.07),
-          0px 1px 5px 0px rgba(0,0,0,0.06)`,
+        0px 2px 2px -1px rgba(0,0,0,0.05), 
+        0px 2px 2px 0px rgba(0,0,0,0.07),
+        0px 1px 5px 0px rgba(0,0,0,0.06)`,
+        borderRadius: 10,
+        textAlign: 'center',
       }}
     >
-      <h3 style={{ color: theme.palette.primary.main }}>
-        {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
-      </h3>
-      {errorOrResponse}
-    </Box>
+      <Box sx={{}}>
+        <div
+          style={{
+            display: 'flex',
+            padding: 20,
+            flexDirection: 'column',
+            color: theme.palette.text.primary,
+            fontStyle: 'normal',
+            fontSize: '1em',
+            textAlign: 'center',
+          }}
+        >
+          {t(`software_delivery_performance_metrics.labels.benchmark_${type}`)}
+          {errorOrResponse}
+        </div>
+      </Box>
+    </Grid>
   );
 };
