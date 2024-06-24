@@ -1,21 +1,13 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: Devoteam DORA Metrics API
-  description: ""
+  title: OpenDoraApiFirst
+  description: Test if we can build API First
+  version: 0.0.1
   contact:
-    name: Devoteam DORA
-    url: https://github.com/DevoteamNL/dora-backstage-plugin/issues
-    email: dora@devoteam.com
-  version: v1
-  x-logo:
-    altText: Devoteam Logo
-    backgroundColor: "#FFFFFF"
-    url: https://voortekst.nl/storage/clients/mqjWxe5KUrI1sytG3RPXtlKy9qgvLBuXgcqpwljm.png
-    href: /
+    name: Open Dora
+    email: open@dora.com
 servers:
-  - url: http://localhost:10666/dora/api
-security:
-  - BearerAuth: []
+  - url: 'https://dev-api'
 tags:
   - name: data-point
     description: <SchemaDefinition schemaRef="#/components/schemas/DataPoint" />
@@ -23,45 +15,54 @@ tags:
   - name: response
     description: <SchemaDefinition schemaRef="#/components/schemas/MetricResponse" />
     x-displayName: MetricResponse
+  - name: aggregation-types
+    description: <SchemaDefinition schemaRef="#/components/schemas/MetricResponse" />
+    x-displayName: aggregationTypesResponse
+  - name: benchmark-response
+    description: <SchemaDefinition schemaRef="#/components/schemas/BenchmarkResponse" />
+    x-displayName: BenchmarkResponse
   - name: error-response
     description: <SchemaDefinition schemaRef="#/components/schemas/ErrorResponse" />
     x-displayName: ErrorResponse
 paths:
   /metric:
     get:
+      summary: Summary
+      description: Description
       tags:
-        - data-points
-      summary: Query data points for a given DORA Metric
-      description: |+
-        Returns the data points for the requested metric according to the informed filters. The below are the metrics currently supported:
-
-        | Metric Type     | Description                                                                         |
-        | --------------- | ----------------------------------------------------------------------------------- |
-        | `df_average`    | Deployment frequency (average), aggregated according to the `aggregation` parameter |
-        | `df_count`      | Amount of Deployments, aggregated according to the `aggregation` parameter          |
-        | `mltc`          | Median Lead Time for Changes, aggregated according to the `aggregation` parameter   |
-        | `cfr`           | Change Failure Rate, aggregated according to the `aggregation` parameter            | 
-        | `mttr`          | Mean Time to Recovery, aggregated according to the `aggregation` parameter          |
-
+        - data-point
       operationId: dataPointsByMetrics
       parameters:
         - name: type
           in: query
-          description: >-
-            `required`. Specify the type of metric the data points should be retrieved to
+          description: '`required`. Specify the type of metric the data points should be retrieved to'
           required: true
           schema:
             type: string
             enum:
-              - df_average
-              - df_count
+              - df
               - mltc
               - cfr
               - mttr
+        - name: from
+          in: query
+          description: '`required`. Date/time from when the results should be filtered. Should be before the ''to'' param, and should always be paired with the ''to'' param.'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-01-01T00:00:00Z'
+        - name: to
+          in: query
+          description: '`required`. Date/time to when the results should be filtered. Should be before the current date/time and after the ''from'' param, and should always be paired with the ''from'' param.'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-01-31T23:59:59Z'
         - name: aggregation
           in: query
-          description: >-
-            `optional`. Specify how the data points should be aggregated. If not informed, it will default to `weekly`
+          description: '`optional`. Specify how the data points should be aggregated. If not informed, it will default to `weekly`'
           schema:
             type: string
             enum:
@@ -69,36 +70,6 @@ paths:
               - monthly
               - quarterly
             default: weekly
-        - name: project
-          in: query
-          description: >-
-            `optional`. Specify the project/repo/component to which the data points should be retrieved
-          schema:
-            type: string
-        - name: team
-          in: query
-          description: >-
-            `optional`. Specify the team to which the data points should be retrieved
-          schema:
-            type: string
-        - name: from
-          in: query
-          description: >-
-            `optional`. Date/time from when the results should be filtered. If not informed, it will assume 6 months from the current date/time
-            Should be before the 'to' param, and should always be paired with the 'to' param.
-          schema:
-            type: string
-            format: date-time
-            example: "2020-01-01T00:00:00Z"
-        - name: to
-          in: query
-          description: >-
-            `optional`. Date/time to when the results should be filtered. If not informed, it will assume the current date/time
-            Should be before the current date/time and after the 'from' param, and should always be paired with the 'from' param.
-          schema:
-            type: string
-            format: date-time
-            example: "2020-01-31T23:59:59Z"
         - name: x-correlation-id
           in: header
           description: Unique identifer associated with the request
@@ -107,12 +78,12 @@ paths:
             format: uuid
           example: c0c62604-e3ab-4008-b882-4effcb4963ae
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MetricResponse"
+                $ref: '#/components/schemas/MetricResponse'
           headers:
             x-correlation-id:
               description: Unique identifer associated with the request
@@ -120,12 +91,14 @@ paths:
                 type: string
                 format: uuid
               example: c0c62604-e3ab-4008-b882-4effcb4963ae
-        "400":
+        '201':
+          description: Created
+        '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
           headers:
             x-correlation-id:
               description: Unique identifer associated with the request
@@ -133,17 +106,7 @@ paths:
                 type: string
                 format: uuid
               example: c0c62604-e3ab-4008-b882-4effcb4963ae
-        "403":
-          description: Forbidden! Access denied. Do not have authority to call this API
-          content: {}
-          headers:
-            x-correlation-id:
-              description: Unique identifer associated with the request
-              schema:
-                type: string
-                format: uuid
-              example: c0c62604-e3ab-4008-b882-4effcb4963ae
-        "401":
+        '401':
           description: Unauthorized! Should Provide a valid JWT token
           content: {}
           headers:
@@ -153,12 +116,22 @@ paths:
                 type: string
                 format: uuid
               example: c0c62604-e3ab-4008-b882-4effcb4963ae
-        "500":
+        '403':
+          description: Forbidden! Access denied. Do not have authority to call this API
+          content: {}
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+        '500':
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
               example:
                 message: Failed to connect to DevLake's DB
                 reference: c0c62604-e3ab-4008-b882-4effcb4963ae
@@ -169,14 +142,57 @@ paths:
                 type: string
                 format: uuid
               example: c0c62604-e3ab-4008-b882-4effcb4963ae
-      security:
-        - BearerAuth: []
+  /aggregation:
+    get:
+      summary: Get aggregation types
+      description: Get aggregation types
+      tags:
+        - aggregation-types
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregationTypesResponse'
+          headers:
+            x-correlation-id:
+              description: Unique identifer associated with the request
+              schema:
+                type: string
+                format: uuid
+              example: c0c62604-e3ab-4008-b882-4effcb4963ae
+      operationId: get-aggregation
   /benchmark:
     get:
+      summary: Your GET endpoint
       tags:
-        - summary
-      summary: Query the benchmark key for a given DORA Metric
-      description: |+
+        - benchmark-response
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-correlation-id:
+              schema:
+                type: string
+              description: Unique identifer associated with the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkResponse'
+        '500':
+          description: Internal Server Error
+          headers:
+            x-correlation-id:
+              schema:
+                type: string
+              description: Unique identifer associated with the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: get-benchmark
+      description: |-
         Returns a key corresponding to the benchmark calculated from the data points that match the filters. 
         The metrics currently supported are below:
 
@@ -186,121 +202,94 @@ paths:
         | `mltc`      | Median lead time for changes. | lt-1hour, lt-1week, week-6month, mt-6month     |
         | `cfr`       | Change Failure Rate.          | lt-15p, 15-25p, 25-30p, mt-30p                 |       
         | `mttr`      | Mean Time to Recovery         | lt-1hour, lt-1day, day-week, mt-6month         |
-
-      operationId: benchmarkByMetric
       parameters:
-        - name: type
-          in: query
-          description: >-
-            `required`. Specify the type of metric the benchmark should be calculated for
-          required: true
-          schema:
+        - schema:
             type: string
             enum:
               - df
               - mltc
               - cfr
               - mttr
-        - name: project
           in: query
-          description: >-
-            `optional`. Specify the project/repo/component to which the metric benchmark should be retrieved
-          schema:
+          name: type
+          required: true
+        - schema:
             type: string
-        - name: team
           in: query
-          description: >-
-            `optional`. Specify the team to which the metric benchmark should be retrieved
-          schema:
+          name: aggregation
+          required: true
+        - schema:
             type: string
-        - name: from
           in: query
-          description: >-
-            `optional`. Date/time from when the results should be filtered. If not informed, it will assume 6 months from the current date/time
-            Should be before the 'to' param, and should always be paired with the 'to' param.
-            Time-span should be at least 6 months to get an accurate benchmark.
-          schema:
+          name: project
+        - schema:
             type: string
-            format: date-time
-            example: "2020-01-01T00:00:00Z"
-        - name: to
           in: query
-          description: >-
-            `optional`. Date/time to when the results should be filtered. If not informed, it will assume the current date/time
-            Should be before the current date/time and after the 'from' param, and should always be paired with the 'from' param.
-          schema:
+          name: team
+        - schema:
             type: string
-            format: date-time
-            example: "2020-01-31T23:59:59Z"
-        - name: x-correlation-id
+          in: query
+          name: from
+        - schema:
+            type: string
+          in: query
+          name: to
+        - schema:
+            type: string
           in: header
+          name: x-correlation-id
           description: Unique identifer associated with the request
-          schema:
-            type: string
-            format: uuid
-          example: c0c62604-e3ab-4008-b882-4effcb4963ae
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BenchmarkResponse"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-              example:
-                message: Failed to connect to DevLake's DB
-                reference: c0c62604-e3ab-4008-b882-4effcb4963ae
 components:
   schemas:
     DataPoint:
       type: object
-      required:
-        - key
-        - value
+      x-examples:
+        Example 1:
+          - key: 1
+            count: 3
+            average: 3
       properties:
         key:
-          title: The key/label for the datapoint
+          type: integer
+          minimum: 1
+          maximum: 52
+        count:
+          type: integer
+          minimum: 1
+          maximum: 150
+        average:
+          type: integer
+          minimum: 1
+          maximum: 150
+    AggregationType:
+      x-stoplight:
+        id: 1f7d0d5bb4a4e
+      examples: []
+      type: object
+      properties:
+        type:
           type: string
-        value:
-          title: "The numeric value of the metric, can be a Long or Double"
-          type: number
-          example: 103.5
+          enum:
+            - weekly
+            - monthly
+            - quarterly
+        description:
+          type: string
     MetricResponse:
-      type: object
-      required:
-        - aggregation
-        - dataPoints
-      properties:
-        aggregation:
-          title: Unit of aggregation used
-          type: string
-          example: weekly
-        dataPoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/DataPoint"
-    BenchmarkResponse:
-      type: object
-      required:
-        - key
-      properties:
-        key:
-          title: The key to identify the benchmark text
-          description: month-6month would correspond to the text "Between once per month and once every 6 months" for example.
-          type: string
-          example: month-6month
-
+      type: array
+      minItems: 4
+      maxItems: 4
+      items:
+        $ref: '#/components/schemas/DataPoint'
+    AggregationTypesResponse:
+      type: array
+      x-stoplight:
+        id: 43ee9ca660a4e
+      minItems: 3
+      maxItems: 3
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/AggregationType'
     ErrorResponse:
       required:
         - message
@@ -310,24 +299,28 @@ components:
         message:
           title: Generic information about the failure
           type: string
-          example: "You have requested an unsupported metric name, please check the metric parameter"
+          example: 'You have requested an unsupported metric name, please check the metric parameter'
         reference:
           title: Generated ID to be able to trace more information about the error in the logs
           type: string
           example: c0c62604-e3ab-4008-b882-4effcb4963ae
-  securitySchemes:
-    BearerAuth:
-      type: http
-      description: A JWT Token provided by your OIDC Server
-      scheme: bearer
-      bearerFormat: JWT
-x-tagGroups:
-  - name: DORA
-    tags:
-      - data-points
-      - summary
-  - name: Models
-    tags:
-      - data-point
-      - response
-      - error-response
+    BenchmarkResponse:
+      title: BenchmarkResponse
+      x-stoplight:
+        id: ma2lcv5d5gfro
+      type: object
+      examples:
+        - key: high
+          value: '1.7'
+      properties:
+        key:
+          type: string
+          x-stoplight:
+            id: npelrap9nw5pt
+        value:
+          type: string
+          x-stoplight:
+            id: h707172828k4m
+      required:
+        - key
+        - value
